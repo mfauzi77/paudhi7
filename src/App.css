@@ -1,0 +1,5 @@
+@import "tailwindcss";
+
+@theme {
+  --color-biruku: #19C1B6; 
+}
