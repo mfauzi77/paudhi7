@@ -4,6 +4,5 @@ import tailwindcss from "@tailwindcss/vite";
 
 // Ganti 'nama-repo' dengan nama repository GitHub kamu
 export default defineConfig({
-  base: '/paudhi16/',
   plugins: [react(), tailwindcss()],
 });
