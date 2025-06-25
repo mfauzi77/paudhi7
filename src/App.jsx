@@ -1,51 +1,59 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Header from "./components/Header";
-import ChatPage from "./pages/ChatPage";
-import DataChart from "./pages/DataCharts";
-import NewSlider from "./components/NewSlider";
-import AboutPAUD from "./components/AboutPAUD";
-import Footer from "./components/Footer";
-import KLPage from "./pages/KLPage";
-import PAUDStats from "./components/PAUDStats";
-import Bidang from "./components/Bidang";
-import AboutPAUD2 from "./components/AboutPAUD2";
+// src/App.jsx
+import React from 'react';
+import './App.css';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
+import Navigation from './components/Navigation';
+import HeroSection from './components/HeroSection';
+import ServicesSection from './components/ServicesSection';
+import StatsSection from './components/StatsSection';
+import Footer from './components/Footer';
+import NewsSection from './components/NewsSection';
+import Chatbot from './components/Chatbot/Chatbot';
+import EducationSection from './components/EducationSection/';
+import KLProgramsMVP from './pages/KLProgramMVP';
+import KLSection from './components/KLSection';
+import DirectorySection from './components/DirectorySection';
+import PAUDDashboard from './components/PAUDDashboard/PAUDDashboard';
+import FaqPage from './components/FAQApp';
+import AboutPage from './components/About/AboutPage';
+import Main from './components/PengasuhanAi/Main';
+
+
+
+
+
+function HomePage() {
+  return (
+    <>
+      <HeroSection />
+      <ServicesSection />
+      <StatsSection />
+      <NewsSection />
+      < EducationSection />
+      <KLSection />
+      <Footer />
+      <Chatbot />
+    </>
+  );
+}
 
 function App() {
   return (
     <Router>
-      <Header />
-      <div className="min-h-screen flex flex-col">
-        <div className="flex-grow">
-          <Routes>
-            {/* Halaman Beranda (Menampilkan Slider & Deskripsi PAUD) */}
-            <Route
-              path="/"
-              element={
-                <div className="bg-white">
-                <AboutPAUD />
-                <AboutPAUD2 />
-                <Bidang />
-                <PAUDStats />
-                <NewSlider />
+      <Navigation />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+                <Route path="/KL" element={<KLProgramsMVP/>} />
+        <Route path="/directory" element={<DirectorySection />} />
+        <Route path="/dashboard" element={<PAUDDashboard />} />
+                <Route path="/faq" element={<FaqPage />} />
+                    <Route path="/faq" element={<FaqPage />} />
+        <Route path="/about" element={<AboutPage/>} />
+        <Route path="/pengasuhan" element={<Main/>} />
 
-                </div>
-              }
-            />
 
-            {/* Halaman Chat */}
-            <Route path="/chat" element={<ChatPage />} />
-
-            {/* Halaman Data */}
-            <Route path="/data" element={<DataChart />} />
-
-            {/* Halaman K/L */}
-            <Route path="/kl" element={<KLPage />} />
-
-          </Routes>
-        </div>
-        <Footer /> {/* Footer akan muncul di semua halaman */}
-      </div>
+      </Routes>
     </Router>
   );
 }
