@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import berita0 from '../images/berita/berita0.jpg';
 
 const NewsSection = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -8,36 +9,65 @@ const NewsSection = () => {
 
   const newsArticles = [
     {
-      id: 1,
-      title: 'Kemenko PMK Sinkronkan Kebijakan Tempat Penitipan Anak untuk Dukung Peningkatan Kualitas Pengasuhan',
-      excerpt: 'Kemenko PMK melalui Deputi Bidang Koordinasi Peningkatan Kualitas Keluarga dan Kependudukan menggelar Rapat Koordinasi dan Sinkronisasi Tingkat Eselon I terkait Surat Edaran Bersama (SEB) tentang Pembentukan dan Penyelenggaraan Tempat Penitipan Anak (TPA) di Kantor Kemenko PMK, pada Rabu (19/3/2025).',
-      author: 'Kemenko PMK',
-      date: '10 Maret 2025',
-      readTime: '5 menit',
-      icon: 'fas fa-chart-line',
-      tags: ['Strategi Nasional', 'RPJMN 2025-2029', 'Inovasi'],
-      image: 'https://www.kemenkopmk.go.id/sites/default/files/articles/2025-03/WhatsApp%20Image%202025-03-24%20at%2009.10.05.jpeg',
-      fullContent: `
-        <p>Kemenko PMK melalui Deputi Bidang Koordinasi Peningkatan Kualitas Keluarga dan Kependudukan menggelar Rapat Koordinasi dan Sinkronisasi Tingkat Eselon I terkait Surat Edaran Bersama (SEB) tentang Pembentukan dan Penyelenggaraan Tempat Penitipan Anak (TPA) di Kantor Kemenko PMK, pada Rabu (19/3/2025).</p>
-        
-        <h4>Data dan Tantangan</h4>
-        <p>Berdasarkan data Badan Pusat Statistik (BPS) tahun 2024, anak usia dini menyumbang 10,82% dari total penduduk Indonesia. Namun, tantangan masih perlu segera diatasi, antara lain 3,69% balita yang belum mendapatkan pengasuhan layak, 38,71% anak mengalami masalah kesehatan, serta 12,41% anak usia dini yang hidup di bawah garis kemiskinan.</p>
-        <p>Rakor ini bertujuan untuk memastikan agar kebijakan TPA selaras dalam kerangka Pengembangan Anak Usia Dini Holistik Integratif (PAUD HI) dan Care Economy, serta mengoordinasikan penyusunan SEB agar lebih terintegrasi dan efektif.
- 
-SEB tentang TPA ini telah diinisiasi sejak November 2024 dengan melibatkan enam kementerian, yakni Kementerian Kependudukan dan Pembangunan Keluarga/BKKBN, Kementerian Pemberdayaan Perempuan dan Perlindungan Anak (KemenPPPA), Kementerian Pendidikan Dasar dan Menengah (Kemendikdasmen), Kementerian Ketenagakerjaan (Kemenaker), Kementerian Sosial (Kemensos), serta Kementerian Dalam Negeri (Kemendagri). SEB ini dimaksudkan sebagai acuan bagi kementerian/lembaga, pemerintah daerah, BUMN/BUMD, sektor swasta, dan masyarakat dalam pembentukan dan penyelenggaraan TPA yang terstandar dan berkelanjutan, dengan memperhatikan aspek pengasuhan anak.
- 
-Deputi Bidang Koordinasi Peningkatan Kualitas Keluarga dan Pembangunan Kependudukan Kemenko PMK, Woro Srihastuti Sulistyaningrum yang akrab disapa Lisa, menekankan bahwa penguatan layanan TPA menjadi kebutuhan mendesak, mengingat meningkatnya partisipasi perempuan dalam dunia kerja dan perubahan struktur keluarga yang kini lebih banyak berbentuk keluarga inti.
- 
-"Semakin banyak orang tua, terutama ibu bekerja, yang membutuhkan layanan penitipan anak yang aman dan berkualitas. Oleh karena itu, penting bagi kita memastikan bahwa kebijakan TPA terintegrasi dengan program pembangunan manusia dan kebudayaan, serta memiliki standar yang seragam di seluruh Indonesia," ujar Lisa.
-        </p>
-      `,
+    
+  id: 0,
+  title: 'Kemenko PMK Lakukan Monitoring dan Evaluasi Perlindungan dan Pemenuhan Hak Anak di DIY',
+  excerpt: 'Kemenko PMK melalui Asdep dr. Nia melakukan monitoring dan evaluasi sistem perlindungan anak di Provinsi DIY, menyoroti peningkatan koordinasi lintas sektor dalam penanganan kekerasan terhadap anak dan perempuan.',
+  author: 'Kemenko PMK',
+  date: '26 Juni 2025',
+  readTime: '3 menit',
+  icon: 'fas fa-shield-alt',
+  tags: ['Perlindungan Anak', 'Monitoring Evaluasi', 'Kemenko PMK'],
+  image: berita0,
+  fullContent: `
+<p>Yogyakarta – Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan (Kemenko PMK), melalui Asisten Deputi Perlindungan dan Pemenuhan Hak Anak (PPHA), melakukan kunjungan kerja ke Provinsi Daerah Istimewa Yogyakarta (DIY) pada 24–26 Juni 2025. Kegiatan ini merupakan bagian dari upaya monitoring dan evaluasi penanganan kekerasan terhadap anak dan perempuan di daerah.</p>
+
+<p>Berdasarkan data Simfoni PPA tahun 2024, tercatat 575 kasus kekerasan terhadap anak di DIY, termasuk kasus yang terjadi di satuan pendidikan dan lingkungan keluarga. Kegiatan ini menyoroti pentingnya penguatan perlindungan anak, khususnya dalam lingkungan pendidikan formal dan nonformal.</p>
+
+<p>Selama tiga hari, rangkaian kegiatan mencakup pertemuan dengan P2TPAKK “Rekso Dyah Utami”, UPTD PPA Sleman dan Bantul, Satgas PPKS UGM, ISI, dan UPN, serta kunjungan ke Polres Sleman dan Pesantren Ora Aji. Kegiatan ditutup dengan evaluasi internal dan penyusunan rekomendasi kebijakan untuk penguatan sistem perlindungan anak.</p>
+
+<p>Kegiatan ini diharapkan menghasilkan peningkatan sinergi antar pemangku kepentingan serta komitmen bersama dalam menciptakan lingkungan yang aman dan ramah anak di seluruh wilayah Indonesia. Pendanaan kegiatan bersumber dari DIPA Kemenko PMK Tahun Anggaran 2025.</p>
+`,
       images: [
         {
-          src: 'https://www.kemenkopmk.go.id/sites/default/files/articles/2025-03/WhatsApp%20Image%202025-03-24%20at%2009.10.05.jpeg',
-          caption: 'Rapat Koordinasi Evaluasi Pelaksanaan RAN PAUD HI 2020-2024 di Hotel Mercure Sabang, Jakarta',
+          src: berita0,
+          imageClass: 'w-full h-64 object-cover object-top', // ← tambahkan ini di render-nya!
+
+          caption: 'Monitoring dan Evaluasi Perlindungan dan Pemenuhan Hak Anak di DIY, fokus pada pencegahan kekerasan di lingkungan pendidikan dan penguatan layanan UPTD PPA.',
         },
       ],
     },
+
+    {
+  id: 1,
+  title: 'Deputi Woro Tegaskan Sinergi PAUD HI Hadapi ECDI 2030 untuk SDM Unggul',
+  excerpt: 'Deputi Bidang Koordinasi Peningkatan Kualitas Anak, Perempuan, dan Pemuda Kemenko PMK, Woro Srihastuti Sulistyaningrum, menegaskan pentingnya sinergi lintas sektor dalam mendukung peluncuran Indeks Perkembangan Anak Usia Dini (ECDI) 2030.',
+  author: 'Kemenko PMK',
+  date: '15 Mei 2025',
+  readTime: '4 menit',
+  icon: 'fas fa-child',
+  tags: ['PAUD HI', 'ECDI 2030', 'SDM Unggul', 'Indonesia Emas 2045'],
+  image: 'https://akcdn.detik.net.id/community/media/visual/2025/05/15/bappenas-meluncurkan-early-childhood-development-index-ecdi-2030-1747282294752.jpeg?w=700&q=90',
+  fullContent: `
+    <p>Kementerian PPN/Bappenas resmi meluncurkan <strong>Indeks Perkembangan Anak Usia Dini (ECDI) 2030</strong> sebagai bagian dari upaya strategis menyongsong generasi Indonesia Emas 2045. Dalam momentum penting ini, <strong>Deputi Bidang Koordinasi Peningkatan Kualitas Anak, Perempuan, dan Pemuda Kemenko PMK, Woro Srihastuti Sulistyaningrum</strong>, menekankan pentingnya sinergi lintas sektor dalam mengakselerasi implementasi <em>Pengembangan Anak Usia Dini Holistik Integratif (PAUD HI)</em>.</p>
+
+    <h4>PAUD HI sebagai Fondasi SDM Unggul</h4>
+    <p>Deputi Woro menyambut baik peluncuran ECDI2030 oleh Bappenas yang turut disusun bersama Kemendikbudristek, BKKBN, BPS, UNICEF, dan Tanoto Foundation, dan menegaskan bahwa PAUD HI adalah landasan utama membangun SDM berkualitas sejak usia dini. “Kita harus memastikan seluruh anak Indonesia mendapatkan hak tumbuh kembang optimal sejak dalam kandungan hingga usia 6 tahun,” tegasnya.</p>
+
+    <h4>87,7% Anak Berkembang Sesuai Tahapan</h4>
+    <p>Menurut hasil pengukuran ECDI 2024, sebanyak <strong>87,7% anak usia 24–59 bulan</strong> telah berkembang sesuai tahapan sensorik, kognitif, bahasa, dan kesejahteraan. Namun, Deputi Woro mengingatkan bahwa tantangan pemerataan layanan PAUD HI di daerah masih tinggi.</p>
+
+    <h4>Perkuat Kolaborasi Menuju 2045</h4>
+    <p>Deputi Woro mengajak seluruh pemangku kepentingan untuk memperkuat komitmen dan koordinasi. “Mari kita satukan langkah, perkuat sinergi, dan bangun pondasi kokoh bagi generasi masa depan,” ujarnya dalam pernyataan resmi. ECDI 2030 diharapkan menjadi alat kebijakan berbasis data yang mendorong penguatan PAUD HI menuju <strong>Indonesia Emas 2045</strong>.</p>
+  `,
+  images: [
+    {
+      src: 'https://akcdn.detik.net.id/community/media/visual/2025/05/15/bappenas-meluncurkan-early-childhood-development-index-ecdi-2030-1747282294752.jpeg?w=700&q=90',
+      caption: 'Deputi Woro saat menyampaikan pentingnya PAUD HI dalam peluncuran ECDI 2030.'
+    }
+  ]
+},
+
     {
       id: 2,
       title: 'Kemenko PMK Dorong Pentingnya Pengembangan Anak Usia Dini Secara Holistik dan Integratif',

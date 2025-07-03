@@ -1,5 +1,6 @@
 // src/components/Main.tsx
 
+import Footer from "../Footer";
 import AboutHero from "./AboutHero";
 import AboutOverview from "./AboutOverview";
 import AboutServices from "./AboutServices";
@@ -14,7 +15,8 @@ export default function Main() {
 <AboutOverview  />
 <AboutTimeline />
 <AboutServices />
-<AboutTestimonials />
+{/* <AboutTestimonials /> */}
+< Footer />
 
     </main>
   )

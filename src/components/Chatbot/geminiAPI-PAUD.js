@@ -1,4 +1,19 @@
-// geminiAPI-PAUD.js - API Integration untuk SISMONEV PAUD HI
+// geminiAPI-PAUD.js - Protected API Integration untuk SISMONEV PAUD HI
+
+// Environment Variables
+const GEMINI_API_KEY = import.meta.env.VITE_REACT_APP_GEMINI_API_KEY;
+const GEMINI_MODEL = import.meta.env.VITE_REACT_APP_GEMINI_MODEL || 'gemini-2.0-flash';
+const GEMINI_API_URL = import.meta.env.VITE_REACT_APP_GEMINI_API_URL || 'https://generativelanguage.googleapis.com/v1beta/models';
+const WHATSAPP_NUMBER = import.meta.env.VITE_REACT_APP_WHATSAPP_NUMBER || '6281112345678';
+const SUPPORT_PHONE = import.meta.env.VITE_REACT_APP_SUPPORT_PHONE || '0811-1234-5678';
+const EMERGENCY_HOTLINE = import.meta.env.VITE_REACT_APP_EMERGENCY_HOTLINE || '129';
+
+
+// Validation for API Key
+if (!GEMINI_API_KEY) {
+  console.error('❌ GEMINI API KEY tidak ditemukan di environment variables!');
+  console.log('💡 Pastikan file .env berisi: REACT_APP_GEMINI_API_KEY=your_key_here');
+}
 
 // FAQ Data untuk fallback dan context
 const faqData = [
@@ -65,6 +80,18 @@ const faqData = [
 ];
 
 export async function callGeminiAPI(userPrompt) {
+  // Check if API key is available
+  if (!GEMINI_API_KEY) {
+    console.error('❌ Gemini API Key tidak tersedia');
+    // Fallback ke FAQ jika API key tidak ada
+    const relevantFAQ = searchFAQ(userPrompt);
+    if (relevantFAQ.length > 0) {
+      const bestMatch = relevantFAQ[0];
+      return `📋 Berdasarkan FAQ PAUD HI:\n\n**${bestMatch.question}**\n\n${bestMatch.answer}\n\n💡 *API tidak tersedia, jawaban dari database FAQ.*`;
+    }
+    return `❌ Maaf, layanan AI sedang tidak tersedia.\n\n💡 Silakan:\n• Hubungi staf via WhatsApp: ${SUPPORT_PHONE}\n• Isi form kontak untuk bantuan lebih lanjut`;
+  }
+
   // System prompt yang fokus pada PAUD HI dan pengasuhan anak
   const systemPrompt = `
    Kamu adalah chatbot pakar dalam bidang Pengasuhan dan Pengembangan Anak Usia Dini (PAUD) yang dirancang untuk mendampingi orang tua, guru PAUD, kader posyandu, dan pengambil kebijakan dalam memberikan perawatan dan stimulasi terbaik bagi anak usia 0–6 tahun. Jawabanmu harus berbasis bukti ilmiah terkini dan dapat dipertanggungjawabkan secara akademik dan praktis.
@@ -93,15 +120,14 @@ Contoh sub-bidang yang kamu kuasai:
     FOKUS UTAMA:
     - Berikan jawaban yang ramah, informatif, dan mudah dipahami
     - Gunakan bahasa Indonesia yang sesuai dengan konteks keluarga Indonesia
-    - Jika tidak yakin tentang informasi spesifik, arahkan pengguna untuk menghubungi staf melalui WhatsApp (0811-1234-5678) atau formulir kontak
+    - Jika tidak yakin tentang informasi spesifik, arahkan pengguna untuk menghubungi staf melalui WhatsApp (${SUPPORT_PHONE}) atau formulir kontak
     - Selalu berikan saran praktis dan dapat diterapkan
     - Integrasikan informasi PAUD HI dalam konteks pengasuhan sehari-hari
 
-
     INFORMASI KONTAK:
     - Jam operasional: Senin-Jumat 08:00-17:00 WIB, Sabtu 08:00-12:00 WIB, Minggu Tutup
-    - Hotline Darurat: 129 (24/7)
-    - WhatsApp Support: 0811-1234-5678
+    - Hotline Darurat: ${EMERGENCY_HOTLINE} (24/7)
+    - WhatsApp Support: ${SUPPORT_PHONE}
     - Chatbot tersedia 24/7
 
     DATABASE PENGETAHUAN PAUD HI:
@@ -111,7 +137,9 @@ Contoh sub-bidang yang kamu kuasai:
   `;
 
   try {
-    const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyCVA2DZYzfqEfPh40ZErYiAlsDE_lWBOwU', {
+    const apiUrl = `${GEMINI_API_URL}/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+    
+    const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -141,7 +169,7 @@ Contoh sub-bidang yang kamu kuasai:
       return `📋 Berdasarkan FAQ PAUD HI:\n\n**${bestMatch.question}**\n\n${bestMatch.answer}\n\n💡 *AI sedang tidak tersedia, jawaban dari database FAQ.*`;
     }
     
-    return `❌ Maaf, AI sedang mengalami gangguan dan saya tidak menemukan informasi spesifik di FAQ.\n\n💡 Silakan:\n• Hubungi staf via WhatsApp: 0811-1234-5678\n• Isi form kontak untuk bantuan lebih lanjut\n• Coba pertanyaan dengan kata kunci yang berbeda`;
+    return `❌ Maaf, AI sedang mengalami gangguan dan saya tidak menemukan informasi spesifik di FAQ.\n\n💡 Silakan:\n• Hubungi staf via WhatsApp: ${SUPPORT_PHONE}\n• Isi form kontak untuk bantuan lebih lanjut\n• Coba pertanyaan dengan kata kunci yang berbeda`;
   }
 }
 

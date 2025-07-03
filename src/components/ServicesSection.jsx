@@ -59,8 +59,8 @@ const services = [
       'Program Pendidikan Islam',
     ],
     button: {
-      text: 'Hubungi Ai',
-      link: '/pengasuhan',
+      text: 'Hubungi',
+      link: 'https://api.whatsapp.com/send?phone=628111129129',
       style: 'bg-white text-amber-700 border-3 border-amber-100 hover:bg-white',
     },
   },
@@ -79,7 +79,7 @@ const services = [
     ],
     button: {
       text: 'Hubungi',
-      link: 'https://api.whatsapp.com/send?phone=628111129129',
+      link: '/',
       style: 'bg-white text-purple-700 border-3 border-purple-100 hover:bg-white',
     },
   },
@@ -87,7 +87,7 @@ const services = [
 
 const ServicesSection = () => {
   return (
-    <section id="layanan" className="py-20 bg-white">
+<section id="layanan" className="pt-5 pb-12 bg-white">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-6">

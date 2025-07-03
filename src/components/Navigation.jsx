@@ -6,11 +6,12 @@ const Navigation = () => {
 
   const navItems = [
     { name: 'Beranda', href: '/', active: false },
-    { name: 'Tentang', href: '/About', active: false },
-    { name: 'Faq', href: '/faq', active: false },
     { name: 'Direktori', href: '/directory', active: false },
-    { name: 'Dashboard', href: '/dashboard', active: false },
     { name: 'Pengasuhan Ai', href: '/pengasuhan', active: false },
+    { name: 'Tentang', href: '/About', active: false },
+    { name: 'Dashboard', href: '/dashboard', active: false },
+    { name: 'FAQ', href: '/faq', active: false },
+    
 
   ];
 

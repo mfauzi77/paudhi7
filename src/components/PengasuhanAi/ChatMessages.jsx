@@ -45,7 +45,7 @@ const ChatMessages = ({ messages, isTyping }) => {
 
   // Welcome Screen Component
   const WelcomeScreen = () => (
-    <div className="flex-1 p-8 flex items-center justify-center">
+    <div className="flex-1 p-20 flex items-center justify-center">
       <div className="text-center max-w-lg">
         {/* Welcome Icon */}
         <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-purple-100 to-blue-100 rounded-full flex items-center justify-center text-4xl relative">

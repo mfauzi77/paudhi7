@@ -120,9 +120,6 @@ const Chatbot = () => {
         } else {
           // User is entering AI chat mode for the first time
           addBotMessage("💬 Mode AI Chat aktif! Silakan ketik pertanyaan Anda seputar pengasuhan anak atau layanan PAUD HI. Saya akan membantu menjawab berdasarkan pengetahuan lengkap tentang PAUD HI.");
-          setTimeout(() => {
-            addBotMessage("💡 Atau klik salah satu contoh pertanyaan berikut:", true);
-          }, 1000);
         }
       }, 500);
     } else if (option.type === 'example-question') {
@@ -148,11 +145,28 @@ const Chatbot = () => {
       }, 2000);
     } else if (option.type === 'contact-form') {
       setShowContactForm(true);
-      addBotMessage("Silakan isi form di bawah dengan lengkap, tim kami akan menghubungi Anda dalam 1x24 jam:");
+      addBotMessage("Silakan isi form di bawah dengan lengkap, tim kami akan menghubungi Anda dalam 1x24 jam:", true);
     } else if (option.type === 'back-menu') {
       setChatStep('greeting');
+      setShowContactForm(false); // Reset form jika user kembali ke menu utama
       setTimeout(() => {
         addBotMessage("Silakan pilih jenis bantuan yang Anda butuhkan:", true);
+      }, 500);
+    } else if (option.type === 'feedback-yes') {
+      setTimeout(() => {
+        addBotMessage("Terima kasih! Senang bisa membantu Anda. 😊");
+        setTimeout(() => {
+          addBotMessage("Ada pertanyaan lain yang ingin ditanyakan?", true);
+          setChatStep('greeting'); // Return to greeting untuk opsi menu utama
+        }, 1000);
+      }, 500);
+    } else if (option.type === 'feedback-no') {
+      setTimeout(() => {
+        addBotMessage("Mohon maaf jawaban saya kurang membantu. 🙏");
+        setTimeout(() => {
+          addBotMessage("Silakan coba ajukan pertanyaan yang lebih spesifik atau hubungi staf kami langsung:", true);
+          setChatStep('greeting'); // Return to greeting untuk opsi menu utama
+        }, 1000);
       }, 500);
     }
   };
@@ -171,8 +185,9 @@ const Chatbot = () => {
       const aiResponse = await callGeminiAPI(userMessage);
       addBotMessage(aiResponse);
       
+      // Tambahkan feedback dan menu utama setelah AI menjawab
       setTimeout(() => {
-        addBotMessage("Apakah jawaban ini membantu? Ada yang ingin ditanyakan lagi?", true);
+        addBotMessage("Apakah jawaban ini membantu?", true);
       }, 1500);
       
     } catch (error) {
@@ -259,14 +274,8 @@ const Chatbot = () => {
 
     if (chatStep === 'ai-chat') {
       return [
-        { label: "❓ Apa itu PAUD HI?", type: "example-question", question: "Apa itu PAUD HI?" },
-        { label: "❓ Cara menggunakan SISMONEV?", type: "example-question", question: "Bagaimana cara menggunakan SISMONEV PAUD HI?" },
-        { label: "❓ Tips pengasuhan anak usia 2-3 tahun", type: "example-question", question: "Apa tips pengasuhan untuk anak usia 2-3 tahun?" },
-        { label: "❓ Perkembangan bahasa anak balita", type: "example-question", question: "Bagaimana tahap perkembangan bahasa anak balita?" },
-        { label: "💬 Tanya Lagi (AI Chat)", type: "ai-chat" },
-        { label: "📋 Lihat FAQ", type: "faq-list" },
-        { label: "📝 Isi Form Kontak", type: "contact-form" },
-        { label: "📱 Chat via WhatsApp", type: "whatsapp" },
+        { label: "👍 Ya", type: "feedback-yes" },
+        { label: "👎 Tidak", type: "feedback-no" },
         { label: "🔙 Menu Utama", type: "back-menu" }
       ];
     }
@@ -287,20 +296,27 @@ const Chatbot = () => {
       ];
     }
 
+    // Untuk contact form, tampilkan menu utama
+    if (showContactForm) {
+      return [
+        { label: "🔙 Menu Utama", type: "back-menu" }
+      ];
+    }
+
     return [];
   };
 
   // Typing Indicator Component
   const TypingIndicator = () => (
     <div className="flex justify-start">
-      <div className="max-w-[80%]">
-        <div className="bg-white text-gray-800 rounded-2xl rounded-bl-sm border border-gray-200 p-3">
+      <div className="max-w-[85%]">
+        <div className="bg-white text-gray-800 rounded-2xl rounded-bl-sm border border-gray-200 p-4">
           <div className="flex items-center gap-3 text-gray-600">
-            <span className="text-sm">Asisten sedang mengetik</span>
+            <span className="text-base">Asisten sedang mengetik</span>
             <div className="flex gap-1">
-              <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
-              <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-              <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+              <div className="w-2.5 h-2.5 bg-blue-500 rounded-full animate-bounce"></div>
+              <div className="w-2.5 h-2.5 bg-blue-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+              <div className="w-2.5 h-2.5 bg-blue-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
             </div>
           </div>
         </div>
@@ -310,72 +326,72 @@ const Chatbot = () => {
 
   return (
     <>
-      {/* Tombol pembuka/penutup Chatbot */}
+      {/* Tombol pembuka/penutup Chatbot - Diperbesar 20% */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`fixed bottom-6 right-6 w-16 h-16 rounded-full shadow-lg transition-all duration-300 z-50 flex items-center justify-center group ${
+        className={`fixed bottom-7 right-7 w-20 h-20 rounded-full shadow-lg transition-all duration-300 z-50 flex items-center justify-center group ${
           isOpen
             ? 'bg-red-500 hover:bg-red-600 transform rotate-45'
             : 'bg-gradient-to-r from-blue-600 to-emerald-600 hover:shadow-xl hover:-translate-y-1'
         }`}
       >
         {isOpen ? (
-          <div className="text-white text-xl transform -rotate-45">✕</div>
+          <div className="text-white text-2xl transform -rotate-45">✕</div>
         ) : (
           <>
-            <div className="text-white text-xl group-hover:scale-110 transition-transform">💬</div>
-            <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
-              <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+            <div className="text-white text-2xl group-hover:scale-110 transition-transform">💬</div>
+            <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
+              <div className="w-2.5 h-2.5 bg-white rounded-full animate-pulse"></div>
             </div>
           </>
         )}
       </button>
 
-      {/* Kontainer Chatbot */}
-      <div className={`fixed bottom-24 right-6 w-96 max-w-[calc(100vw-2rem)] h-[500px] max-h-[calc(100vh-8rem)] bg-white rounded-2xl shadow-2xl border border-gray-200 transition-all duration-300 z-40 flex flex-col ${
+      {/* Kontainer Chatbot - Diperbesar 20% */}
+      <div className={`fixed bottom-28 right-7 w-[28.8rem] max-w-[calc(100vw-2.4rem)] h-[600px] max-h-[calc(100vh-9.6rem)] bg-white rounded-2xl shadow-2xl border border-gray-200 transition-all duration-300 z-40 flex flex-col ${
         isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none'
       }`}>
 
-        {/* Header Chatbot */}
-        <div className="bg-gradient-to-r from-blue-600 to-emerald-600 p-4 rounded-t-2xl text-white">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-              <div className="text-lg">🤖</div>
+        {/* Header Chatbot - Diperbesar 20% */}
+        <div className="bg-gradient-to-r from-blue-600 to-emerald-600 p-5 rounded-t-2xl text-white">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+              <div className="text-xl">🤖</div>
             </div>
             <div className="flex-1">
-              <h3 className="font-bold">Asisten PAUD HI</h3>
-              <div className="flex items-center gap-2 text-sm text-blue-100">
-                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              <h3 className="font-bold text-lg">Asisten PAUD HI</h3>
+              <div className="flex items-center gap-2 text-base text-blue-100">
+                <div className="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse"></div>
                 AI + FAQ Online
               </div>
             </div>
           </div>
         </div>
 
-        {/* Area Pesan Chatbot */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+        {/* Area Pesan Chatbot - Diperbesar 20% */}
+        <div className="flex-1 overflow-y-auto p-5 space-y-5 bg-gray-50">
           {messages.map((message) => (
             <div key={message.id} className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
-              <div className={`max-w-[80%] ${message.type === 'user' ? 'order-2' : 'order-1'}`}>
-                <div className={`p-3 rounded-2xl ${
+              <div className={`max-w-[85%] ${message.type === 'user' ? 'order-2' : 'order-1'}`}>
+                <div className={`p-4 rounded-2xl ${
                   message.type === 'user'
                     ? 'bg-blue-600 text-white rounded-br-sm'
                     : 'bg-white text-gray-800 rounded-bl-sm border border-gray-200'
                 }`}>
-                  <div className="whitespace-pre-line">{message.message}</div>
-                  <div className={`text-xs mt-1 ${message.type === 'user' ? 'text-blue-100' : 'text-gray-500'}`}>
+                  <div className="whitespace-pre-line text-base">{message.message}</div>
+                  <div className={`text-sm mt-1.5 ${message.type === 'user' ? 'text-blue-100' : 'text-gray-500'}`}>
                     {message.timestamp}
                   </div>
                 </div>
 
-                {/* Opsi menu jika ditampilkan oleh bot */}
+                {/* Opsi menu jika ditampilkan oleh bot - Diperbesar 20% */}
                 {message.type === 'bot' && message.showOptions && (
-                  <div className="mt-3 space-y-2">
+                  <div className="mt-4 space-y-2.5">
                     {getMenuOptions().map((option, index) => (
                       <button
                         key={index}
                         onClick={() => handleOptionClick(option)}
-                        className="block w-full text-left p-2 text-sm bg-white border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-all duration-200"
+                        className="block w-full text-left p-3 text-base bg-white border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-all duration-200"
                       >
                         {option.label}
                       </button>
@@ -392,47 +408,47 @@ const Chatbot = () => {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Formulir Kontak */}
+        {/* Formulir Kontak - Diperbesar 20% */}
         {showContactForm && (
-          <div className="p-4 border-t border-gray-200 bg-white">
-            <div className="space-y-3">
+          <div className="p-5 border-t border-gray-200 bg-white">
+            <div className="space-y-4">
               <input
                 type="text"
                 placeholder="Nama Lengkap *"
                 value={userInfo.name}
                 onChange={(e) => setUserInfo(prev => ({...prev, name: e.target.value}))}
-                className="w-full p-2 text-sm border border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none"
+                className="w-full p-3 text-base border border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none"
               />
               <input
                 type="email"
                 placeholder="Email *"
                 value={userInfo.email}
                 onChange={(e) => setUserInfo(prev => ({...prev, email: e.target.value}))}
-                className="w-full p-2 text-sm border border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none"
+                className="w-full p-3 text-base border border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none"
               />
               <input
                 type="tel"
                 placeholder="Nomor WhatsApp *"
                 value={userInfo.whatsapp}
                 onChange={(e) => setUserInfo(prev => ({...prev, whatsapp: e.target.value}))}
-                className="w-full p-2 text-sm border border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none"
+                className="w-full p-3 text-base border border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none"
               />
               <textarea
                 placeholder="Pertanyaan / Keluhan *"
                 value={userInfo.question}
                 onChange={(e) => setUserInfo(prev => ({...prev, question: e.target.value}))}
-                className="w-full p-2 text-sm border border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none h-20 resize-none"
+                className="w-full p-3 text-base border border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none h-24 resize-none"
               />
-              <div className="flex gap-2">
+              <div className="flex gap-2.5">
                 <button
                   onClick={() => setShowContactForm(false)}
-                  className="flex-1 p-2 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                  className="flex-1 p-3 text-base bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
                 >
                   Batal
                 </button>
                 <button
                   onClick={handleContactFormSubmit}
-                  className="flex-1 p-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="flex-1 p-3 text-base bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                 >
                   Kirim
                 </button>
@@ -441,10 +457,10 @@ const Chatbot = () => {
           </div>
         )}
 
-        {/* Input teks untuk AI Chat */}
+        {/* Input teks untuk AI Chat - Diperbesar 20% */}
         {chatStep === 'ai-chat' && !showContactForm && (
-          <div className="p-4 border-t border-gray-200 bg-white rounded-b-2xl">
-            <div className="flex gap-2">
+          <div className="p-5 border-t border-gray-200 bg-white rounded-b-2xl">
+            <div className="flex gap-2.5">
               <input
                 type="text"
                 value={currentInput}
@@ -455,36 +471,34 @@ const Chatbot = () => {
                   }
                 }}
                 placeholder="Ketik pertanyaan Anda tentang PAUD HI..."
-                className="flex-1 p-3 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-100 focus:outline-none"
+                className="flex-1 p-4 text-base border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-100 focus:outline-none"
                 autoFocus
                 disabled={isTyping}
               />
               <button
                 onClick={() => handleAIChat(currentInput)}
                 disabled={!currentInput.trim() || isTyping}
-                className="px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="px-5 py-4 bg-blue-600 text-white text-lg rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 ➤
               </button>
             </div>
 
-            <div className="mt-2 text-xs text-gray-500 text-center">
-              💡 Powered by Google Gemini + FAQ Database
-            </div>
+            
           </div>
         )}
 
-        {/* Opsi cepat di bagian bawah chatbot */}
+        {/* Opsi cepat di bagian bawah chatbot - Diperbesar 20% */}
         {(chatStep === 'greeting' || chatStep === 'faq-list' || chatStep === 'completed') && !showContactForm && (
-          <div className="p-3 border-t border-gray-200 bg-white rounded-b-2xl">
-            <div className="flex gap-2 text-xs">
+          <div className="p-4 border-t border-gray-200 bg-white rounded-b-2xl">
+            <div className="flex gap-2.5 text-sm">
               <button
                 onClick={() => {
                   const waNumber = '6281112345678';
                   const waMessage = encodeURIComponent('Halo, saya ingin bertanya tentang SISMONEV PAUD HI...');
                   window.open(`https://wa.me/${waNumber}?text=${waMessage}`, '_blank');
                 }}
-                className="flex-1 p-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                className="flex-1 p-2.5 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
               >
                 📱 WhatsApp
               </button>
@@ -495,7 +509,7 @@ const Chatbot = () => {
                     addBotMessage("Jam Operasional: Senin-Jumat 08:00-17:00 WIB, Sabtu 08:00-12:00 WIB, Minggu Tutup. Hotline Darurat: 129 (24/7). Chatbot tersedia 24/7!");
                   }, 500);
                 }}
-                className="flex-1 p-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                className="flex-1 p-2.5 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
               >
                 🕐 Jam Kerja
               </button>

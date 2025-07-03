@@ -2,40 +2,36 @@ import React, { useState } from 'react';
 
 // ==================== SUB-COMPONENTS ====================
 
-// Section Number Component
-const SectionNumber = ({ number, bgColor = "bg-blue-500" }) => (
+const SectionNumber = ({ number, bgColor = "bg-blue-600" }) => (
   <span className={`inline-flex items-center justify-center w-8 h-8 ${bgColor} text-white rounded-full font-bold text-sm mr-4`}>
     {number}
   </span>
 );
 
-// Highlight Box Component
-const HighlightBox = ({ children, className = "", borderColor = "from-blue-500 to-green-500" }) => (
-  <div className={`bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-200 rounded-2xl p-6 md:p-8 my-8 relative overflow-hidden ${className}`}>
+const HighlightBox = ({ children, className = "", borderColor = "from-blue-600 to-emerald-600" }) => (
+  <div className={`bg-gradient-to-br from-blue-50 to-emerald-50 border border-blue-100 rounded-2xl p-6 md:p-8 my-8 relative overflow-hidden ${className}`}>
     <div className={`absolute top-0 left-0 w-1 h-full bg-gradient-to-b ${borderColor}`}></div>
     {children}
   </div>
 );
 
-// Info Callout Component
-const InfoCallout = ({ icon, title, children, iconBg = "bg-blue-500" }) => (
-  <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 my-6 flex items-start gap-4">
-    <div className={`w-10 h-10 ${iconBg} rounded-lg flex items-center justify-center text-white text-lg flex-shrink-0`}>
+const InfoCallout = ({ icon, title, children, iconBg = "bg-blue-600" }) => (
+  <div className="bg-blue-100 border border-blue-300 rounded-xl p-6 my-6 flex items-start gap-4 animate-fade-in shadow-lg">
+    <div className={`w-12 h-12 ${iconBg} rounded-lg flex items-center justify-center text-white text-xl flex-shrink-0 shadow-md animate-bounce-slow`}>
       <i className={`fas ${icon}`}></i>
     </div>
     <div className="flex-1">
-      <h4 className="text-gray-900 mb-2 text-lg font-semibold">{title}</h4>
-      <div className="text-blue-900 text-sm leading-relaxed">{children}</div>
+      <h4 className="text-blue-800 mb-2 text-xl font-bold uppercase tracking-wide">{title}</h4>
+      <div className="text-blue-900 text-base leading-relaxed font-medium">{children}</div>
     </div>
   </div>
 );
 
-// Stats Item Component
 const StatItem = ({ number, label, description, numberColor = "text-blue-600" }) => {
   const [isHovered, setIsHovered] = useState(false);
-  
+
   return (
-    <div 
+    <div
       className={`text-center p-6 md:p-8 bg-white rounded-2xl border border-gray-100 transition-all duration-300 cursor-pointer ${
         isHovered ? 'transform -translate-y-2 scale-105 shadow-xl' : 'shadow-md'
       }`}
@@ -49,8 +45,7 @@ const StatItem = ({ number, label, description, numberColor = "text-blue-600" })
   );
 };
 
-// Feature Card Component
-const FeatureCard = ({ icon, title, description, iconBg = "bg-blue-500" }) => (
+const FeatureCard = ({ icon, title, description, iconBg = "bg-emerald-600" }) => (
   <div className="bg-white rounded-2xl p-6 md:p-8 border border-gray-100 shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group">
     <div className="flex items-center gap-4 mb-4">
       <div className={`w-12 h-12 ${iconBg} rounded-lg flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300`}>
@@ -72,8 +67,6 @@ const AboutOverview = ({
   containerClassName = "",
   sectionClassName = ""
 }) => {
-  
-  // Default stats data
   const defaultStats = [
     {
       number: "90%",
@@ -83,37 +76,36 @@ const AboutOverview = ({
     },
     {
       number: "1000",
-      label: "Hari Pertama Kehidupan", 
+      label: "Hari Pertama Kehidupan",
       description: "Periode kritis pembentukan otak",
-      numberColor: "text-green-600"
+      numberColor: "text-emerald-600"
     },
     {
       number: "6",
       label: "Tahun Periode Emas",
       description: "Masa golden age anak",
-      numberColor: "text-purple-600"
+      numberColor: "text-teal-500"
     }
   ];
 
-  // Default features data
   const defaultFeatures = [
     {
       icon: "fa-link",
       title: "Layanan Terpadu",
       description: "Menyediakan akses layanan terpadu untuk anak dan keluarga dalam satu sistem yang terkoordinasi dan mudah diakses oleh seluruh masyarakat.",
-      iconBg: "bg-blue-500"
+      iconBg: "bg-blue-600"
     },
     {
-      icon: "fa-shield-alt", 
+      icon: "fa-shield-alt",
       title: "Pencegahan Masalah",
       description: "Mencegah stunting, kekerasan anak, dan keterlambatan tumbuh kembang melalui intervensi dini yang tepat sasaran dan berbasis bukti.",
-      iconBg: "bg-green-500"
+      iconBg: "bg-emerald-600"
     },
     {
       icon: "fa-handshake",
-      title: "Koordinasi Lintas Sektor", 
+      title: "Koordinasi Lintas Sektor",
       description: "Membangun koordinasi antarsektor untuk layanan yang merata dan berkualitas di seluruh wilayah Indonesia.",
-      iconBg: "bg-yellow-500"
+      iconBg: "bg-blue-500"
     }
   ];
 
@@ -121,58 +113,31 @@ const AboutOverview = ({
   const featuresData = customFeatures || defaultFeatures;
 
   return (
-    <div className={`min-h-screen bg-gray-50 ${containerClassName}`}>
-      {/* Section 1: What is PAUD HI */}
+    <div className={`relative bg-gradient-to-br from-yellow-50 via-blue-50 to-rose-100 ${containerClassName}`}>
       {showSection1 && (
         <section className={`py-16 md:py-20 ${sectionClassName}`}>
           <div className="container mx-auto px-6">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-                <SectionNumber number="1" />
-                Apa Itu PAUD Holistik Integratif?
-              </h2>
-              <p className="text-lg text-gray-600 leading-relaxed max-w-3xl mx-auto">
-                Pendekatan komprehensif untuk pengembangan anak usia dini yang mengintegrasikan lima aspek penting dalam satu sistem yang terkoordinasi.
-              </p>
-            </div>
-            
-            <div className="bg-white rounded-2xl p-8 md:p-12 shadow-lg border border-gray-100 max-w-6xl mx-auto">
-              <div className="grid md:grid-cols-2 gap-8 items-center mb-12">
-                <div>
-                  <p className="text-lg leading-relaxed text-gray-700 mb-6">
-                    <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-lg font-semibold">
-                      PAUD Holistik Integratif (PAUD HI)
-                    </span> adalah pendekatan layanan untuk anak usia dini yang mencakup seluruh aspek kebutuhan dasar anak—mulai dari kesehatan, gizi, pendidikan, pengasuhan, hingga perlindungan—yang dilakukan secara terpadu, menyeluruh, dan berkelanjutan.
-                  </p>
-                </div>
-                <div className="flex justify-center">
-                  <div className="w-32 h-32 bg-gradient-to-br from-blue-500 to-green-500 rounded-3xl flex items-center justify-center text-white text-5xl shadow-lg hover:scale-105 transition-transform duration-300">
-                    <i className="fas fa-graduation-cap"></i>
-                  </div>
-                </div>
-              </div>
-              
+            <div className="bg-white rounded-2xl p-8 md:p-12 shadow-2xl border-l-8 border-blue-600 max-w-6xl mx-auto animate-fade-in-up">
               <InfoCallout 
                 icon="fa-gavel" 
-                title="Landasan Hukum"
-                iconBg="bg-blue-500"
+                title="Landasan Hukum Perpres 60 tahun 2013 Tentang PAUD HI"
+                iconBg="bg-blue-600"
               >
                 <p>
-                  Sesuai dengan <strong>Peraturan Presiden Republik Indonesia Nomor 60 Tahun 2013</strong>, pemenuhan kebutuhan anak usia dini (0–6 tahun) harus dilakukan <strong>simultan dan lintas sektor</strong>, dengan melibatkan orang tua, keluarga, pemerintah, dan masyarakat.
-                </p>
+                  <strong>Bahwa untuk menjamin pemenuhan hak tumbuh kembang anak usia dini, diperlukan upaya peningkatan kesehatan, gizi, perawatan, pengasuhan, perlindungan, kesejahteraan, dan rangsangan pendidikan yang dilakukan secara simultan, sistematis, menyeluruh, terintegrasi, dan berkesinambungan.
+               </strong> </p>
               </InfoCallout>
             </div>
           </div>
         </section>
       )}
 
-      {/* Section 2: Why PAUD HI Important */}
       {showSection2 && (
         <section className={`py-16 md:py-20 bg-white ${sectionClassName}`}>
           <div className="container mx-auto px-6">
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-                <SectionNumber number="2" />
+                <SectionNumber number="1" />
                 Mengapa PAUD HI Penting?
               </h2>
               <p className="text-lg text-gray-600 leading-relaxed max-w-3xl mx-auto">
@@ -182,14 +147,13 @@ const AboutOverview = ({
 
             <HighlightBox className="text-center mb-12">
               <h3 className="text-blue-600 text-xl md:text-2xl font-bold mb-4">
-                🧠 Golden Age: Periode Emas Perkembangan Otak
+                🧐 Golden Age: Periode Emas Perkembangan Otak
               </h3>
               <p className="text-gray-700 text-lg leading-relaxed">
                 90% perkembangan otak terjadi pada 6 tahun pertama kehidupan. Inilah mengapa investasi di masa ini memberikan dampak yang luar biasa.
               </p>
             </HighlightBox>
 
-            {/* Stats Section */}
             <div className="grid md:grid-cols-3 gap-6 md:gap-8 mb-16">
               {statsData.map((stat, index) => (
                 <StatItem 
@@ -202,7 +166,6 @@ const AboutOverview = ({
               ))}
             </div>
 
-            {/* Features Section */}
             <div className="grid md:grid-cols-3 gap-6 md:gap-8">
               {featuresData.map((feature, index) => (
                 <FeatureCard 
@@ -217,87 +180,25 @@ const AboutOverview = ({
           </div>
         </section>
       )}
-    </div>
-  );
-};
 
-// ==================== EXAMPLE USAGE VARIANTS ====================
-
-const OverviewVariants = () => {
-  // Custom stats example
-  const customStats = [
-    {
-      number: "100%",
-      label: "Coverage Target",
-      description: "Target cakupan layanan nasional",
-      numberColor: "text-green-600"
-    },
-    {
-      number: "34",
-      label: "Provinsi",
-      description: "Tersebar di seluruh Indonesia",
-      numberColor: "text-blue-600"
-    },
-    {
-      number: "500+",
-      label: "Kab/Kota",
-      description: "Implementasi PAUD HI",
-      numberColor: "text-purple-600"
-    }
-  ];
-
-  // Custom features example
-  const customFeatures = [
-    {
-      icon: "fa-chart-line",
-      title: "Monitoring Real-time",
-      description: "Pantau progress implementasi PAUD HI secara real-time dengan dashboard interaktif.",
-      iconBg: "bg-indigo-500"
-    },
-    {
-      icon: "fa-mobile-alt",
-      title: "Mobile Friendly",
-      description: "Akses platform dari berbagai device untuk kemudahan penggunaan di lapangan.",
-      iconBg: "bg-green-500"
-    }
-  ];
-
-  return (
-    <div className="space-y-0">
-      {/* Default Overview */}
-      <AboutOverview />
-      
-      {/* Only Section 1 */}
-      <AboutOverview 
-        showSection2={false}
-        containerClassName="bg-blue-50"
-      />
-      
-      {/* Custom stats and features */}
-      <AboutOverview 
-        customStats={customStats}
-        customFeatures={customFeatures}
-        containerClassName="bg-gradient-to-b from-white to-gray-100"
-      />
-      
-      {/* Only Section 2 with custom styling */}
-      <AboutOverview 
-        showSection1={false}
-        sectionClassName="bg-gradient-to-r from-blue-50 to-indigo-50"
-      />
+      {/* Dekorasi Latar */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-32 -right-32 w-72 h-72 bg-white opacity-10 rounded-full"></div>
+        <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-white opacity-10 rounded-full"></div>
+        <div className="absolute top-20 left-1/4 w-3 h-3 bg-amber-300 opacity-40 rounded-full animate-ping"></div>
+        <div className="absolute bottom-20 right-1/4 w-4 h-4 bg-blue-300 opacity-30 rounded-full animate-ping delay-1000"></div>
+      </div>
     </div>
   );
 };
 
 export default AboutOverview;
 
-// Named exports
 export { 
   AboutOverview, 
-  OverviewVariants,
   SectionNumber,
   HighlightBox,
   InfoCallout,
   StatItem,
   FeatureCard
-};
+ };

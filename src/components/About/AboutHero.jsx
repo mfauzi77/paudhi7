@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
-const AboutHero = ({ 
-  title = "Tentang SISMONEV PAUD HI",
-  subtitle = "Memahami lebih dalam tentang Sistem Informasi Monitoring dan Evaluasi Pengembangan Anak Usia Dini Holistik Integratif untuk masa depan anak Indonesia yang lebih baik.",
+const AboutHero = ({
+  title = "Apa itu PAUD HI?",
+  subtitle = "PAUD HI adalah Upaya pengembangan anak usia dini yang dilakukan untuk memenuhi kebutuhan esensial anak yang beragam dan saling terkait secara simultan, sistematis, dan terintegrasi..",
   showButtons = true,
-  onWatchVideo = () => console.log('Watch video clicked'),
-  onDownloadGuide = () => console.log('Download guide clicked'),
+  onWatchVideo = () => console.log("Tonton video"),
+  onDownloadGuide = () => console.log("Unduh panduan"),
   customButtons = null,
-  bgGradient = "from-blue-600 via-blue-700 to-indigo-800",
-  textColor = "text-white",
-  className = ""
+  bgGradient = "from-blue-50 via-emerald-50 to-white",
+  textColor = "text-gray-800",
+  className = "",
 }) => {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -17,120 +17,73 @@ const AboutHero = ({
     const timer = setTimeout(() => {
       setIsVisible(true);
     }, 100);
-    
     return () => clearTimeout(timer);
   }, []);
 
   return (
-    <div className={`bg-gradient-to-br ${bgGradient} ${textColor} ${className}`}>
-      <div className="container mx-auto px-6 py-20 text-center mt-20">
-        <div className={`transition-all duration-1000 ease-out ${
-          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-        }`}>
-          {/* Main Title */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-8 leading-tight tracking-tight animate-bounce">
-            {title}
+    <div
+      className={`relative bg-gradient-to-br ${bgGradient} ${textColor} ${className}`}
+    >
+      <div className="container mx-auto px-6 py-24 text-center">
+        <div
+          className={`transition-all duration-1000 ease-out ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+          }`}
+        >
+          {/* Judul */}
+          <h1 className="text-3xl md:text-5xl font-extrabold mb-6 leading-tight tracking-wide">
+            <span className="bg-gradient-to-r from-blue-600 to-emerald-600 bg-clip-text text-transparent">
+              {title}
+            </span>
           </h1>
-          
-          {/* Subtitle */}
-          <p className="text-lg md:text-xl lg:text-2xl opacity-90 mb-12 leading-relaxed max-w-4xl mx-auto font-medium">
+
+          {/* Subjudul */}
+          <p className="text-md md:text-xl max-w-3xl mx-auto mb-10 font-medium leading-relaxed text-gray-700">
             {subtitle}
           </p>
-          
-          {/* CTA Buttons */}
+
+          {/* Tombol */}
           {showButtons && (
-            <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-4">
+            <div className="flex flex-col sm:flex-row justify-center gap-4">
               {customButtons ? (
                 customButtons
               ) : (
                 <>
-                  <button 
+                  <button
                     onClick={onWatchVideo}
-                    className="bg-white text-blue-600 px-8 py-4 rounded-xl font-semibold hover:bg-gray-100 hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-3 min-w-[200px] group"
+                    className="bg-blue-600 text-white px-6 py-3 rounded-full font-semibold shadow-md hover:bg-blue-700 transition-all duration-300"
                   >
-                    <i className="fas fa-play group-hover:scale-110 transition-transform duration-300"></i>
-                    Tonton Video Pengenalan
+                    🎥 Tonton Video PAUD HI
                   </button>
-                  
-                  <button 
+                  <button
                     onClick={onDownloadGuide}
-                    className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold hover:bg-white hover:text-blue-600 hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-3 min-w-[200px] group"
+                    className="bg-white border border-emerald-600 text-emerald-700 px-6 py-3 rounded-full font-semibold hover:bg-emerald-50 transition-all duration-300"
                   >
-                    <i className="fas fa-download group-hover:scale-110 transition-transform duration-300"></i>
-                    Download Panduan
+                    📥 Unduh Panduan
                   </button>
                 </>
               )}
             </div>
           )}
-          
-          {/* Optional scroll indicator */}
-          <div className="mt-11 opacity-70">
-            <div className="animate-bounce">
-              <i className="fas fa-chevron-down text-2xl"></i>
-            </div>
-            <p className="text-sm mt-2 opacity-80">Scroll untuk melihat lebih lanjut</p>
+
+          {/* Scroll indicator */}
+          <div className="mt-14 flex flex-col items-center animate-pulse">
+            <i className="fas fa-chevron-down text-2xl text-blue-500"></i>
+            <p className="text-sm mt-2 text-gray-500">Scroll untuk lanjut</p>
           </div>
         </div>
       </div>
-      
-      {/* Background decoration */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-white opacity-5 rounded-full"></div>
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-white opacity-5 rounded-full"></div>
-        <div className="absolute top-20 left-1/4 w-2 h-2 bg-white opacity-30 rounded-full animate-pulse"></div>
-        <div className="absolute bottom-20 right-1/4 w-3 h-3 bg-white opacity-20 rounded-full animate-pulse" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute top-1/2 left-10 w-1 h-1 bg-white opacity-40 rounded-full animate-pulse" style={{ animationDelay: '2s' }}></div>
-      </div>
-    </div>
-  );
-};
 
-// Example usage dengan different variants
-const HeroVariants = () => {
-  return (
-    <div className="space-y-0">
-      {/* Default Hero */}
-      <AboutHero />
-      
-      {/* Custom Hero dengan green theme */}
-      <AboutHero 
-        title="PAUD HI Dashboard"
-        subtitle="Platform monitoring terpadu untuk layanan anak usia dini di seluruh Indonesia"
-        bgGradient="from-green-600 via-green-700 to-emerald-800"
-        onWatchVideo={() => alert('Opening video modal...')}
-        onDownloadGuide={() => alert('Downloading guide...')}
-      />
-      
-      {/* Minimal Hero tanpa buttons */}
-      <AboutHero 
-        title="Selamat Datang di SISMONEV"
-        subtitle="Sistem informasi terdepan untuk PAUD Holistik Integratif"
-        showButtons={false}
-        bgGradient="from-purple-600 via-purple-700 to-indigo-800"
-      />
-      
-      {/* Custom buttons */}
-      <AboutHero 
-        title="Bergabung dengan PAUD HI"
-        subtitle="Daftarkan institusi Anda dan mulai memberikan layanan terbaik"
-        customButtons={
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-yellow-500 text-gray-900 px-8 py-4 rounded-xl font-bold hover:bg-yellow-400 transition-colors duration-300">
-              Daftar Sekarang
-            </button>
-            <button className="border-2 border-yellow-500 text-yellow-500 px-8 py-4 rounded-xl font-semibold hover:bg-yellow-500 hover:text-gray-900 transition-colors duration-300">
-              Pelajari Lebih Lanjut
-            </button>
-          </div>
-        }
-        bgGradient="from-gray-800 via-gray-900 to-black"
-      />
+      {/* Dekorasi Latar */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-32 -right-32 w-72 h-72 bg-white opacity-10 rounded-full"></div>
+        <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-white opacity-10 rounded-full"></div>
+        <div className="absolute top-20 left-1/4 w-3 h-3 bg-blue-400 opacity-40 rounded-full animate-ping"></div>
+        <div className="absolute bottom-20 right-1/4 w-4 h-4 bg-emerald-400 opacity-30 rounded-full animate-ping delay-1000"></div>
+      </div>
     </div>
   );
 };
 
 export default AboutHero;
-
-// Named export untuk flexibility
-export { AboutHero, HeroVariants };
+export { AboutHero };

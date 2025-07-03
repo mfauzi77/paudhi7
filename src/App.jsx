@@ -1,7 +1,7 @@
 // src/App.jsx
 import React from 'react';
 import './App.css';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 
 import Navigation from './components/Navigation';
 import HeroSection from './components/HeroSection';
@@ -11,16 +11,12 @@ import Footer from './components/Footer';
 import NewsSection from './components/NewsSection';
 import Chatbot from './components/Chatbot/Chatbot';
 import EducationSection from './components/EducationSection/';
-import KLProgramsMVP from './pages/KLProgramMVP';
 import KLSection from './components/KLSection';
 import DirectorySection from './components/DirectorySection';
 import PAUDDashboard from './components/PAUDDashboard/PAUDDashboard';
 import FaqPage from './components/FAQApp';
 import AboutPage from './components/About/AboutPage';
 import Main from './components/PengasuhanAi/Main';
-
-
-
 
 
 function HomePage() {
@@ -30,10 +26,33 @@ function HomePage() {
       <ServicesSection />
       <StatsSection />
       <NewsSection />
-      < EducationSection />
+      <EducationSection />
       <KLSection />
       <Footer />
-      <Chatbot />
+    </>
+  );
+}
+
+// Komponen pembungkus untuk mengatur Chatbot di semua halaman kecuali "/pengasuhan"
+function AppWrapper() {
+  const location = useLocation();
+
+  return (
+    <>
+      <Navigation />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/directory" element={<DirectorySection />} />
+        <Route path="/dashboard" element={<PAUDDashboard />} />
+        <Route path="/faq" element={<FaqPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/pengasuhan" element={<Main />} />
+    
+
+      </Routes>
+
+      {/* Tampilkan chatbot di semua halaman kecuali /pengasuhan */}
+      {location.pathname !== '/pengasuhan' && <Chatbot />}
     </>
   );
 }
@@ -41,19 +60,7 @@ function HomePage() {
 function App() {
   return (
     <Router>
-      <Navigation />
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-                <Route path="/KL" element={<KLProgramsMVP/>} />
-        <Route path="/directory" element={<DirectorySection />} />
-        <Route path="/dashboard" element={<PAUDDashboard />} />
-                <Route path="/faq" element={<FaqPage />} />
-                    <Route path="/faq" element={<FaqPage />} />
-        <Route path="/about" element={<AboutPage/>} />
-        <Route path="/pengasuhan" element={<Main/>} />
-
-
-      </Routes>
+      <AppWrapper />
     </Router>
   );
 }
