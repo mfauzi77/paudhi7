@@ -37,17 +37,19 @@ export default function Main() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100">
+    <div className="flex flex-col h-screen bg-gray-100 pt-17">
+      
       <div className="flex-1 flex justify-center overflow-hidden">
         <main className="w-full max-w-screen-lg flex flex-col md:flex-row bg-white shadow-xl rounded-lg overflow-hidden m-4">
 
           {/* Sidebar */}
-          <aside className="hidden md:block md:w-[300px] border-r border-gray-200 bg-white">
+          <aside className="hidden md:block md:w-[380px] border-r border-gray-200 bg-white">
             <Sidebar onQuickQuestion={handleQuickQuestion} />
           </aside>
 
           {/* Area Chat */}
           <section className="flex-1 flex flex-col h-full md:h-auto">
+           
             <div className="flex-1 overflow-y-auto px-3 pt-4 pb-32 md:pb-4">
               <ChatMessages messages={messages} isTyping={isTyping} />
             </div>

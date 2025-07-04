@@ -66,9 +66,9 @@ const VisionMissionCard = ({ type, title, content, icon, bgColor = "bg-gradient-
 
   return (
     <div 
-      className={`bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 group transform ${
-        isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
-      } ${isHovered ? 'scale-105 -translate-y-2' : ''}`}
+  className={`bg-white rounded-2xl border border-gray-200 overflow-hidden transition-all duration-500 group transform flex flex-col justify-between h-full ${
+    isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+  } ${isHovered ? 'shadow-2xl -translate-y-3 scale-105' : 'shadow-lg'}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -276,61 +276,53 @@ const AboutServices = ({
     }
   ];
 
-  // Default Services Data (4 services only)
+  // Updated Services Data - 3 Pilar
   const defaultServices = [
     {
       icon: "fa-heartbeat",
-      title: "Kesehatan",
-      description: "Memberikan layanan promotif, preventif, kuratif, dan rehabilitatif bagi anak usia dini agar tumbuh sehat secara fisik dan mental dengan standar pelayanan terbaik.",
+      title: "Kesehatan & Gizi",
+      description: "Memastikan anak usia dini tumbuh sehat dan bergizi optimal melalui layanan kesehatan komprehensif dan program gizi terintegrasi sejak dalam kandungan hingga usia 6 tahun.",
       features: [
-        "Imunisasi lengkap dan berkala sesuai jadwal",
-        "Pemantauan tumbuh kembang komprehensif",
-        "Deteksi dini gangguan kesehatan",
+        "Imunisasi lengkap dan berkala sesuai jadwal nasional",
+        "Pemantauan tumbuh kembang dan status gizi berkala",
+        "Deteksi dini gangguan kesehatan dan stunting",
+        "Pemberian makanan tambahan (PMT) bergizi seimbang",
         "Layanan kesehatan ibu & anak terintegrasi",
+        "Program ASI eksklusif dan konseling gizi keluarga",
         "Rujukan ke fasilitas kesehatan spesialis",
         "Edukasi perilaku hidup bersih & sehat"
       ],
-      iconBg: "bg-gradient-to-br from-red-500 to-pink-600"
-    },
-    {
-      icon: "fa-utensils",
-      title: "Gizi",
-      description: "Memastikan kecukupan gizi anak sejak dalam kandungan hingga usia 6 tahun untuk mendukung tumbuh kembang yang optimal dan berkelanjutan.",
-      features: [
-        "Pemantauan status gizi berkala",
-        "Pemberian makanan tambahan (PMT) bergizi",
-        "Konseling gizi keluarga professional",
-        "Kampanye gizi seimbang dan edukasi",
-        "Program pemberian ASI eksklusif",
-        "Integrasi layanan posyandu & PAUD"
-      ],
-      iconBg: "bg-gradient-to-br from-orange-500 to-red-600"
+      iconBg: "bg-gradient-to-br from-red-500 to-orange-600"
     },
     {
       icon: "fa-graduation-cap",
       title: "Pendidikan",
-      description: "Memberikan stimulasi dan rangsangan pendidikan sesuai tahap perkembangan anak untuk membentuk kecerdasan, kreativitas, dan karakter yang kuat.",
+      description: "Memberikan stimulasi dan rangsangan pendidikan yang sesuai dengan tahap perkembangan anak untuk membentuk kecerdasan, kreativitas, karakter, dan kesiapan bersekolah yang kuat.",
       features: [
-        "Pembelajaran berbasis bermain dan eksplorasi",
-        "Kurikulum holistik integratif modern",
-        "Asesmen tumbuh kembang komprehensif",
-        "Pelatihan guru PAUD berkualitas tinggi",
-        "Kegiatan literasi & numerasi awal",
-        "Penyediaan media belajar interaktif"
+       "Belajar bermain & eksplorasi di PAUD Pra SD",
+      "Kurikulum holistik, integratif & adaptif",
+      "Asesmen tumbuh kembang & kemampuan anak",
+      "Pelatihan guru PAUD berkelanjutan & berkualitas",
+      "Literasi & numerasi untuk kesiapan SD",
+      "Media belajar interaktif & edukatif",
+      "Program kesiapan masuk sekolah dasar",
+      "Layanan inklusif untuk anak berkebutuhan khusus (ABK)"
       ],
       iconBg: "bg-gradient-to-br from-blue-500 to-indigo-600"
     },
     {
       icon: "fa-shield-heart",
-      title: "Pengasuhan & Perlindungan",
-      description: "Menjamin anak mendapatkan kasih sayang, rasa aman, dan perlindungan dari kekerasan, penelantaran, dan eksploitasi dalam lingkungan yang kondusif.",
+      title: "Perlindungan, Pengasuhan & Kesejahteraan Anak",
+      description: "Menjamin setiap anak mendapatkan kasih sayang, rasa aman, perlindungan dari segala bentuk kekerasan, serta dukungan kesejahteraan dalam lingkungan yang kondusif dan ramah anak.",
       features: [
-        "Pelatihan pola asuh positif dan efektif",
-        "Home visit & parenting support rutin",
-        "Sistem pelaporan kasus anak terintegrasi",
-        "Pendampingan keluarga rentan berkelanjutan",
-        "Kampanye perlindungan anak masif",
-        "Lingkungan ramah anak (child friendly)"
+        "Pelatihan pola asuh positif dan responsif",
+        "Home visit & parenting support berkelanjutan",
+        "Sistem pelaporan dan penanganan kasus anak",
+        "Pendampingan keluarga rentan dan bermasalah",
+        "Program bantuan sosial untuk anak dan keluarga",
+        "Kampanye perlindungan anak dari kekerasan",
+        "Lingkungan ramah anak (child-friendly environment)",
+        "Layanan rehabilitasi dan reintegrasi sosial"
       ],
       iconBg: "bg-gradient-to-br from-purple-500 to-pink-600"
     }
@@ -414,14 +406,14 @@ const AboutServices = ({
       {/* Section 7: Service Scope */}
       {showSection7 && (
         <section className={`py-16 md:py-20 ${sectionClassName}`}>
-          <div className="container mx-auto px-6">
+          <div className="container mx-auto px-6 scale-80 origin-top">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
                 <SectionNumber number="5" bgColor="bg-gradient-to-r from-purple-500 to-pink-600" />
-                Empat Pilar Layanan PAUD HI
+                Tiga Pilar Layanan PAUD HI
               </h2>
               <p className="text-lg text-gray-600 leading-relaxed max-w-3xl mx-auto">
-                Layanan komprehensif yang mencakup seluruh kebutuhan tumbuh kembang anak usia dini dengan pendekatan holistik dan terintegrasi untuk masa depan yang cerah.
+                Layanan komprehensif yang mencakup seluruh kebutuhan tumbuh kembang anak usia dini dengan pendekatan holistik dan terintegrasi melalui tiga pilar utama untuk masa depan yang cerah.
               </p>
             </div>
 
@@ -430,23 +422,25 @@ const AboutServices = ({
                 🌟 Pendekatan Holistik untuk Tumbuh Kembang Optimal
               </h3>
               <p className="text-gray-700 leading-relaxed text-lg">
-                Setiap anak berhak mendapatkan layanan yang lengkap dan berkualitas dalam empat aspek penting kehidupan untuk menjamin masa depan yang gemilang.
+                Setiap anak berhak mendapatkan layanan yang lengkap dan berkualitas dalam tiga pilar penting kehidupan untuk menjamin masa depan yang gemilang dan berkelanjutan.
               </p>
             </HighlightBox>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
-              {servicesData.map((service, index) => (
-                <ServiceCard
-                  key={index}
-                  icon={service.icon}
-                  title={service.title}
-                  description={service.description}
-                  features={service.features}
-                  iconBg={service.iconBg}
-                  index={index}
-                />
-              ))}
-            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+  {servicesData.map((service, index) => (
+    <div key={index} className="h-full flex">
+      <ServiceCard
+        icon={service.icon}
+        title={service.title}
+        description={service.description}
+        features={service.features}
+        iconBg={service.iconBg}
+        index={index}
+      />
+    </div>
+  ))}
+</div>
+
           </div>
         </section>
       )}

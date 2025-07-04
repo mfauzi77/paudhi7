@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import berita0 from '../images/berita/berita0.jpg';
+import berita2 from '../images/berita/berita2.jpeg';
 
 const NewsSection = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -69,7 +70,72 @@ const NewsSection = () => {
 },
 
     {
-      id: 2,
+  id: 2,
+  title: 'Strategi Baru PAUD HI 2025–2029 Disusun di Hotel Mercure Jakarta',
+  excerpt: 'Kemenko PMK menggelar rapat evaluasi RAN PAUD HI 2020–2024 dan menyusun strategi lanjutan untuk 2025–2029. Deputi Woro menekankan pentingnya sinergi lintas sektor dan pendekatan holistik.',
+  author: 'Kemenko PMK',
+  date: '10 Maret 2025',
+  readTime: '6 menit',
+  icon: 'fas fa-people-group',
+  tags: ['RAN PAUD HI', 'Strategi Nasional', 'RPJMN 2025–2029', 'Kemenko PMK'],
+  image: berita2,
+  fullContent: `
+    <h3>Evaluasi RAN PAUD HI 2020–2024</h3>
+    <p>Pada 10 Maret 2025, Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan (Kemenko PMK) menggelar rapat koordinasi nasional di Hotel Mercure Sabang, Jakarta, untuk mengevaluasi implementasi Rencana Aksi Nasional PAUD HI 2020–2024.</p>
+
+    <h4>Pentingnya Pendekatan Holistik</h4>
+    <p>Deputi Woro Srihastuti Sulistyaningrum menyampaikan bahwa PAUD HI tidak hanya mencakup pendidikan saja, melainkan seluruh kebutuhan dasar anak, mulai dari kesehatan, gizi, pengasuhan, hingga perlindungan.</p>
+
+    <h4>Menuju RPJMN 2025–2029</h4>
+    <p>Hasil evaluasi dijadikan dasar untuk menyusun strategi keberlanjutan RAN PAUD HI ke dalam RPJMN 2025–2029. Kemenko PMK mendorong kolaborasi antarsektor serta penggunaan sistem digital untuk meningkatkan efisiensi layanan.</p>
+
+    <h4>Sinergi dan Digitalisasi</h4>
+    <p>Salah satu fokus strategi baru adalah memperkuat integrasi data dan monitoring digital. SISMONEV PAUD HI akan menjadi tulang punggung sistem pelaporan dan pengawasan nasional.</p>
+
+    <h4>Kutipan Penting</h4>
+    <blockquote>
+      “Kita tidak hanya bicara pendidikan anak usia dini saja, tetapi juga layanan kesehatan, gizi, pengasuhan, dan perlindungan. Semua ini harus dipastikan terintegrasi dan berkelanjutan.” – Woro Srihastuti
+    </blockquote>
+  `,
+  images: [
+    {
+      src: berita2,
+      caption: 'Rapat Koordinasi Evaluasi PAUD HI 2020–2024 di Hotel Mercure Sabang, Jakarta',
+    },
+      ],
+    },
+    // {
+    //   id: 3,
+    //   title: 'Kemenko PMK Terima Audiensi PATTIRO Terkait Program PAUD HI',
+    //   excerpt: 'Asisten Deputi Bidang Pendidikan Anak Usia Dini, Dasar dan Menengah Jazziray Hartoyo menerima audiensi dari PATTIRO terkait kebijakan dan implementasi program PAUD HI. Penekanan pada koordinasi lintas sektor dan kolaborasi pentahelix menjadi kunci utama.',
+    //   author: 'Kemenko PMK',
+    //   date: '4 September 2023',
+    //   readTime: '4 menit',
+    //   icon: 'fas fa-handshake',
+    //   tags: ['PATTIRO', 'Kolaborasi', 'Pentahelix', 'Koordinasi'],
+    //   image: 'https://www.kemenkopmk.go.id/sites/default/files/articles/2023-09/IMG-20230905-WA0034.jpg',
+    //   fullContent: `
+    //     <h3>Satu Koridor Kebijakan PAUD HI</h3>
+    //     <p>Jazziray menyampaikan, Kemenko PMK selaku koordinator program menghimbau agar seluruh kebijakan terkait PAUD HI dapat berjalan melalui satu koridor sehingga arah dan tujuan yang dicapai sama. "Kebijakan terkait PAUD HI, baik itu dari sisi pendidikan, kesehatan, pertumbuhan anak usia dini secara menyeluruh harus dipastikan berjalan dalam satu koridor dibawah koordinasi kami, sehingga arah dan tujuannya sama," ujar Jazziray.</p>
+        
+    //     <h4>Capaian Implementasi di Daerah</h4>
+    //     <p>Kemenko PMK terus melakukan koordinasi, sinkronisasi, dan pengendalian (KSP), baik secara luring maupun daring terhadap 12 provinsi dan 78 kabupaten/kota yang mendapatkan bantuan pendampingan penyusunan regulasi dari Kemendikbudristek tahun 2022-2023. Hingga 1 September 2023, terdapat 216 Kab/Kota memiliki Perbub/Perwal PAUD HI, 145 Kab/Kota memiliki Gugus Tugas PAUD HI dan 90 Kab/Kota memiliki Rencana Aksi Daerah (RAD).</p>
+        
+    //     <h4>Kolaborasi Pentahelix</h4>
+    //     <p>Jazziray memaparkan perkembangan implementasi kebijakan program PAUD HI melibatkan pentahelix yang tentunya mengutamakan kolaborasi yang melibatkan Kementerian dan Lembaga termasuk Pemda, masyarakat termasuk lembaga swadaya masyarakat, kalangan akademisi, pelaku usaha dan juga tentunya media. "Kata kuncinya adalah kolaborasi" ujar Jazziray.</p>
+        
+    //     <h4>Dukungan Peta Jalan Pengasuhan</h4>
+    //     <p>Jazziray menyambut baik rencana Pattiro yang akan membantu peta jalan pengasuhan dalam kebijakan PAUD HI. "Dari 3 bidang, Pendidikan, kesehatan, Penenuhan hak anak tumbuh kembang, bidang pengasuhan anak masih membutuhkan banyak intervensi" pungkasnya.</p>
+    //   `,
+    //   images: [
+    //     {
+    //       src: 'https://www.kemenkopmk.go.id/sites/default/files/articles/2023-09/IMG-20230905-WA0034.jpg',
+    //       caption: 'Audiensi PATTIRO dengan Kemenko PMK di Ruang Rapat Lt. 13 Kemenko PMK',
+    //     },
+    //   ],
+    // },
+    {
+      id: 4,
       title: 'Kemenko PMK Dorong Pentingnya Pengembangan Anak Usia Dini Secara Holistik dan Integratif',
       excerpt: 'Deputi Peningkatan Kualitas Anak, Perempuan, dan Pemuda Kemenko PMK menekankan pentingnya pengawalan perkembangan anak sejak usia dini. Kesalahan sedikit saja dalam mengawal perkembangan anak usia dini akan berdampak pada kualitas SDM di masa depan.',
       author: 'Kemenko PMK',
@@ -96,104 +162,42 @@ const NewsSection = () => {
           src: 'https://kemenkopmk.go.id/sites/default/files/articles/2024-08/IMG-20240813-WA0026.jpg',
           caption: 'Lokakarya pembentukan ECED Council di Jakarta dengan para ahli dan praktisi PAUD HI',
         },
-      ],
-    },
-    {
-      id: 3,
-      title: 'Kemenko PMK Terima Audiensi PATTIRO Terkait Program PAUD HI',
-      excerpt: 'Asisten Deputi Bidang Pendidikan Anak Usia Dini, Dasar dan Menengah Jazziray Hartoyo menerima audiensi dari PATTIRO terkait kebijakan dan implementasi program PAUD HI. Penekanan pada koordinasi lintas sektor dan kolaborasi pentahelix menjadi kunci utama.',
-      author: 'Kemenko PMK',
-      date: '4 September 2023',
-      readTime: '4 menit',
-      icon: 'fas fa-handshake',
-      tags: ['PATTIRO', 'Kolaborasi', 'Pentahelix', 'Koordinasi'],
-      image: 'https://www.kemenkopmk.go.id/sites/default/files/articles/2023-09/IMG-20230905-WA0034.jpg',
-      fullContent: `
-        <h3>Satu Koridor Kebijakan PAUD HI</h3>
-        <p>Jazziray menyampaikan, Kemenko PMK selaku koordinator program menghimbau agar seluruh kebijakan terkait PAUD HI dapat berjalan melalui satu koridor sehingga arah dan tujuan yang dicapai sama. "Kebijakan terkait PAUD HI, baik itu dari sisi pendidikan, kesehatan, pertumbuhan anak usia dini secara menyeluruh harus dipastikan berjalan dalam satu koridor dibawah koordinasi kami, sehingga arah dan tujuannya sama," ujar Jazziray.</p>
+  ],
+},
+
+    // {
+    //   id: 5,
+    //   title: 'Kemenko PMK Dorong Penguatan PAUD HI melalui Simposium Internasional ECED 2024',
+    //   excerpt: 'Menteri PPPA menekankan bahwa periode 2025-2029 akan menjadi tonggak penting dalam implementasi RAN PAUD HI. PAUD HI merupakan strategi untuk memutus rantai kemiskinan dan menciptakan generasi masa depan yang unggul dengan kolaborasi lintas sektor.',
+    //   author: 'Kemenko PMK',
+    //   date: '20 November 2024',
+    //   readTime: '8 menit',
+    //   icon: 'fas fa-globe',
+    //   tags: ['Simposium Internasional', 'ECED 2024', 'Kolaborasi', 'Era Digital'],
+    //   image: 'https://www.kemenkopmk.go.id/sites/default/files/articles/2024-11/WhatsApp%20Image%202024-11-22%20at%2015.25.18.jpeg',
+    //   fullContent: `
+    //     <h3>Tonggak Penting Implementasi RAN PAUD HI</h3>
+    //     <p>Menteri Pemberdayaan Perempuan dan Perlindungan Anak, Arifah Fauzi, yang hadir mewakili Menko PMK menekankan bahwa periode 2025-2029 akan menjadi tonggak penting dalam implementasi Rencana Aksi Nasional (RAN) PAUD HI. PAUD HI merupakan strategi untuk memutus rantai kemiskinan dan menciptakan generasi masa depan yang unggul.</p>
         
-        <h4>Capaian Implementasi di Daerah</h4>
-        <p>Kemenko PMK terus melakukan koordinasi, sinkronisasi, dan pengendalian (KSP), baik secara luring maupun daring terhadap 12 provinsi dan 78 kabupaten/kota yang mendapatkan bantuan pendampingan penyusunan regulasi dari Kemendikbudristek tahun 2022-2023. Hingga 1 September 2023, terdapat 216 Kab/Kota memiliki Perbub/Perwal PAUD HI, 145 Kab/Kota memiliki Gugus Tugas PAUD HI dan 90 Kab/Kota memiliki Rencana Aksi Daerah (RAD).</p>
+    //     <h4>Tantangan Era Digital dan Perubahan Iklim</h4>
+    //     <p>Deputi Bidang Koordinasi Peningkatan Kualitas Anak, Perempuan, dan Pemuda, Woro Srihastuti Sulistyaningrum, menegaskan perlunya memperkuat konsep PAUD HI dengan mempertimbangkan isu-isu terkini seperti perubahan iklim dan dampak teknologi, termasuk penggunaan gadget pada anak. "Tidak hanya melihat dari lima komponen nurturing care framework, tetapi juga bagaimana kita menyikapi tantangan seperti climate change dan dampak teknologi terhadap anak di era digital ini," jelas Deputi Lisa.</p>
         
-        <h4>Kolaborasi Pentahelix</h4>
-        <p>Jazziray memaparkan perkembangan implementasi kebijakan program PAUD HI melibatkan pentahelix yang tentunya mengutamakan kolaborasi yang melibatkan Kementerian dan Lembaga termasuk Pemda, masyarakat termasuk lembaga swadaya masyarakat, kalangan akademisi, pelaku usaha dan juga tentunya media. "Kata kuncinya adalah kolaborasi" ujar Jazziray.</p>
+    //     <h4>Rebranding PAUD HI</h4>
+    //     <p>Deputi Lisa menekankan perlunya rebranding PAUD HI untuk membedakan dengan konsep PAUD (Pendidikan Anak Usia Dini) agar perbedaan konsep ini lebih dipahami hingga ke daerah. Pendekatan siklus hidup perlu menjadi acuan dalam menyiapkan konsep PAUD HI yang baru, sehingga dapat menyesuaikan kebutuhan esensial anak sesuai tahapan kehidupan anak usia dini.</p>
         
-        <h4>Dukungan Peta Jalan Pengasuhan</h4>
-        <p>Jazziray menyambut baik rencana Pattiro yang akan membantu peta jalan pengasuhan dalam kebijakan PAUD HI. "Dari 3 bidang, Pendidikan, kesehatan, Penenuhan hak anak tumbuh kembang, bidang pengasuhan anak masih membutuhkan banyak intervensi" pungkasnya.</p>
-      `,
-      images: [
-        {
-          src: 'https://www.kemenkopmk.go.id/sites/default/files/articles/2023-09/IMG-20230905-WA0034.jpg',
-          caption: 'Audiensi PATTIRO dengan Kemenko PMK di Ruang Rapat Lt. 13 Kemenko PMK',
-        },
-      ],
-    },
-    {
-      id: 4,
-      title: 'Pentingnya Implementasi PAUD HI Untuk Tingkatkan Kualitas SDM Indonesia',
-      excerpt: 'Deputi Kemenko PMK menyampaikan bahwa PAUD HI dilakukan secara holistik integratif untuk memastikan semua kebutuhan esensial anak diberikan secara terintegrasi. Rentannya periode usia dini membuat anak harus terpenuhi kebutuhan esensialnya secara holistik.',
-      author: 'Kemenko PMK',
-      date: '28 Agustus 2024',
-      readTime: '7 menit',
-      icon: 'fas fa-graduation-cap',
-      tags: ['Kualitas SDM', 'Indonesia Emas 2045', 'Investasi Strategis', 'Holistik'],
-      image: 'https://www.kemenkopmk.go.id/sites/default/files/articles/2024-08/IMG-20240828-WA0021.jpg',
-      fullContent: `
-        <h3>Strategi Peningkatan Kualitas SDM</h3>
-        <p>Deputi Bidang Koordinasi Peningkatan Kualitas Anak, Perempuan, dan Pemuda Kemenko PMK Woro Srihastuti menyampaikan, PAUD HI merupakan upaya yang dilakukan untuk meningkatkan kualitas Sumber Daya Manusia (SDM) Indonesia. PAUD HI tidak dilakukan dengan berfokus pada satu aspek dalam tumbuh kembang anak, tetapi dilakukan secara holistik integratif supaya anak dapat tumbuh kembang secara optimal.</p>
+    //     <h4>Investasi Strategis untuk Masa Depan</h4>
+    //     <p>Country Head Tanoto Foundation Indonesia, Inge Kusuma, menyampaikan pentingnya peran komunitas dalam mendukung tumbuh kembang anak. "It takes a village to raise a child," yang menggambarkan betapa besar kontribusi kolektif masyarakat dalam membangun ekosistem yang mendukung perkembangan anak. "Investasi pada anak usia dini sangat penting karena menjadi kunci masa depan yang tangguh dan maju dan investasi strategis untuk Indonesia yang lebih baik," ungkapnya.</p>
         
-        <h4>Konsepsi PAUD HI yang Komprehensif</h4>
-        <p>Pengembangan anak usia dini dilakukan dengan memberikan layanan untuk memenuhi kebutuhan esensial anak usia dini yang meliputi kesehatan dan gizi, stimulasi persiapan pendidikan dini, pembinaan moral emosional, pengasuhan termasuk perlindungan bagi anak-anak supaya bisa tumbuh kembang secara optimal. "Jadi ini konsepsi dari PAUD HI. Kita tidak melihat bagaimana penyediaan layanan anak secara parsial," ujarnya.</p>
-        
-        <h4>Persiapan dari Hulu hingga Hilir</h4>
-        <p>"Jadi artinya kita juga harus memastikan penguatan bimbingan perkawinan bagi calon pengantin agar mereka siap secara fisik dan emosional untuk memiliki anak termasuk kesiapan dalam pengasuhannya. Selain itu, perlu dipastikan layanan untuk anak kita di setiap tahapan kehidupan mulai dari janin dalam kandungan sampai usia 6 tahun itu benar-benar terpenuhi," ungkapnya.</p>
-        
-        <h4>Tiga Kajian Strategis</h4>
-        <p>Kemenko PMK bersama dengan Tanoto Foundation telah membuat 3 kajian berkaitan dengan PAUD HI: Penyelarasan Indikator Global Perawatan dan Pengasuhan Anak Usia Dini dan Indikator PAUD HI, Pembangunan Sumber Daya Manusia pada 1000 HPK hingga Usia 3 Tahun: Strategi Pengasuhan dan Stimulasi Dini, serta Catatan Kritis Kebijakan dan Implementasi Program PAUD HI.</p>
-        
-        <h4>Tantangan Implementasi</h4>
-        <p>Masih ditemui adanya tantangan implementasi PAUD HI mulai dari sinergi kebijakan, pelaksanaan, termasuk penyediaan fasilitas dan standarisasi. Kajian ini diharapkan dapat menjadi masukan dalam menyiapkan RAN PAUD HI 2025-2029 dan menguatkan kedudukan PAUD HI dalam RPJMN 2025-2029.</p>
-      `,
-      images: [
-        {
-          src: 'https://www.kemenkopmk.go.id/sites/default/files/articles/2024-08/IMG-20240828-WA0021.jpg',
-          caption: 'Seminar Nasional Strategi Investasi PAUD HI Menuju Visi Indonesia Emas 2045 di Kantor Kemenko PMK',
-        },
-      ],
-    },
-    {
-      id: 5,
-      title: 'Kemenko PMK Dorong Penguatan PAUD HI melalui Simposium Internasional ECED 2024',
-      excerpt: 'Menteri PPPA menekankan bahwa periode 2025-2029 akan menjadi tonggak penting dalam implementasi RAN PAUD HI. PAUD HI merupakan strategi untuk memutus rantai kemiskinan dan menciptakan generasi masa depan yang unggul dengan kolaborasi lintas sektor.',
-      author: 'Kemenko PMK',
-      date: '20 November 2024',
-      readTime: '8 menit',
-      icon: 'fas fa-globe',
-      tags: ['Simposium Internasional', 'ECED 2024', 'Kolaborasi', 'Era Digital'],
-      image: 'https://www.kemenkopmk.go.id/sites/default/files/articles/2024-11/WhatsApp%20Image%202024-11-22%20at%2015.25.18.jpeg',
-      fullContent: `
-        <h3>Tonggak Penting Implementasi RAN PAUD HI</h3>
-        <p>Menteri Pemberdayaan Perempuan dan Perlindungan Anak, Arifah Fauzi, yang hadir mewakili Menko PMK menekankan bahwa periode 2025-2029 akan menjadi tonggak penting dalam implementasi Rencana Aksi Nasional (RAN) PAUD HI. PAUD HI merupakan strategi untuk memutus rantai kemiskinan dan menciptakan generasi masa depan yang unggul.</p>
-        
-        <h4>Tantangan Era Digital dan Perubahan Iklim</h4>
-        <p>Deputi Bidang Koordinasi Peningkatan Kualitas Anak, Perempuan, dan Pemuda, Woro Srihastuti Sulistyaningrum, menegaskan perlunya memperkuat konsep PAUD HI dengan mempertimbangkan isu-isu terkini seperti perubahan iklim dan dampak teknologi, termasuk penggunaan gadget pada anak. "Tidak hanya melihat dari lima komponen nurturing care framework, tetapi juga bagaimana kita menyikapi tantangan seperti climate change dan dampak teknologi terhadap anak di era digital ini," jelas Deputi Lisa.</p>
-        
-        <h4>Rebranding PAUD HI</h4>
-        <p>Deputi Lisa menekankan perlunya rebranding PAUD HI untuk membedakan dengan konsep PAUD (Pendidikan Anak Usia Dini) agar perbedaan konsep ini lebih dipahami hingga ke daerah. Pendekatan siklus hidup perlu menjadi acuan dalam menyiapkan konsep PAUD HI yang baru, sehingga dapat menyesuaikan kebutuhan esensial anak sesuai tahapan kehidupan anak usia dini.</p>
-        
-        <h4>Investasi Strategis untuk Masa Depan</h4>
-        <p>Country Head Tanoto Foundation Indonesia, Inge Kusuma, menyampaikan pentingnya peran komunitas dalam mendukung tumbuh kembang anak. "It takes a village to raise a child," yang menggambarkan betapa besar kontribusi kolektif masyarakat dalam membangun ekosistem yang mendukung perkembangan anak. "Investasi pada anak usia dini sangat penting karena menjadi kunci masa depan yang tangguh dan maju dan investasi strategis untuk Indonesia yang lebih baik," ungkapnya.</p>
-        
-        <h4>Memutus Rantai Kemiskinan</h4>
-        <p>Nina Sardjunani selaku ECED Council menegaskan bahwa investasi PAUD HI tidak hanya berkaitan dengan pembangunan manusia, tetapi juga menjadi kunci untuk memutus rantai kemiskinan. "Yang ingin kita tingkatkan adalah capability atau potensi dari manusia kecil itu sejak dalam kandungan hingga usia delapan tahun. ECED menjadi faktor utama memastikan pertumbuhan ekonomi dapat berjalan baik," ungkap Nina.</p>
-      `,
-      images: [
-        {
-          src: 'https://www.kemenkopmk.go.id/sites/default/files/articles/2024-11/WhatsApp%20Image%202024-11-22%20at%2015.25.18.jpeg',
-          caption: 'International Symposium on Early Childhood Education and Development (ECED) di Thamrin Nine Ballroom, Jakarta',
-        },
-      ],
-    },
+    //     <h4>Memutus Rantai Kemiskinan</h4>
+    //     <p>Nina Sardjunani selaku ECED Council menegaskan bahwa investasi PAUD HI tidak hanya berkaitan dengan pembangunan manusia, tetapi juga menjadi kunci untuk memutus rantai kemiskinan. "Yang ingin kita tingkatkan adalah capability atau potensi dari manusia kecil itu sejak dalam kandungan hingga usia delapan tahun. ECED menjadi faktor utama memastikan pertumbuhan ekonomi dapat berjalan baik," ungkap Nina.</p>
+    //   `,
+    //   images: [
+    //     {
+    //       src: 'https://www.kemenkopmk.go.id/sites/default/files/articles/2024-11/WhatsApp%20Image%202024-11-22%20at%2015.25.18.jpeg',
+    //       caption: 'International Symposium on Early Childhood Education and Development (ECED) di Thamrin Nine Ballroom, Jakarta',
+    //     },
+    //   ],
+    // },
      {
       id: 6,
       title: 'Kolaborasi Strategis RI-UNICEF: Susun Rencana Kerja Untuk Kesejahteraan Anak',

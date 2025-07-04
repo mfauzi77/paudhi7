@@ -9,7 +9,7 @@ const Footer = () => {
       content: 'description',
       description: 'Sistem Informasi, Monitoring, dan Evaluasi PAUD Holistik Integratif yang mendukung tumbuh kembang optimal anak-anak Indonesia melalui layanan terintegrasi dan berkualitas.',
       contact: {
-        phone: '+62 21 1234 5678',
+        // phone: '+62 21 1234 5678',
         email: 'info@paudhi.kemenkopmk.go.id',
         address: ' Jl. Medan Merdeka Barat No.3, RT.2/RW.3, Gambir, Kecamatan Gambir, Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta 10110, Indonesia'
       }
@@ -18,24 +18,19 @@ const Footer = () => {
       title: 'Layanan',
       content: 'links',
       links: [
-        { name: 'Direktori PAUD', href: '#direktori' },
-        { name: 'Layanan Kesehatan', href: '#kesehatan' },
-        { name: 'Konseling Keluarga', href: '#konseling' },
-        { name: 'Monitoring Tumbuh Kembang', href: '#monitoring' },
-        { name: 'Edukasi Parenting', href: '#parenting' },
-        { name: 'Perlindungan Anak', href: '#perlindungan' }
+        { name: 'Direktori PAUD', href: '/directory' },
+        { name: 'Layanan Kesehatan', href: 'https://asiksupport-stg.dto.kemkes.go.id/' },
+        { name: 'Konseling Keluarga', href: 'https://api.whatsapp.com/send?phone=628111129129' },
+        { name: 'Edukasi Parenting', href: '/pengasuhan' },
       ]
     },
     {
       title: 'Informasi',
       content: 'links',
       links: [
-        { name: 'Tentang Kami', href: '#tentang' },
+        { name: 'Tentang Kami', href: '/About' },
         { name: 'Berita Terkini', href: '#berita' },
-        { name: 'Panduan Pengguna', href: '#panduan' },
-        { name: 'FAQ', href: '#faq' },
-        { name: 'Kebijakan Privasi', href: '#privasi' },
-        { name: 'Syarat & Ketentuan', href: '#syarat' }
+        { name: 'FAQ', href: '/faq' },
       ]
     },
     {
