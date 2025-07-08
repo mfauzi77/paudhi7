@@ -33,18 +33,18 @@ const Footer = () => {
         { name: 'FAQ', href: '/faq' },
       ]
     },
-    {
-      title: 'Dukungan',
-      content: 'links',
-      links: [
-        { name: 'Pusat Bantuan', href: '#bantuan' },
-        { name: 'Kontak Support', href: '#support' },
-        { name: 'Pelatihan & Workshop', href: '#pelatihan' },
-        { name: 'API Documentation', href: '#api' },
-        { name: 'Download Mobile App', href: '#app' },
-        { name: 'Hubungi Kami', href: '#kontak' }
-      ]
-    }
+    // {
+    //   title: 'Dukungan',
+    //   content: 'links',
+    //   links: [
+    //     { name: 'Pusat Bantuan', href: '#bantuan' },
+    //     { name: 'Kontak Support', href: '#support' },
+    //     { name: 'Pelatihan & Workshop', href: '#pelatihan' },
+    //     { name: 'API Documentation', href: '#api' },
+    //     { name: 'Download Mobile App', href: '#app' },
+    //     { name: 'Hubungi Kami', href: '#kontak' }
+    //   ]
+    // }
   ];
 
   const socialLinks = [
@@ -155,7 +155,7 @@ const Footer = () => {
             </div>
 
             {/* Newsletter Signup */}
-            <div className="text-center lg:text-right">
+            {/* <div className="text-center lg:text-right">
               <h4 className="text-lg font-semibold mb-4">
                 Newsletter
               </h4>
@@ -169,13 +169,13 @@ const Footer = () => {
                   Berlangganan
                 </button>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
 
         {/* App Download Section */}
         <div className="border-t border-gray-800 pt-8 mb-8">
-          <div className="text-center">
+          {/* <div className="text-center">
             <h4 className="text-lg font-semibold mb-4">
               Download Aplikasi Mobile
             </h4>
@@ -202,7 +202,7 @@ const Footer = () => {
                 </div>
               </button>
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* Bottom Section */}

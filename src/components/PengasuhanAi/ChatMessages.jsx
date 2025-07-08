@@ -189,10 +189,7 @@ const ChatMessages = ({ messages, isTyping }) => {
                     <span>🕐</span>
                     <span>{message.time}</span>
                     {!message.isUser && (
-                      <span className="ml-2 flex items-center gap-1">
-                        <span>🤖</span>
-                        <span>PengasuhanAI Pro</span>
-                      </span>
+                      <span>👤</span>
                     )}
                   </div>
                   

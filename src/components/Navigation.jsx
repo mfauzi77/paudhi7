@@ -9,10 +9,10 @@ const Navigation = () => {
 
   const navItems = [
     { name: 'Beranda', href: '/' },
-    { name: 'Direktori', href: '/directory' },
+    // { name: 'Direktori', href: '/directory' },
     { name: 'Pengasuhan Ai', href: '/pengasuhan' },
     { name: 'Tentang', href: '/About' },
-    { name: 'Dashboard', href: '/dashboard' },
+    // { name: 'Dashboard', href: '/dashboard' },
     { name: 'FAQ', href: '/faq' },
   ];
 
@@ -126,7 +126,7 @@ const Navigation = () => {
         </div>
       </nav>
 
-      {/* Mobile Bottom Navigation */}
+      {/* Mobile Bottom Navigation
       <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-40">
         <div className="flex">
           {[
@@ -151,7 +151,7 @@ const Navigation = () => {
             );
           })}
         </div>
-      </div>
+      </div> */}
     </>
   );
 };

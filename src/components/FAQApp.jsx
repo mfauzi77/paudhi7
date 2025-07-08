@@ -467,7 +467,7 @@ const FAQApp = () => {
           
             <div className="text-center mb-16 animate-bounce">
           <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-6">
-            Tanya Jawab <span className="bg-gradient-to-r from-blue-600 to-emerald-600 bg-clip-text text-transparent">PAUD HI</span>
+            Tanya <span className="bg-gradient-to-r from-blue-600 to-emerald-600 bg-clip-text text-transparent">PAUD HI</span>
           </h2>
         
         </div>
