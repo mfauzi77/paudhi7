@@ -10,7 +10,7 @@ const Navigation = () => {
   const navItems = [
     { name: 'Beranda', href: '/' },
     // { name: 'Direktori', href: '/directory' },
-    { name: 'Pengasuhan Ai', href: '/pengasuhan' },
+    { name: 'Pengasuhan AI', href: '/pengasuhan' },
     { name: 'Tentang', href: '/About' },
     // { name: 'Dashboard', href: '/dashboard' },
     { name: 'FAQ', href: '/faq' },

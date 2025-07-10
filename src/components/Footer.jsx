@@ -1,6 +1,6 @@
 import React from 'react';
 import { Facebook, Twitter, Instagram, Github, Linkedin, Globe } from 'lucide-react';
-
+import pmklogo from '../assets/kl/pmk.png';
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
@@ -102,27 +102,23 @@ const Footer = () => {
           </div>
 
           {/* Follow Us */}
-          <div>
-            <h3 className="text-white font-semibold text-base mb-6">
-              Follow us
-            </h3>
-            <div className="flex gap-4">
-              {socialLinks.map((social, index) => {
-                const IconComponent = social.icon;
-                return (
-                  <a
-                    key={index}
-                    href={social.href}
-                    className="w-8 h-8 flex items-center justify-center text-gray-300 hover:text-white transition-colors duration-200"
-                    title={social.name}
-                    aria-label={`Follow us on ${social.name}`}
-                  >
-                    <IconComponent size={18} />
-                  </a>
-                );
-              })}
-            </div>
-          </div>
+          <div className="text-white">
+  <div className="flex flex-col items-start mb-4">
+    <img
+      src={pmklogo}
+      alt="Logo Kemenko PMK"
+      className="h-12 w-auto transform scale-110 mb-2"
+    />
+    <span className="font-semibold text-lg">Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan</span>
+  </div>
+  <p className="text-gray-300 text-sm leading-relaxed">
+    Jl. Medan Merdeka Barat No.3<br />
+    RT.2/RW.3, Gambir, Kota Jakarta Pusat<br />
+    Daerah Khusus Ibukota Jakarta 10110
+  </p>
+</div>
+
+
 
         </div>
 
