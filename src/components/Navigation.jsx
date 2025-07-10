@@ -75,11 +75,11 @@ const Navigation = () => {
 
             {/* Actions */}
             <div className="flex items-center gap-3">
-              {/* Login Button */}
+              {/* Login Button
               <button className="hidden lg:flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-2.5 rounded-lg font-semibold shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 group overflow-hidden relative">
                 <span className="absolute inset-0 bg-gradient-to-r from-blue-700 to-blue-800 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
                 <span className="relative">Masuk</span>
-              </button>
+              </button> */}
               
               {/* Mobile Menu Button */}
               <button 
@@ -116,11 +116,11 @@ const Navigation = () => {
                   </li>
                 );
               })}
-              <li className="pt-4 border-t border-gray-200">
+              {/* <li className="pt-4 border-t border-gray-200">
                 <button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all duration-300">
                   Masuk
                 </button>
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>

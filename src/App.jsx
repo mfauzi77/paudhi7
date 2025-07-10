@@ -17,6 +17,7 @@ import PAUDDashboard from './components/PAUDDashboard/PAUDDashboard';
 import FaqPage from './components/FAQApp';
 import AboutPage from './components/About/AboutPage';
 import Main from './components/PengasuhanAi/Main';
+import MaknaLogo from './components/MaknaLogo';
 
 
 function HomePage() {
@@ -47,6 +48,7 @@ function AppWrapper() {
         <Route path="/faq" element={<FaqPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/pengasuhan" element={<Main />} />
+        <Route path="/maknalogo" element={<MaknaLogo />} />
     
 
       </Routes>

@@ -306,7 +306,8 @@ const AboutServices = ({
       "Literasi & numerasi untuk kesiapan SD",
       "Media belajar interaktif & edukatif",
       "Program kesiapan masuk sekolah dasar",
-      "Layanan inklusif untuk anak berkebutuhan khusus (ABK)"
+      "Layanan inklusif untuk anak berkebutuhan khusus (ABK)",
+      "Angka Partisipasi Kasar (APK)"
       ],
       iconBg: "bg-gradient-to-br from-blue-500 to-indigo-600"
     },
@@ -316,12 +317,11 @@ const AboutServices = ({
       description: "Menjamin setiap anak mendapatkan kasih sayang, rasa aman, perlindungan dari segala bentuk kekerasan, serta dukungan kesejahteraan dalam lingkungan yang kondusif dan ramah anak.",
       features: [
         "Pelatihan pola asuh positif dan responsif",
-        "Home visit & parenting support berkelanjutan",
         "Sistem pelaporan dan penanganan kasus anak",
         "Pendampingan keluarga rentan dan bermasalah",
         "Program bantuan sosial untuk anak dan keluarga",
         "Kampanye perlindungan anak dari kekerasan",
-        "Lingkungan ramah anak (child-friendly environment)",
+        "Lingkungan ramah anak",
         "Layanan rehabilitasi dan reintegrasi sosial"
       ],
       iconBg: "bg-gradient-to-br from-purple-500 to-pink-600"
