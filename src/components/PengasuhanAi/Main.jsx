@@ -107,7 +107,7 @@ export default function Main() {
             <div className="flex-1 overflow-y-auto">
               <ChatMessages messages={messages} isTyping={isTyping} />
             </div>
-            <div className="border-t border-gray-200 bg-white">
+            <div className="border-t border-gray-200 bg-white mb-4 p-2 sm:p-3 md:p-4">
               <ChatInput onSend={handleUserInput} shouldFocus={shouldFocusInput} />
             </div>
           </section>

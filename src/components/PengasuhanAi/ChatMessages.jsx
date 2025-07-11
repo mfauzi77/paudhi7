@@ -102,14 +102,6 @@ const ChatMessages = ({ messages, isTyping }) => {
             </span>
           ))}
         </div>
-
-        {/* Getting Started - Mobile optimized */}
-        <div className="p-2 sm:p-3 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border border-purple-200">
-          <div className="text-purple-700 font-medium text-xs sm:text-sm mb-1">💡 Cara Memulai:</div>
-          <div className="text-xs text-purple-600">
-            Ketik pertanyaan, pilih topik dari sidebar, atau gunakan quick action untuk memulai!
-          </div>
-        </div>
       </div>
     </div>
   );
@@ -162,7 +154,7 @@ const ChatMessages = ({ messages, isTyping }) => {
             </div>
 
             {/* Message Content - Mobile optimized */}
-            <div className={`max-w-[70%] sm:max-w-[65%] group ${message.isUser ? 'items-end' : 'items-start'} flex flex-col`}>
+            <div className={`max-w-[70%] sm:max-w-[60%] group ${message.isUser ? 'items-end' : 'items-start'} flex flex-col`}>
               {/* Message Bubble - Mobile optimized */}
               <div
                 className={`p-2 sm:p-3 lg:p-4 rounded-xl lg:rounded-2xl shadow-lg transition-all duration-200 hover:shadow-xl ${
