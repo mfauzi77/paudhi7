@@ -162,7 +162,7 @@ const ChatMessages = ({ messages, isTyping }) => {
             </div>
 
             {/* Message Content - Mobile optimized */}
-            <div className={`max-w-[85%] sm:max-w-[80%] group ${message.isUser ? 'items-end' : 'items-start'} flex flex-col`}>
+            <div className={`max-w-[70%] sm:max-w-[65%] group ${message.isUser ? 'items-end' : 'items-start'} flex flex-col`}>
               {/* Message Bubble - Mobile optimized */}
               <div
                 className={`p-2 sm:p-3 lg:p-4 rounded-xl lg:rounded-2xl shadow-lg transition-all duration-200 hover:shadow-xl ${
