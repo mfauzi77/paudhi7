@@ -105,7 +105,11 @@ export default function Main() {
           {/* Chat Area */}
           <section className="flex-1 flex flex-col h-full md:h-auto">
             <div className="flex-1 overflow-y-auto">
-              <ChatMessages messages={messages} isTyping={isTyping} />
+              <ChatMessages
+                messages={messages}
+                isTyping={isTyping}
+                onStartConsultation={() => setShouldFocusInput(true)} // 🔥 ini bagian penting!
+              />
             </div>
             <div className="border-t border-gray-200 bg-white mb-4 p-2 sm:p-3 md:p-4">
               <ChatInput onSend={handleUserInput} shouldFocus={shouldFocusInput} />
