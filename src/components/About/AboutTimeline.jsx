@@ -3,29 +3,29 @@ import React, { useState, useEffect } from 'react';
 // ==================== SUB-COMPONENTS ====================
 
 const SectionNumber = ({ number, bgColor = "bg-blue-600" }) => (
-  <span className={`inline-flex items-center justify-center w-10 h-10 ${bgColor} text-white rounded-full font-bold text-sm mr-4 shadow-lg transform transition-all duration-300 hover:scale-110 hover:shadow-xl`}>
+  <span className={`inline-flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10 ${bgColor} text-white rounded-full font-bold text-xs sm:text-sm mr-2 sm:mr-4 shadow-lg transform transition-all duration-300 hover:scale-110 hover:shadow-xl flex-shrink-0`}>
     {number}
   </span>
 );
 
 const VisualSeparator = ({ icon, className = "" }) => (
-  <div className={`text-center my-16 relative ${className}`}>
+  <div className={`text-center my-8 sm:my-12 lg:my-16 relative ${className}`}>
     <div className="absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-300 to-transparent opacity-60"></div>
-    <div className="bg-white px-6 text-blue-600 text-2xl relative shadow-lg rounded-full w-12 h-12 flex items-center justify-center mx-auto">
+    <div className="bg-white px-4 sm:px-6 text-blue-600 text-lg sm:text-2xl relative shadow-lg rounded-full w-8 h-8 sm:w-12 sm:h-12 flex items-center justify-center mx-auto">
       <i className={`fas ${icon} animate-pulse`}></i>
     </div>
   </div>
 );
 
 const FloatingParticles = () => {
-  const particles = Array.from({ length: 8 }, (_, i) => i);
+  const particles = Array.from({ length: 6 }, (_, i) => i); // Reduced for mobile
   
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       {particles.map((particle) => (
         <div
           key={particle}
-          className={`absolute w-2 h-2 bg-blue-400 rounded-full opacity-20 animate-float`}
+          className={`absolute w-1 h-1 sm:w-2 sm:h-2 bg-blue-400 rounded-full opacity-20 animate-float hidden sm:block`}
           style={{
             left: `${Math.random() * 100}%`,
             top: `${Math.random() * 100}%`,
@@ -37,8 +37,6 @@ const FloatingParticles = () => {
     </div>
   );
 };
-
-
 
 const TimelineItem = ({ year, title, description, isLast = false, dotColor = "border-blue-600", index, isVisible, details }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -55,18 +53,20 @@ const TimelineItem = ({ year, title, description, isLast = false, dotColor = "bo
   const colors = colorMap[dotColor] || colorMap["border-amber-600"];
 
   return (
-    <div className={`relative flex items-start mb-12 group transition-all duration-700 ${
+    <div className={`relative flex items-start mb-6 sm:mb-8 lg:mb-12 group transition-all duration-700 ${
       isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
     }`} style={{ transitionDelay: `${index * 200}ms` }}>
+      
+      {/* Timeline Line - Mobile optimized */}
       {!isLast && (
-        <div className="absolute left-6 top-16 w-0.5 h-full bg-gradient-to-b from-blue-300 via-purple-300 to-emerald-300 group-hover:from-blue-500 group-hover:via-purple-500 group-hover:to-emerald-500 transition-all duration-500"></div>
+        <div className="absolute left-3 sm:left-4 lg:left-6 top-12 sm:top-14 lg:top-16 w-0.5 h-full bg-gradient-to-b from-blue-300 via-purple-300 to-emerald-300 group-hover:from-blue-500 group-hover:via-purple-500 group-hover:to-emerald-500 transition-all duration-500"></div>
       )}
       
       {/* Enhanced Timeline Dot */}
-      <div className="relative z-10 flex flex-col items-center">
+      <div className="relative z-10 flex flex-col items-center flex-shrink-0">
         <div 
-          className={`relative w-6 h-6 bg-white border-4 ${dotColor} rounded-full transition-all duration-500 mt-3 cursor-pointer ${
-            isHovered ? `transform scale-150 ${colors.bg} shadow-lg ${colors.glow}` : 'hover:scale-125'
+          className={`relative w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 bg-white border-2 sm:border-3 lg:border-4 ${dotColor} rounded-full transition-all duration-500 mt-2 sm:mt-3 cursor-pointer ${
+            isHovered ? `transform scale-125 sm:scale-150 ${colors.bg} shadow-lg ${colors.glow}` : 'hover:scale-110 sm:hover:scale-125'
           } ${showDetails ? 'animate-pulse' : ''}`}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
@@ -77,60 +77,66 @@ const TimelineItem = ({ year, title, description, isLast = false, dotColor = "bo
           )}
         </div>
         
-        {/* Year Badge */}
-        <div className={`mt-2 px-3 py-1 ${colors.bg} text-white text-xs font-bold rounded-full shadow-md transform transition-all duration-300 ${
-          isHovered ? 'scale-110 shadow-lg' : ''
-        }`}>
-          {year}
+        {/* Year Badge - Mobile responsive */}
+        <div className={`mt-1 sm:mt-2 px-2 sm:px-3 py-0.5 sm:py-1 ${colors.bg} text-white text-xs sm:text-xs lg:text-sm font-bold rounded-full shadow-md transform transition-all duration-300 ${
+          isHovered ? 'scale-105 sm:scale-110 shadow-lg' : ''
+        } text-center`}>
+          <span className="block sm:hidden">{year.split(' ')[0]}</span>
+          <span className="hidden sm:block">{year}</span>
         </div>
       </div>
 
-      {/* Enhanced Content Card */}
-      <div className={`ml-8 bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/50 shadow-xl flex-1 transition-all duration-500 group-hover:shadow-2xl group-hover:-translate-y-2 group-hover:bg-white/90 ${
-        showDetails ? 'ring-2 ring-blue-400 ring-opacity-50' : ''
+      {/* Enhanced Content Card - Mobile optimized */}
+      <div className={`ml-4 sm:ml-6 lg:ml-8 bg-white/80 backdrop-blur-sm rounded-lg sm:rounded-xl lg:rounded-2xl p-3 sm:p-4 lg:p-6 border border-white/50 shadow-lg sm:shadow-xl flex-1 transition-all duration-500 group-hover:shadow-xl sm:group-hover:shadow-2xl hover:-translate-y-1 sm:group-hover:-translate-y-2 group-hover:bg-white/90 ${
+        showDetails ? 'ring-1 sm:ring-2 ring-blue-400 ring-opacity-50' : ''
       }`}>
-        <div className={`${colors.text} font-bold text-lg mb-2 group-hover:scale-105 transition-transform duration-300 flex items-center`}>
-          <span className="mr-2">{year.includes('2000') ? '🟤' : year.includes('2005') ? '🟤' : year.includes('2011') ? '🟤' : year.includes('2013') ? '🔵' : year.includes('2014') ? '🟢' : year.includes('2020') ? '🟡' : '🔴'}</span>
-          {title}
+        
+        {/* Title Section */}
+        <div className={`${colors.text} font-bold text-sm sm:text-base lg:text-lg mb-2 sm:mb-3 group-hover:scale-105 transition-transform duration-300 flex items-start sm:items-center gap-2`}>
+          <span className="text-sm sm:text-base flex-shrink-0">
+            {year.includes('2000') ? '🟤' : year.includes('2005') ? '🟤' : year.includes('2011') ? '🟤' : year.includes('2013') ? '🔵' : year.includes('2014') ? '🟢' : year.includes('2020') ? '🟡' : '🔴'}
+          </span>
+          <span className="flex-1 leading-tight">{title}</span>
           <button 
             onClick={() => setShowDetails(!showDetails)}
-            className="ml-auto text-sm bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full transition-colors duration-200"
+            className="text-xs sm:text-sm bg-gray-100 hover:bg-gray-200 px-2 sm:px-3 py-1 rounded-full transition-colors duration-200 flex-shrink-0 touch-manipulation"
           >
             {showDetails ? '−' : '+'}
           </button>
         </div>
         
-        <p className="text-gray-700 leading-relaxed mb-4 group-hover:text-gray-800 transition-colors duration-300">
+        {/* Description */}
+        <p className="text-gray-700 leading-relaxed mb-3 sm:mb-4 group-hover:text-gray-800 transition-colors duration-300 text-xs sm:text-sm lg:text-base">
           {description}
         </p>
 
-        {/* Expandable Details */}
+        {/* Expandable Details - Mobile optimized */}
         <div className={`overflow-hidden transition-all duration-500 ${
-          showDetails ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
+          showDetails ? 'max-h-32 sm:max-h-40 opacity-100' : 'max-h-0 opacity-0'
         }`}>
-          <div className="pt-4 border-t border-gray-200">
-            <div className="flex flex-wrap gap-2 mb-3">
-              <span className="px-3 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">Timeline</span>
-              <span className="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs rounded-full">Detail</span>
+          <div className="pt-3 sm:pt-4 border-t border-gray-200">
+            <div className="flex flex-wrap gap-1 sm:gap-2 mb-2 sm:mb-3">
+              <span className="px-2 sm:px-3 py-0.5 sm:py-1 bg-blue-100 text-blue-700 text-xs rounded-full">Timeline</span>
+              <span className="px-2 sm:px-3 py-0.5 sm:py-1 bg-emerald-100 text-emerald-700 text-xs rounded-full">Detail</span>
             </div>
-            <p className="text-sm text-gray-600">
+            <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
               {details || "Tahap penting dalam pengembangan PAUD HI yang memberikan dampak signifikan bagi perkembangan anak usia dini di Indonesia."}
             </p>
           </div>
         </div>
 
-        {/* Interactive Elements */}
-        <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
-          <div className="flex space-x-2">
-            <button className="w-8 h-8 bg-blue-100 hover:bg-blue-200 rounded-full flex items-center justify-center transition-colors duration-200">
-              <span className="text-blue-600 text-sm">ℹ️</span>
+        {/* Interactive Elements - Mobile friendly */}
+        <div className="flex items-center justify-between mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-gray-100">
+          <div className="flex space-x-1 sm:space-x-2">
+            <button className="w-6 h-6 sm:w-8 sm:h-8 bg-blue-100 hover:bg-blue-200 rounded-full flex items-center justify-center transition-colors duration-200 touch-manipulation">
+              <span className="text-blue-600 text-xs sm:text-sm">ℹ️</span>
             </button>
-            <button className="w-8 h-8 bg-emerald-100 hover:bg-emerald-200 rounded-full flex items-center justify-center transition-colors duration-200">
-              <span className="text-emerald-600 text-sm">📊</span>
+            <button className="w-6 h-6 sm:w-8 sm:h-8 bg-emerald-100 hover:bg-emerald-200 rounded-full flex items-center justify-center transition-colors duration-200 touch-manipulation">
+              <span className="text-emerald-600 text-xs sm:text-sm">📊</span>
             </button>
           </div>
           <div className="text-xs text-gray-400">
-            Step {index + 1}
+            <span className="hidden sm:inline">Step </span>{index + 1}
           </div>
         </div>
       </div>
@@ -220,42 +226,42 @@ const TimelinePaudhi = () => {
     <div className="relative min-h-screen bg-gradient-to-br from-yellow-50 via-blue-50 to-rose-100 overflow-hidden">
       <FloatingParticles />
       
-      {/* Animated Background Elements */}
-      <div className="absolute top-20 right-10 w-32 h-32 bg-blue-200 rounded-full opacity-20 animate-bounce" style={{ animationDelay: '1s' }}></div>
-      <div className="absolute bottom-20 left-10 w-24 h-24 bg-emerald-200 rounded-full opacity-20 animate-bounce" style={{ animationDelay: '2s' }}></div>
+      {/* Animated Background Elements - Mobile optimized */}
+      <div className="absolute top-16 sm:top-20 right-4 sm:right-10 w-16 h-16 sm:w-24 sm:h-24 lg:w-32 lg:h-32 bg-blue-200 rounded-full opacity-20 animate-bounce hidden sm:block" style={{ animationDelay: '1s' }}></div>
+      <div className="absolute bottom-16 sm:bottom-20 left-4 sm:left-10 w-12 h-12 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-emerald-200 rounded-full opacity-20 animate-bounce hidden sm:block" style={{ animationDelay: '2s' }}></div>
       
-      <section className="py-16 md:py-24 max-w-screen-lg mx-auto px-4 relative z-10">
-        <div className="container mx-auto px-4 md:px-6">
-          {/* Enhanced Header */}
-          <div className="text-center mb-16 md:mb-20">
-            <div className="inline-flex items-center justify-center mb-6">
+      <section className="py-8 sm:py-12 lg:py-16 xl:py-24 max-w-screen-lg mx-auto px-4 sm:px-6 relative z-10">
+        <div className="container mx-auto">
+          {/* Enhanced Header - Mobile responsive */}
+          <div className="text-center mb-8 sm:mb-12 lg:mb-16 xl:mb-20">
+            <div className="flex flex-col sm:flex-row items-center justify-center mb-4 sm:mb-6 gap-2 sm:gap-0">
               <SectionNumber number="2" />
-              <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-emerald-600 bg-clip-text text-transparent">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-emerald-600 bg-clip-text text-transparent leading-tight text-center sm:text-left">
                 Perjalanan PAUD HI
               </h2>
             </div>
-            <p className="text-lg md:text-xl text-gray-600 leading-relaxed max-w-3xl mx-auto mb-8">
+            <p className="text-sm sm:text-base lg:text-lg xl:text-xl text-gray-600 leading-relaxed max-w-3xl mx-auto mb-6 sm:mb-8 px-4 sm:px-0">
               Tahapan perjalanan dan perkembangan program PAUD Holistik Integratif dari tahun ke tahun menuju masa depan yang lebih baik.
             </p>
             
-            {/* Interactive Stats */}
-            <div className="flex flex-wrap justify-center gap-6 mt-8">
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-                <div className="text-2xl font-bold text-amber-600">25+</div>
-                <div className="text-sm text-gray-600">Tahun Perjalanan</div>
+            {/* Interactive Stats - Mobile grid */}
+            <div className="grid grid-cols-3 sm:flex sm:flex-wrap justify-center gap-3 sm:gap-4 lg:gap-6 mt-6 sm:mt-8 px-4 sm:px-0">
+              <div className="bg-white/80 backdrop-blur-sm rounded-lg sm:rounded-xl lg:rounded-2xl p-3 sm:p-4 shadow-md sm:shadow-lg hover:shadow-lg sm:hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 sm:hover:-translate-y-1">
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-amber-600">25+</div>
+                <div className="text-xs sm:text-sm text-gray-600">Tahun</div>
               </div>
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-                <div className="text-2xl font-bold text-emerald-600">7</div>
-                <div className="text-sm text-gray-600">Fase Utama</div>
+              <div className="bg-white/80 backdrop-blur-sm rounded-lg sm:rounded-xl lg:rounded-2xl p-3 sm:p-4 shadow-md sm:shadow-lg hover:shadow-lg sm:hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 sm:hover:-translate-y-1">
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-emerald-600">7</div>
+                <div className="text-xs sm:text-sm text-gray-600">Fase</div>
               </div>
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-                <div className="text-2xl font-bold text-blue-600">2013</div>
-                <div className="text-sm text-gray-600">Landasan Hukum</div>
+              <div className="bg-white/80 backdrop-blur-sm rounded-lg sm:rounded-xl lg:rounded-2xl p-3 sm:p-4 shadow-md sm:shadow-lg hover:shadow-lg sm:hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 sm:hover:-translate-y-1">
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-blue-600">2013</div>
+                <div className="text-xs sm:text-sm text-gray-600">Hukum</div>
               </div>
             </div>
           </div>
 
-          {/* Enhanced Timeline */}
+          {/* Enhanced Timeline - Mobile optimized */}
           <div className="max-w-4xl mx-auto">
             {timelineData.map((item, index) => (
               <div
@@ -277,24 +283,40 @@ const TimelinePaudhi = () => {
             ))}
           </div>
 
-          {/* Call to Action */}
-          <div className="text-center mt-16">
-            <button className="bg-gradient-to-r from-blue-600 to-emerald-600 text-white font-bold py-4 px-8 rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
-              Pelajari Lebih Lanjut
+          {/* Call to Action - Mobile responsive */}
+          <div className="text-center mt-8 sm:mt-12 lg:mt-16">
+            <button className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-emerald-600 text-white font-bold py-3 sm:py-4 px-6 sm:px-8 rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 sm:hover:-translate-y-1 transition-all duration-300 text-sm sm:text-base touch-manipulation">
+              <span className="hidden sm:inline">Pelajari Lebih Lanjut</span>
+              <span className="sm:hidden">Pelajari Lebih Lanjut</span>
             </button>
           </div>
         </div>
       </section>
 
+      {/* Custom styles - Mobile optimized */}
       <style jsx>{`
         @keyframes float {
           0%, 100% { transform: translateY(0px) rotate(0deg); }
-          25% { transform: translateY(-10px) rotate(90deg); }
-          50% { transform: translateY(-20px) rotate(180deg); }
-          75% { transform: translateY(-10px) rotate(270deg); }
+          25% { transform: translateY(-5px) rotate(45deg); }
+          50% { transform: translateY(-10px) rotate(90deg); }
+          75% { transform: translateY(-5px) rotate(135deg); }
         }
         .animate-float {
           animation: float 6s ease-in-out infinite;
+        }
+        
+        /* Mobile touch optimization */
+        @media (max-width: 640px) {
+          .touch-manipulation:active {
+            transform: scale(0.95);
+          }
+        }
+        
+        /* Ensure readability on small screens */
+        @media (max-width: 480px) {
+          .leading-tight {
+            line-height: 1.2;
+          }
         }
       `}</style>
     </div>

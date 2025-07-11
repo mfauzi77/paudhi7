@@ -1,26 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import berita0 from '../images/berita/berita0.jpg';
 import berita2 from '../images/berita/berita2.jpeg';
+
+// Import images (you'll need to replace these with your actual image imports)
 
 const NewsSection = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [selectedNews, setSelectedNews] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const scrollContainerRef = useRef(null);
 
   const newsArticles = [
     {
-    
-  id: 0,
-  title: 'Kemenko PMK Lakukan Monitoring dan Evaluasi Perlindungan dan Pemenuhan Hak Anak di DIY',
-  excerpt: 'Kemenko PMK melalui Asdep dr. Nia melakukan monitoring dan evaluasi sistem perlindungan anak di Provinsi DIY, menyoroti peningkatan koordinasi lintas sektor dalam penanganan kekerasan terhadap anak dan perempuan.',
-  author: 'Kemenko PMK',
-  date: '26 Juni 2025',
-  readTime: '3 menit',
-  icon: 'fas fa-shield-alt',
-  tags: ['Perlindungan Anak', 'Monitoring Evaluasi', 'Kemenko PMK'],
-  image: berita0,
-  fullContent: `
+      id: 0,
+      title: 'Kemenko PMK Lakukan Monitoring dan Evaluasi Perlindungan dan Pemenuhan Hak Anak di DIY',
+      excerpt: 'Kemenko PMK melalui Asdep dr. Nia melakukan monitoring dan evaluasi sistem perlindungan anak di Provinsi DIY, menyoroti peningkatan koordinasi lintas sektor dalam penanganan kekerasan terhadap anak dan perempuan.',
+      author: 'Kemenko PMK',
+      date: '26 Juni 2025',
+      readTime: '3 menit',
+      icon: 'fas fa-shield-alt',
+      tags: ['Perlindungan Anak', 'Monitoring Evaluasi', 'Kemenko PMK'],
+      image: berita0,
+      fullContent: `
 <p>Yogyakarta – Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan (Kemenko PMK), melalui Asisten Deputi Perlindungan dan Pemenuhan Hak Anak (PPHA), melakukan kunjungan kerja ke Provinsi Daerah Istimewa Yogyakarta (DIY) pada 24–26 Juni 2025. Kegiatan ini merupakan bagian dari upaya monitoring dan evaluasi penanganan kekerasan terhadap anak dan perempuan di daerah.</p>
 
 <p>Berdasarkan data Simfoni PPA tahun 2024, tercatat 575 kasus kekerasan terhadap anak di DIY, termasuk kasus yang terjadi di satuan pendidikan dan lingkungan keluarga. Kegiatan ini menyoroti pentingnya penguatan perlindungan anak, khususnya dalam lingkungan pendidikan formal dan nonformal.</p>
@@ -32,76 +34,75 @@ const NewsSection = () => {
       images: [
         {
           src: berita0,
-          imageClass: 'w-full h-64 object-cover object-top', // ← tambahkan ini di render-nya!
-
+          imageClass: 'w-full h-64 object-cover object-top',
           caption: 'Monitoring dan Evaluasi Perlindungan dan Pemenuhan Hak Anak di DIY, fokus pada pencegahan kekerasan di lingkungan pendidikan dan penguatan layanan UPTD PPA.',
         },
       ],
     },
 
     {
-  id: 1,
-  title: 'Deputi Woro Tegaskan Sinergi PAUD HI Hadapi ECDI 2030 untuk SDM Unggul',
-  excerpt: 'Deputi Bidang Koordinasi Peningkatan Kualitas Anak, Perempuan, dan Pemuda Kemenko PMK, Woro Srihastuti Sulistyaningrum, menegaskan pentingnya sinergi lintas sektor dalam mendukung peluncuran Indeks Perkembangan Anak Usia Dini (ECDI) 2030.',
-  author: 'Kemenko PMK',
-  date: '15 Mei 2025',
-  readTime: '4 menit',
-  icon: 'fas fa-child',
-  tags: ['PAUD HI', 'ECDI 2030', 'SDM Unggul', 'Indonesia Emas 2045'],
-  image: 'https://akcdn.detik.net.id/community/media/visual/2025/05/15/bappenas-meluncurkan-early-childhood-development-index-ecdi-2030-1747282294752.jpeg?w=700&q=90',
-  fullContent: `
-    <p>Kementerian PPN/Bappenas resmi meluncurkan <strong>Indeks Perkembangan Anak Usia Dini (ECDI) 2030</strong> sebagai bagian dari upaya strategis menyongsong generasi Indonesia Emas 2045. Dalam momentum penting ini, <strong>Deputi Bidang Koordinasi Peningkatan Kualitas Anak, Perempuan, dan Pemuda Kemenko PMK, Woro Srihastuti Sulistyaningrum</strong>, menekankan pentingnya sinergi lintas sektor dalam mengakselerasi implementasi <em>Pengembangan Anak Usia Dini Holistik Integratif (PAUD HI)</em>.</p>
+      id: 1,
+      title: 'Deputi Woro Tegaskan Sinergi PAUD HI Hadapi ECDI 2030 untuk SDM Unggul',
+      excerpt: 'Deputi Bidang Koordinasi Peningkatan Kualitas Anak, Perempuan, dan Pemuda Kemenko PMK, Woro Srihastuti Sulistyaningrum, menegaskan pentingnya sinergi lintas sektor dalam mendukung peluncuran Indeks Perkembangan Anak Usia Dini (ECDI) 2030.',
+      author: 'Kemenko PMK',
+      date: '15 Mei 2025',
+      readTime: '4 menit',
+      icon: 'fas fa-child',
+      tags: ['PAUD HI', 'ECDI 2030', 'SDM Unggul', 'Indonesia Emas 2045'],
+      image: 'https://akcdn.detik.net.id/community/media/visual/2025/05/15/bappenas-meluncurkan-early-childhood-development-index-ecdi-2030-1747282294752.jpeg?w=700&q=90',
+      fullContent: `
+        <p>Kementerian PPN/Bappenas resmi meluncurkan <strong>Indeks Perkembangan Anak Usia Dini (ECDI) 2030</strong> sebagai bagian dari upaya strategis menyongsong generasi Indonesia Emas 2045. Dalam momentum penting ini, <strong>Deputi Bidang Koordinasi Peningkatan Kualitas Anak, Perempuan, dan Pemuda Kemenko PMK, Woro Srihastuti Sulistyaningrum</strong>, menekankan pentingnya sinergi lintas sektor dalam mengakselerasi implementasi <em>Pengembangan Anak Usia Dini Holistik Integratif (PAUD HI)</em>.</p>
 
-    <h4>PAUD HI sebagai Fondasi SDM Unggul</h4>
-    <p>Deputi Woro menyambut baik peluncuran ECDI2030 oleh Bappenas yang turut disusun bersama Kemendikbudristek, BKKBN, BPS, UNICEF, dan Tanoto Foundation, dan menegaskan bahwa PAUD HI adalah landasan utama membangun SDM berkualitas sejak usia dini. "Kita harus memastikan seluruh anak Indonesia mendapatkan hak tumbuh kembang optimal sejak dalam kandungan hingga usia 6 tahun," tegasnya.</p>
+        <h4>PAUD HI sebagai Fondasi SDM Unggul</h4>
+        <p>Deputi Woro menyambut baik peluncuran ECDI2030 oleh Bappenas yang turut disusun bersama Kemendikbudristek, BKKBN, BPS, UNICEF, dan Tanoto Foundation, dan menegaskan bahwa PAUD HI adalah landasan utama membangun SDM berkualitas sejak usia dini. "Kita harus memastikan seluruh anak Indonesia mendapatkan hak tumbuh kembang optimal sejak dalam kandungan hingga usia 6 tahun," tegasnya.</p>
 
-    <h4>87,7% Anak Berkembang Sesuai Tahapan</h4>
-    <p>Menurut hasil pengukuran ECDI 2024, sebanyak <strong>87,7% anak usia 24–59 bulan</strong> telah berkembang sesuai tahapan sensorik, kognitif, bahasa, dan kesejahteraan. Namun, Deputi Woro mengingatkan bahwa tantangan pemerataan layanan PAUD HI di daerah masih tinggi.</p>
+        <h4>87,7% Anak Berkembang Sesuai Tahapan</h4>
+        <p>Menurut hasil pengukuran ECDI 2024, sebanyak <strong>87,7% anak usia 24–59 bulan</strong> telah berkembang sesuai tahapan sensorik, kognitif, bahasa, dan kesejahteraan. Namun, Deputi Woro mengingatkan bahwa tantangan pemerataan layanan PAUD HI di daerah masih tinggi.</p>
 
-    <h4>Perkuat Kolaborasi Menuju 2045</h4>
-    <p>Deputi Woro mengajak seluruh pemangku kepentingan untuk memperkuat komitmen dan koordinasi. "Mari kita satukan langkah, perkuat sinergi, dan bangun pondasi kokoh bagi generasi masa depan," ujarnya dalam pernyataan resmi. ECDI 2030 diharapkan menjadi alat kebijakan berbasis data yang mendorong penguatan PAUD HI menuju <strong>Indonesia Emas 2045</strong>.</p>
-  `,
-  images: [
-    {
-      src: 'https://akcdn.detik.net.id/community/media/visual/2025/05/15/bappenas-meluncurkan-early-childhood-development-index-ecdi-2030-1747282294752.jpeg?w=700&q=90',
-      caption: 'Deputi Woro saat menyampaikan pentingnya PAUD HI dalam peluncuran ECDI 2030.'
-    }
-  ]
-},
-
-    {
-  id: 2,
-  title: 'Strategi Baru PAUD HI 2025–2029 Disusun di Hotel Mercure Jakarta',
-  excerpt: 'Kemenko PMK menggelar rapat evaluasi RAN PAUD HI 2020–2024 dan menyusun strategi lanjutan untuk 2025–2029. Deputi Woro menekankan pentingnya sinergi lintas sektor dan pendekatan holistik.',
-  author: 'Kemenko PMK',
-  date: '10 Maret 2025',
-  readTime: '6 menit',
-  icon: 'fas fa-people-group',
-  tags: ['RAN PAUD HI', 'Strategi Nasional', 'RPJMN 2025–2029', 'Kemenko PMK'],
-  image: berita2,
-  fullContent: `
-    <h3>Evaluasi RAN PAUD HI 2020–2024</h3>
-    <p>Pada 10 Maret 2025, Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan (Kemenko PMK) menggelar rapat koordinasi nasional di Hotel Mercure Sabang, Jakarta, untuk mengevaluasi implementasi Rencana Aksi Nasional PAUD HI 2020–2024.</p>
-
-    <h4>Pentingnya Pendekatan Holistik</h4>
-    <p>Deputi Woro Srihastuti Sulistyaningrum menyampaikan bahwa PAUD HI tidak hanya mencakup pendidikan saja, melainkan seluruh kebutuhan dasar anak, mulai dari kesehatan, gizi, pengasuhan, hingga perlindungan.</p>
-
-    <h4>Menuju RPJMN 2025–2029</h4>
-    <p>Hasil evaluasi dijadikan dasar untuk menyusun strategi keberlanjutan RAN PAUD HI ke dalam RPJMN 2025–2029. Kemenko PMK mendorong kolaborasi antarsektor serta penggunaan sistem digital untuk meningkatkan efisiensi layanan.</p>
-
-    <h4>Sinergi dan Digitalisasi</h4>
-    <p>Salah satu fokus strategi baru adalah memperkuat integrasi data dan monitoring digital. SISMONEV PAUD HI akan menjadi tulang punggung sistem pelaporan dan pengawasan nasional.</p>
-
-    <h4>Kutipan Penting</h4>
-    <blockquote>
-      "Kita tidak hanya bicara pendidikan anak usia dini saja, tetapi juga layanan kesehatan, gizi, pengasuhan, dan perlindungan. Semua ini harus dipastikan terintegrasi dan berkelanjutan." – Woro Srihastuti
-    </blockquote>
-  `,
-  images: [
-    {
-      src: berita2,
-      caption: 'Rapat Koordinasi Evaluasi PAUD HI 2020–2024 di Hotel Mercure Sabang, Jakarta',
+        <h4>Perkuat Kolaborasi Menuju 2045</h4>
+        <p>Deputi Woro mengajak seluruh pemangku kepentingan untuk memperkuat komitmen dan koordinasi. "Mari kita satukan langkah, perkuat sinergi, dan bangun pondasi kokoh bagi generasi masa depan," ujarnya dalam pernyataan resmi. ECDI 2030 diharapkan menjadi alat kebijakan berbasis data yang mendorong penguatan PAUD HI menuju <strong>Indonesia Emas 2045</strong>.</p>
+      `,
+      images: [
+        {
+          src: 'https://akcdn.detik.net.id/community/media/visual/2025/05/15/bappenas-meluncurkan-early-childhood-development-index-ecdi-2030-1747282294752.jpeg?w=700&q=90',
+          caption: 'Deputi Woro saat menyampaikan pentingnya PAUD HI dalam peluncuran ECDI 2030.'
+        }
+      ]
     },
+
+    {
+      id: 2,
+      title: 'Strategi Baru PAUD HI 2025–2029 Disusun di Hotel Mercure Jakarta',
+      excerpt: 'Kemenko PMK menggelar rapat evaluasi RAN PAUD HI 2020–2024 dan menyusun strategi lanjutan untuk 2025–2029. Deputi Woro menekankan pentingnya sinergi lintas sektor dan pendekatan holistik.',
+      author: 'Kemenko PMK',
+      date: '10 Maret 2025',
+      readTime: '6 menit',
+      icon: 'fas fa-people-group',
+      tags: ['RAN PAUD HI', 'Strategi Nasional', 'RPJMN 2025–2029', 'Kemenko PMK'],
+      image: berita2,
+      fullContent: `
+        <h3>Evaluasi RAN PAUD HI 2020–2024</h3>
+        <p>Pada 10 Maret 2025, Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan (Kemenko PMK) menggelar rapat koordinasi nasional di Hotel Mercure Sabang, Jakarta, untuk mengevaluasi implementasi Rencana Aksi Nasional PAUD HI 2020–2024.</p>
+
+        <h4>Pentingnya Pendekatan Holistik</h4>
+        <p>Deputi Woro Srihastuti Sulistyaningrum menyampaikan bahwa PAUD HI tidak hanya mencakup pendidikan saja, melainkan seluruh kebutuhan dasar anak, mulai dari kesehatan, gizi, pengasuhan, hingga perlindungan.</p>
+
+        <h4>Menuju RPJMN 2025–2029</h4>
+        <p>Hasil evaluasi dijadikan dasar untuk menyusun strategi keberlanjutan RAN PAUD HI ke dalam RPJMN 2025–2029. Kemenko PMK mendorong kolaborasi antarsektor serta penggunaan sistem digital untuk meningkatkan efisiensi layanan.</p>
+
+        <h4>Sinergi dan Digitalisasi</h4>
+        <p>Salah satu fokus strategi baru adalah memperkuat integrasi data dan monitoring digital. SISMONEV PAUD HI akan menjadi tulang punggung sistem pelaporan dan pengawasan nasional.</p>
+
+        <h4>Kutipan Penting</h4>
+        <blockquote>
+          "Kita tidak hanya bicara pendidikan anak usia dini saja, tetapi juga layanan kesehatan, gizi, pengasuhan, dan perlindungan. Semua ini harus dipastikan terintegrasi dan berkelanjutan." – Woro Srihastuti
+        </blockquote>
+      `,
+      images: [
+        {
+          src: berita2,
+          caption: 'Rapat Koordinasi Evaluasi PAUD HI 2020–2024 di Hotel Mercure Sabang, Jakarta',
+        },
       ],
     },
     {
@@ -132,10 +133,10 @@ const NewsSection = () => {
           src: 'https://kemenkopmk.go.id/sites/default/files/articles/2024-08/IMG-20240813-WA0026.jpg',
           caption: 'Lokakarya pembentukan ECED Council di Jakarta dengan para ahli dan praktisi PAUD HI',
         },
-  ],
-},
+      ],
+    },
 
-     {
+    {
       id: 6,
       title: 'Kolaborasi Strategis RI-UNICEF: Susun Rencana Kerja Untuk Kesejahteraan Anak',
       excerpt: 'Asisten Deputi Bidang Pendidikan Anak Usia Dini, Dasar dan Menengah Jazziray Hartoyo menerima audiensi dari PATTIRO terkait kebijakan dan implementasi program PAUD HI. Penekanan pada koordinasi lintas sektor dan kolaborasi pentahelix menjadi kunci utama.',
@@ -154,7 +155,7 @@ Rapat ini bertujuan merumuskan dan menyepakati rencana kerja 2025 sebagai bagian
 
 Sebagai Ketua Gugus Tugas PAUD Holistik Integratif (PAUD HI), Kemenko PMK telah mendapat dukungan dari Program Kerja Sama RI-UNICEF, termasuk dalam pelaksanaan monitoring dan evaluasi di sejumlah wilayah. Deputi Lisa mengungkapkan bahwa monitoring tersebut menemukan sejumlah tantangan di lapangan, termasuk miskonsepsi terkait implementasi PAUD HI.
 
-"Selama ini PAUD HI sering dianggap hanya mencakup Pendidikan Anak Usia Dini (PAUD), padahal pendekatan ini mengusung konsep Nurturing Care Framework yang meliputi kesehatan dan gizi, pendidikan dini, pengasuhan, perlindungan, dan kesejahteraan anak usia dini. Akibatnya, program PAUD HI kerap terfokus pada pendidikan anak usia 5–6 tahun, yang menjadi tanggung jawab Kemendikbudristek, sementara layanan untuk anak usia 0–3 tahun masih minim," jelas Deputi Lisa.</p
+"Selama ini PAUD HI sering dianggap hanya mencakup Pendidikan Anak Usia Dini (PAUD), padahal pendekatan ini mengusung konsep Nurturing Care Framework yang meliputi kesehatan dan gizi, pendidikan dini, pengasuhan, perlindungan, dan kesejahteraan anak usia dini. Akibatnya, program PAUD HI kerap terfokus pada pendidikan anak usia 5–6 tahun, yang menjadi tanggung jawab Kemendikbudristek, sementara layanan untuk anak usia 0–3 tahun masih minim," jelas Deputi Lisa.</p>
       `,
       images: [
         {
@@ -214,6 +215,30 @@ Sebagai Ketua Gugus Tugas PAUD Holistik Integratif (PAUD HI), Kemenko PMK telah 
     window.open(shareUrl, '_blank');
   };
 
+  const scrollLeft = () => {
+    if (scrollContainerRef.current) {
+      const container = scrollContainerRef.current;
+      const cardWidth = container.children[0].offsetWidth;
+      const gap = window.innerWidth >= 640 ? 24 : 16; // gap-6 = 24px on sm+, gap-4 = 16px on mobile
+      container.scrollBy({
+        left: -(cardWidth + gap),
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollContainerRef.current) {
+      const container = scrollContainerRef.current;
+      const cardWidth = container.children[0].offsetWidth;
+      const gap = window.innerWidth >= 640 ? 24 : 16; // gap-6 = 24px on sm+, gap-4 = 16px on mobile
+      container.scrollBy({
+        left: cardWidth + gap,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   return (
     <section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-blue-50 via-white to-emerald-50" id="berita">
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
@@ -247,78 +272,160 @@ Sebagai Ketua Gugus Tugas PAUD Holistik Integratif (PAUD HI), Kemenko PMK telah 
           </div>
         </div>
 
-        {/* Articles Grid - Mobile 2x3, Tablet 2x3, Desktop 3x2 */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 xl:gap-8">
-          {filteredArticles.map((article) => (
-            <div
-              key={article.id}
-              onClick={() => openPopup(article)}
-              className="group cursor-pointer bg-white shadow-lg hover:shadow-xl border border-gray-100 rounded-xl lg:rounded-2xl overflow-hidden transition-all duration-300 transform hover:-translate-y-1 lg:hover:-translate-y-2"
-            >
-              {/* Article Image */}
-              <div className="relative h-32 sm:h-40 lg:h-56 overflow-hidden">
-                <img
-                  src={article.image}
-                  alt={article.title}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-                <div className="absolute top-2 sm:top-3 right-2 sm:right-3 bg-white/90 backdrop-blur-sm rounded-full p-1.5 sm:p-2">
-                  <i className={`${article.icon} text-blue-600 text-xs sm:text-sm`}></i>
-                </div>
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2 sm:p-3 lg:p-4">
-                  <div className="flex items-center gap-2 sm:gap-3 text-xs text-white mb-1 sm:mb-2">
-                    <span className="flex items-center gap-1">
-                      <i className="fas fa-calendar text-xs"></i>
-                      <span className="hidden sm:inline">{article.date}</span>
-                      <span className="sm:hidden">{article.date.split(' ')[0]}</span>
-                    </span>
-                    <span className="flex items-center gap-1 hidden sm:flex">
-                      <i className="fas fa-clock text-xs"></i>
-                      {article.readTime}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Article Content */}
-              <div className="p-3 sm:p-4 lg:p-6">
-                <h3 className="text-sm sm:text-base lg:text-xl font-bold text-gray-900 mb-2 sm:mb-3 line-clamp-2 group-hover:text-blue-600 transition leading-tight">
-                  {article.title}
-                </h3>
-
-                <p className="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4 line-clamp-2 sm:line-clamp-3 leading-relaxed">
-                  {article.excerpt}
-                </p>
-
-                <div className="flex items-center justify-between mb-3 sm:mb-4">
-                  <div className="flex flex-wrap gap-1">
-                    {article.tags.slice(0, 1).map((tag, idx) => (
-                      <span
-                        key={idx}
-                        className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-md"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                    {article.tags.length > 1 && (
-                      <span className="text-xs text-gray-500">+{article.tags.length - 1}</span>
-                    )}
-                  </div>
-                  <div className="text-blue-600 group-hover:translate-x-1 transition-transform">
-                    <i className="fas fa-chevron-right text-xs sm:text-sm"></i>
-                  </div>
-                </div>
-
-                <div className="pt-2 sm:pt-3 lg:pt-4 border-t border-gray-100">
-                  <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600">
-                    <i className="fas fa-user-circle"></i>
-                    <span className="truncate">{article.author}</span>
-                  </div>
-                </div>
-              </div>
+        {/* Mobile Swipe Indicator */}
+        <div className="flex justify-center mt-2 sm:hidden">
+          <div className="flex items-center gap-1 bg-blue-50 px-3 py-1 rounded-full">
+            <div className="flex gap-1">
+              <div className="w-1 h-1 bg-blue-400 rounded-full animate-pulse"></div>
+              <div className="w-1 h-1 bg-blue-400 rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
+              <div className="w-1 h-1 bg-blue-400 rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
             </div>
-          ))}
+          </div>
         </div>
+
+        {/* Articles Container - Horizontal Scroll with Side Navigation */}
+        {filteredArticles.length > 0 && (
+          <div className="relative flex items-center">
+            {/* Left Navigation Button - Hidden on mobile, show on tablet+ */}
+            {filteredArticles.length > 3 && (
+              <button
+                onClick={scrollLeft}
+                className="absolute left-0 z-10 w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-gradient-to-r from-blue-600 to-emerald-600 text-white items-center justify-center hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:scale-110 shadow-xl -translate-x-3 hidden sm:flex"
+                aria-label="Scroll Left"
+              >
+                <i className="fas fa-chevron-left text-sm lg:text-base"></i>
+              </button>
+            )}
+
+            {/* Right Navigation Button - Hidden on mobile, show on tablet+ */}
+            {filteredArticles.length > 3 && (
+              <button
+                onClick={scrollRight}
+                className="absolute right-0 z-10 w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-gradient-to-r from-blue-600 to-emerald-600 text-white items-center justify-center hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:scale-110 shadow-xl translate-x-3 hidden sm:flex"
+                aria-label="Scroll Right"
+              >
+                <i className="fas fa-chevron-right text-sm lg:text-base"></i>
+              </button>
+            )}
+
+            {/* Articles Container */}
+            <div
+              ref={scrollContainerRef}
+              className={`flex gap-3 sm:gap-6 overflow-x-auto scrollbar-hide pb-4 px-1 ${
+                filteredArticles.length > 3 ? 'sm:mx-16 lg:mx-20' : ''
+              }`}
+              style={{
+                scrollSnapType: 'x mandatory',
+                scrollBehavior: 'smooth',
+                scrollPaddingLeft: '16px',
+                scrollPaddingRight: '16px'
+              }}
+            >
+            {filteredArticles.map((article) => (
+              <div
+                key={article.id}
+                onClick={() => openPopup(article)}
+                className="group cursor-pointer bg-white shadow-lg hover:shadow-xl border border-gray-100 rounded-xl lg:rounded-2xl overflow-hidden transition-all duration-300 transform hover:-translate-y-1 lg:hover:-translate-y-2 flex-shrink-0 w-64 sm:w-80 lg:w-96"
+                style={{ scrollSnapAlign: 'start' }}
+              >
+                {/* Article Image */}
+                <div className="relative h-40 sm:h-48 lg:h-56 overflow-hidden">
+                  <img
+                    src={article.image}
+                    alt={article.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                  <div className="absolute top-2 sm:top-3 right-2 sm:right-3 bg-white/90 backdrop-blur-sm rounded-full p-1.5 sm:p-2">
+                    <i className={`${article.icon} text-blue-600 text-xs sm:text-sm`}></i>
+                  </div>
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2 sm:p-4">
+                    <div className="flex items-center gap-2 sm:gap-3 text-xs text-white mb-1 sm:mb-2">
+                      <span className="flex items-center gap-1">
+                        <i className="fas fa-calendar text-xs"></i>
+                        <span className="hidden sm:inline">{article.date}</span>
+                        <span className="sm:hidden">{article.date.split(' ')[0]}</span>
+                      </span>
+                      <span className="flex items-center gap-1 hidden sm:flex">
+                        <i className="fas fa-clock text-xs"></i>
+                        {article.readTime}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Article Content */}
+                <div className="p-3 sm:p-4 lg:p-6">
+                  <h3 className="text-sm sm:text-lg lg:text-xl font-bold text-gray-900 mb-2 sm:mb-3 line-clamp-2 group-hover:text-blue-600 transition leading-tight">
+                    {article.title}
+                  </h3>
+
+                  <p className="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4 line-clamp-2 sm:line-clamp-3 leading-relaxed">
+                    {article.excerpt}
+                  </p>
+
+                  <div className="flex items-center justify-between mb-3 sm:mb-4">
+                    <div className="flex flex-wrap gap-1">
+                      {article.tags.slice(0, 1).map((tag, idx) => (
+                        <span
+                          key={idx}
+                          className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-md"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                      {article.tags.length > 1 && (
+                        <span className="text-xs text-gray-500">+{article.tags.length - 1}</span>
+                      )}
+                    </div>
+                    <div className="text-blue-600 group-hover:translate-x-1 transition-transform">
+                      <i className="fas fa-chevron-right text-xs sm:text-sm"></i>
+                    </div>
+                  </div>
+
+                  <div className="pt-2 sm:pt-3 border-t border-gray-100">
+                    <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600">
+                      <i className="fas fa-user-circle"></i>
+                      <span className="truncate hidden sm:inline">{article.author}</span>
+                      <span className="truncate sm:hidden">Kemenko PMK</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+            </div>
+          </div>
+        )}
+
+        {/* Instructional Text - Different for mobile vs desktop */}
+        {filteredArticles.length > 1 && (
+          <div className="text-center mt-4">
+            <div className="flex items-center justify-center gap-2">
+              {/* Mobile: Swipe instruction */}
+              {/* <span className="text-sm text-gray-600 font-medium sm:hidden flex items-center gap-1">
+                <i className="fas fa-hand-pointer text-blue-500"></i>
+                Geser untuk melihat berita lainnya
+              </span>
+              {/* Desktop: Click instruction */}
+              {/* <span className="text-sm text-gray-600 font-medium hidden sm:inline">
+                {filteredArticles.length > 3 ? 'Klik panah atau geser untuk melihat berita lainnya' : 'Berita terbaru PAUD HI'}
+              </span> */}
+            </div>
+          </div>
+        )}
+
+        {/* Scroll Indicators - Only show if more than 3 articles */}
+        {filteredArticles.length > 3 && (
+          <div className="flex justify-center mt-6">
+            <div className="flex gap-2">
+              {Array.from({ length: Math.max(1, filteredArticles.length - 2) }, (_, i) => (
+                <div
+                  key={i}
+                  className="w-2 h-2 rounded-full bg-blue-300 opacity-60"
+                ></div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* No Results */}
         {filteredArticles.length === 0 && (
@@ -475,8 +582,24 @@ Sebagai Ketua Gugus Tugas PAUD Holistik Integratif (PAUD HI), Kemenko PMK telah 
         </div>
       )}
 
-      {/* Custom CSS for line-clamp */}
+      {/* Custom CSS for scrollbar hide, line-clamp, and mobile optimization */}
       <style jsx>{`
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        
+        /* Mobile-optimized scroll */
+        @media (max-width: 640px) {
+          .scrollbar-hide {
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+          }
+        }
+        
         .line-clamp-2 {
           display: -webkit-box;
           -webkit-line-clamp: 2;
@@ -489,6 +612,8 @@ Sebagai Ketua Gugus Tugas PAUD Holistik Integratif (PAUD HI), Kemenko PMK telah 
           -webkit-box-orient: vertical;
           overflow: hidden;
         }
+        
+        /* Better touch targets for mobile */
         @media (max-width: 640px) {
           .line-clamp-3 {
             -webkit-line-clamp: 2;

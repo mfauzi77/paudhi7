@@ -310,13 +310,13 @@ const Chatbot = () => {
   const TypingIndicator = () => (
     <div className="flex justify-start">
       <div className="max-w-[85%]">
-        <div className="bg-white text-gray-800 rounded-2xl rounded-bl-sm border border-gray-200 p-4">
-          <div className="flex items-center gap-3 text-gray-600">
-            <span className="text-base">Asisten sedang mengetik</span>
+        <div className="bg-white text-gray-800 rounded-xl sm:rounded-2xl rounded-bl-sm border border-gray-200 p-2 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3 text-gray-600">
+            <span className="text-xs sm:text-base">Asisten sedang mengetik</span>
             <div className="flex gap-1">
-              <div className="w-2.5 h-2.5 bg-blue-500 rounded-full animate-bounce"></div>
-              <div className="w-2.5 h-2.5 bg-blue-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-              <div className="w-2.5 h-2.5 bg-blue-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+              <div className="w-1.5 h-1.5 sm:w-2.5 sm:h-2.5 bg-blue-500 rounded-full animate-bounce"></div>
+              <div className="w-1.5 h-1.5 sm:w-2.5 sm:h-2.5 bg-blue-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+              <div className="w-1.5 h-1.5 sm:w-2.5 sm:h-2.5 bg-blue-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
             </div>
           </div>
         </div>
@@ -326,72 +326,72 @@ const Chatbot = () => {
 
   return (
     <>
-      {/* Tombol pembuka/penutup Chatbot - Diperbesar 20% */}
+      {/* Tombol pembuka/penutup Chatbot - Mobile 30% lebih kecil */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`fixed bottom-7 right-7 w-20 h-20 rounded-full shadow-lg transition-all duration-300 z-50 flex items-center justify-center group ${
+        className={`fixed bottom-4 right-4 sm:bottom-7 sm:right-7 w-12 h-12 sm:w-20 sm:h-20 rounded-full shadow-lg transition-all duration-300 z-50 flex items-center justify-center group ${
           isOpen
             ? 'bg-red-500 hover:bg-red-600 transform rotate-45'
             : 'bg-gradient-to-r from-blue-600 to-emerald-600 hover:shadow-xl hover:-translate-y-1'
         }`}
       >
         {isOpen ? (
-          <div className="text-white text-2xl transform -rotate-45">✕</div>
+          <div className="text-white text-lg sm:text-2xl transform -rotate-45">✕</div>
         ) : (
           <>
-            <div className="text-white text-2xl group-hover:scale-110 transition-transform">💬</div>
-            <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
-              <div className="w-2.5 h-2.5 bg-white rounded-full animate-pulse"></div>
+            <div className="text-white text-lg sm:text-2xl group-hover:scale-110 transition-transform">💬</div>
+            <div className="absolute -top-0.5 -right-0.5 sm:-top-1 sm:-right-1 w-3 h-3 sm:w-5 sm:h-5 bg-red-500 rounded-full flex items-center justify-center">
+              <div className="w-1.5 h-1.5 sm:w-2.5 sm:h-2.5 bg-white rounded-full animate-pulse"></div>
             </div>
           </>
         )}
       </button>
 
-      {/* Kontainer Chatbot - Diperbesar 20% */}
-      <div className={`fixed bottom-28 right-7 w-[28.8rem] max-w-[calc(100vw-2.4rem)] h-[600px] max-h-[calc(100vh-9.6rem)] bg-white rounded-2xl shadow-2xl border border-gray-200 transition-all duration-300 z-40 flex flex-col ${
+      {/* Kontainer Chatbot - Mobile 30% lebih kecil */}
+      <div className={`fixed bottom-16 right-2 sm:bottom-28 sm:right-7 w-[calc(100vw-1rem)] max-w-[20rem] sm:w-[28.8rem] sm:max-w-[calc(100vw-2.4rem)] h-[70vh] max-h-[420px] sm:h-[600px] sm:max-h-[calc(100vh-9.6rem)] bg-white rounded-xl sm:rounded-2xl shadow-2xl border border-gray-200 transition-all duration-300 z-40 flex flex-col ${
         isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none'
       }`}>
 
-        {/* Header Chatbot - Diperbesar 20% */}
-        <div className="bg-gradient-to-r from-blue-600 to-emerald-600 p-5 rounded-t-2xl text-white">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
-              <div className="text-xl">🤖</div>
+        {/* Header Chatbot - Mobile compact */}
+        <div className="bg-gradient-to-r from-blue-600 to-emerald-600 p-3 sm:p-5 rounded-t-xl sm:rounded-t-2xl text-white">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <div className="w-8 h-8 sm:w-12 sm:h-12 bg-white/20 rounded-full flex items-center justify-center">
+              <div className="text-sm sm:text-xl">🤖</div>
             </div>
             <div className="flex-1">
-              <h3 className="font-bold text-lg">Asisten PAUD HI</h3>
-              <div className="flex items-center gap-2 text-base text-blue-100">
-                <div className="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse"></div>
+              <h3 className="font-bold text-sm sm:text-lg">Asisten PAUD HI</h3>
+              <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-base text-blue-100">
+                <div className="w-1.5 h-1.5 sm:w-2.5 sm:h-2.5 bg-green-400 rounded-full animate-pulse"></div>
                 AI + FAQ Online
               </div>
             </div>
           </div>
         </div>
 
-        {/* Area Pesan Chatbot - Diperbesar 20% */}
-        <div className="flex-1 overflow-y-auto p-5 space-y-5 bg-gray-50">
+        {/* Area Pesan Chatbot - Mobile compact */}
+        <div className="flex-1 overflow-y-auto p-2 sm:p-5 space-y-2 sm:space-y-5 bg-gray-50">
           {messages.map((message) => (
             <div key={message.id} className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
               <div className={`max-w-[85%] ${message.type === 'user' ? 'order-2' : 'order-1'}`}>
-                <div className={`p-4 rounded-2xl ${
+                <div className={`p-2 sm:p-4 rounded-xl sm:rounded-2xl ${
                   message.type === 'user'
                     ? 'bg-blue-600 text-white rounded-br-sm'
                     : 'bg-white text-gray-800 rounded-bl-sm border border-gray-200'
                 }`}>
-                  <div className="whitespace-pre-line text-base">{message.message}</div>
-                  <div className={`text-sm mt-1.5 ${message.type === 'user' ? 'text-blue-100' : 'text-gray-500'}`}>
+                  <div className="whitespace-pre-line text-xs sm:text-base">{message.message}</div>
+                  <div className={`text-xs sm:text-sm mt-1 sm:mt-1.5 ${message.type === 'user' ? 'text-blue-100' : 'text-gray-500'}`}>
                     {message.timestamp}
                   </div>
                 </div>
 
-                {/* Opsi menu jika ditampilkan oleh bot - Diperbesar 20% */}
+                {/* Opsi menu jika ditampilkan oleh bot - Mobile compact */}
                 {message.type === 'bot' && message.showOptions && (
-                  <div className="mt-4 space-y-2.5">
+                  <div className="mt-2 sm:mt-4 space-y-1.5 sm:space-y-2.5">
                     {getMenuOptions().map((option, index) => (
                       <button
                         key={index}
                         onClick={() => handleOptionClick(option)}
-                        className="block w-full text-left p-3 text-base bg-white border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-all duration-200"
+                        className="block w-full text-left p-2 sm:p-3 text-xs sm:text-base bg-white border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-all duration-200"
                       >
                         {option.label}
                       </button>
@@ -408,47 +408,47 @@ const Chatbot = () => {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Formulir Kontak - Diperbesar 20% */}
+        {/* Formulir Kontak - Mobile compact */}
         {showContactForm && (
-          <div className="p-5 border-t border-gray-200 bg-white">
-            <div className="space-y-4">
+          <div className="p-2 sm:p-5 border-t border-gray-200 bg-white">
+            <div className="space-y-2 sm:space-y-4">
               <input
                 type="text"
                 placeholder="Nama Lengkap *"
                 value={userInfo.name}
                 onChange={(e) => setUserInfo(prev => ({...prev, name: e.target.value}))}
-                className="w-full p-3 text-base border border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none"
+                className="w-full p-2 sm:p-3 text-sm sm:text-base border border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none"
               />
               <input
                 type="email"
                 placeholder="Email *"
                 value={userInfo.email}
                 onChange={(e) => setUserInfo(prev => ({...prev, email: e.target.value}))}
-                className="w-full p-3 text-base border border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none"
+                className="w-full p-2 sm:p-3 text-sm sm:text-base border border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none"
               />
               <input
                 type="tel"
                 placeholder="Nomor WhatsApp *"
                 value={userInfo.whatsapp}
                 onChange={(e) => setUserInfo(prev => ({...prev, whatsapp: e.target.value}))}
-                className="w-full p-3 text-base border border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none"
+                className="w-full p-2 sm:p-3 text-sm sm:text-base border border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none"
               />
               <textarea
                 placeholder="Pertanyaan / Keluhan *"
                 value={userInfo.question}
                 onChange={(e) => setUserInfo(prev => ({...prev, question: e.target.value}))}
-                className="w-full p-3 text-base border border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none h-24 resize-none"
+                className="w-full p-2 sm:p-3 text-sm sm:text-base border border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none h-16 sm:h-24 resize-none"
               />
-              <div className="flex gap-2.5">
+              <div className="flex gap-1.5 sm:gap-2.5">
                 <button
                   onClick={() => setShowContactForm(false)}
-                  className="flex-1 p-3 text-base bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                  className="flex-1 p-2 sm:p-3 text-sm sm:text-base bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
                 >
                   Batal
                 </button>
                 <button
                   onClick={handleContactFormSubmit}
-                  className="flex-1 p-3 text-base bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="flex-1 p-2 sm:p-3 text-sm sm:text-base bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                 >
                   Kirim
                 </button>
@@ -457,10 +457,10 @@ const Chatbot = () => {
           </div>
         )}
 
-        {/* Input teks untuk AI Chat - Diperbesar 20% */}
+        {/* Input teks untuk AI Chat - Mobile compact */}
         {chatStep === 'ai-chat' && !showContactForm && (
-          <div className="p-5 border-t border-gray-200 bg-white rounded-b-2xl">
-            <div className="flex gap-2.5">
+          <div className="p-2 sm:p-5 border-t border-gray-200 bg-white rounded-b-xl sm:rounded-b-2xl">
+            <div className="flex gap-1.5 sm:gap-2.5">
               <input
                 type="text"
                 value={currentInput}
@@ -470,35 +470,33 @@ const Chatbot = () => {
                     handleAIChat(currentInput);
                   }
                 }}
-                placeholder="Ketik pertanyaan Anda tentang PAUD HI..."
-                className="flex-1 p-4 text-base border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-100 focus:outline-none"
+                placeholder="Ketik pertanyaan Anda..."
+                className="flex-1 p-2 sm:p-4 text-sm sm:text-base border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-100 focus:outline-none"
                 autoFocus
                 disabled={isTyping}
               />
               <button
                 onClick={() => handleAIChat(currentInput)}
                 disabled={!currentInput.trim() || isTyping}
-                className="px-5 py-4 bg-blue-600 text-white text-lg rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="px-3 py-2 sm:px-5 sm:py-4 bg-blue-600 text-white text-sm sm:text-lg rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 ➤
               </button>
             </div>
-
-            
           </div>
         )}
 
-        {/* Opsi cepat di bagian bawah chatbot - Diperbesar 20% */}
+        {/* Opsi cepat di bagian bawah chatbot - Mobile compact */}
         {(chatStep === 'greeting' || chatStep === 'faq-list' || chatStep === 'completed') && !showContactForm && (
-          <div className="p-4 border-t border-gray-200 bg-white rounded-b-2xl">
-            <div className="flex gap-2.5 text-sm">
+          <div className="p-2 sm:p-4 border-t border-gray-200 bg-white rounded-b-xl sm:rounded-b-2xl">
+            <div className="flex gap-1.5 sm:gap-2.5 text-xs sm:text-sm">
               <button
                 onClick={() => {
                   const waNumber = '6281112345678';
                   const waMessage = encodeURIComponent('Halo, saya ingin bertanya tentang SISMONEV PAUD HI...');
                   window.open(`https://wa.me/${waNumber}?text=${waMessage}`, '_blank');
                 }}
-                className="flex-1 p-2.5 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                className="flex-1 p-1.5 sm:p-2.5 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
               >
                 📱 WhatsApp
               </button>
@@ -509,7 +507,7 @@ const Chatbot = () => {
                     addBotMessage("Jam Operasional: Senin-Jumat 08:00-17:00 WIB, Sabtu 08:00-12:00 WIB, Minggu Tutup. Hotline Darurat: 129 (24/7). Chatbot tersedia 24/7!");
                   }, 500);
                 }}
-                className="flex-1 p-2.5 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                className="flex-1 p-1.5 sm:p-2.5 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
               >
                 🕐 Jam Kerja
               </button>
