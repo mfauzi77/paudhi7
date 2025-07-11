@@ -50,7 +50,7 @@ const Navigation = () => {
             </Link>
 
             {/* Desktop Navigation */}
-            <ul className="hidden lg:flex gap-8">
+            <ul className="hidden lg:flex gap-20">
               {navItems.map((item, index) => {
                 const isActive = item.href === currentPath;
                 return (

@@ -1,5 +1,6 @@
-import Footer from './Footer';
 import React, { useState } from 'react';
+import Footer from './Footer';
+// Footer placeholder component
 
 const FAQApp = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -292,12 +293,12 @@ const FAQApp = () => {
 
     return (
       <div 
-        className={`border rounded-2xl mb-6 overflow-hidden transition-all duration-500 ${isGovernment ? 'border-purple-200' : 'border-gray-200'}`}
+        className={`border rounded-xl sm:rounded-2xl mb-4 sm:mb-6 overflow-hidden transition-all duration-500 ${isGovernment ? 'border-purple-200' : 'border-gray-200'}`}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
         <div 
-          className={`p-6 cursor-pointer flex justify-between items-center font-semibold transition-all duration-300 ${
+          className={`p-4 sm:p-6 cursor-pointer flex justify-between items-center font-semibold transition-all duration-300 touch-manipulation ${
             isExpanded 
               ? isGovernment 
                 ? 'bg-purple-50 text-purple-700' 
@@ -307,12 +308,12 @@ const FAQApp = () => {
           onClick={() => toggleFAQ(faq.id)}
         >
           <span 
-            className="text-lg"
+            className="text-sm sm:text-base lg:text-lg pr-4 leading-tight"
             dangerouslySetInnerHTML={{ 
               __html: highlightText(faq.question, searchTerm) 
             }}
           />
-          <i className={`fas fa-chevron-down transition-transform duration-300 text-xl ${
+          <i className={`fas fa-chevron-down transition-transform duration-300 text-lg sm:text-xl flex-shrink-0 ${
             isExpanded ? 'rotate-180' : ''
           } ${
             isExpanded 
@@ -321,9 +322,9 @@ const FAQApp = () => {
           }`}></i>
         </div>
         <div className={`transition-all duration-400 ease-out overflow-hidden ${
-          isExpanded ? 'max-h-screen p-8' : 'max-h-0 p-0'
+          isExpanded ? 'max-h-screen p-4 sm:p-6 lg:p-8' : 'max-h-0 p-0'
         }`}>
-          <div className={`text-gray-600 leading-relaxed text-base transition-all duration-300 ${
+          <div className={`text-gray-600 leading-relaxed text-sm sm:text-base transition-all duration-300 ${
             isExpanded ? 'opacity-100' : 'opacity-0'
           }`}>
             {faq.answer}
@@ -335,6 +336,100 @@ const FAQApp = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      {/* FontAwesome */}
+      <link 
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" 
+        rel="stylesheet" 
+      />
+      
+      {/* Floating shapes background - Mobile optimized */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-16 sm:top-20 left-4 sm:left-10 w-12 h-12 sm:w-20 sm:h-20 bg-blue-200 rounded-full opacity-20 animate-pulse"></div>
+        <div className="absolute top-32 sm:top-40 right-8 sm:right-20 w-10 h-10 sm:w-16 sm:h-16 bg-purple-200 rounded-full opacity-20 animate-pulse delay-1000"></div>
+        <div className="absolute bottom-32 sm:bottom-40 left-8 sm:left-20 w-14 h-14 sm:w-24 sm:h-24 bg-green-200 rounded-full opacity-20 animate-pulse delay-2000"></div>
+        <div className="absolute bottom-16 sm:bottom-20 right-4 sm:right-10 w-12 h-12 sm:w-18 sm:h-18 bg-orange-200 rounded-full opacity-20 animate-pulse delay-500"></div>
+      </div>
+      
+      {/* Header - Mobile optimized */}
+      <div className="max-w-6xl mx-auto p-3 sm:p-5 pt-25 sm:pt-20 lg:pt-24 xl:pt-32 relative z-10">
+  <div className="bg-gradient-to-br from-blue-600 to-emerald-600 text-white p-6 sm:p-8 lg:p-12 text-center mb-6 sm:mb-10 rounded-2xl sm:rounded-3xl shadow-lg sm:shadow-2xl transform hover:scale-105 transition-all duration-300 hover:shadow-blue-500/25">
+    <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent rounded-2xl sm:rounded-3xl"></div>
+    <div className="relative z-10">
+      <div className="text-center animate-bounce">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-white mb-3 sm:mb-6 leading-tight">
+          Tanya <span className="text-yellow-300">PAUD HI</span>
+        </h2>
+        <p className="text-sm sm:text-base lg:text-lg text-blue-100 max-w-2xl mx-auto px-2">
+          Temukan jawaban untuk semua pertanyaan Anda tentang PAUD Holistik Integratif
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+      {/* FAQ Content - Mobile optimized */}
+      <div className="max-w-6xl mx-auto px-3 sm:px-5 relative z-10">
+        {/* FAQ Section Umum */}
+        {(activeCategory === 'all' || activeCategory !== 'pemerintah') && visibleGeneralFAQs.length > 0 && (
+          <div className="bg-white/90 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-lg sm:shadow-2xl overflow-hidden mb-8 sm:mb-12 border border-white/20 hover:shadow-3xl transition-all duration-500 hover:bg-white/95" id="faq-umum">
+            <div className="bg-gradient-to-r from-blue-600 to-emerald-600 text-white p-4 sm:p-6 lg:p-8 flex items-center gap-3 sm:gap-4 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent"></div>
+              <div className="absolute top-0 right-0 w-16 h-16 sm:w-32 sm:h-32 bg-white/5 rounded-full -translate-y-8 sm:-translate-y-16 translate-x-8 sm:translate-x-16"></div>
+              <div className="absolute bottom-0 left-0 w-12 h-12 sm:w-24 sm:h-24 bg-white/5 rounded-full translate-y-6 sm:translate-y-12 -translate-x-6 sm:-translate-x-12"></div>
+              <i className="fas fa-baby text-xl sm:text-2xl lg:text-3xl animate-bounce relative z-10"></i>
+              <h2 className="text-lg sm:text-2xl lg:text-3xl font-bold relative z-10 leading-tight">
+                Pertanyaan yang Sering Ditanyakan
+              </h2>
+            </div>
+            <div className="p-4 sm:p-6 lg:p-10">
+              {visibleGeneralFAQs.map((faq, index) => (
+                <div 
+                  key={faq.id}
+                  style={{ animationDelay: `${index * 200}ms` }}
+                  className="opacity-0 animate-fade-in-up"
+                >
+                  <FAQItem faq={faq} />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Contact Section - Mobile optimized */}
+      <div className="max-w-6xl mx-auto px-3 sm:px-5 mb-6 sm:mb-10">
+        <div className="bg-gradient-to-br from-blue-600 to-emerald-600 text-white p-6 sm:p-8 lg:p-10 rounded-xl sm:rounded-2xl text-center" id="bantuan">
+          <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-3 sm:mb-4 leading-tight">
+            <i className="fas fa-headset mr-2 sm:mr-3"></i>
+            Masih Ada Pertanyaan?
+          </h3>
+          <p className="text-sm sm:text-base text-blue-100 mb-6 sm:mb-8">
+            Hubungi tim support kami untuk bantuan lebih lanjut
+          </p>
+          
+          {/* Mobile: 2x2 grid, Desktop: horizontal */}
+          <div className="grid grid-cols-2 sm:flex gap-2 sm:gap-4 justify-center">
+            {contactMethods.map((contact, index) => (
+              <a
+                key={index}
+                href={contact.href}
+                onClick={(e) => handleContactClick(e, contact)}
+                className="inline-flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 sm:py-3 bg-white text-gray-600 border-none rounded-lg font-semibold no-underline transition-all duration-200 cursor-pointer hover:-translate-y-0.5 hover:shadow-2xl text-xs sm:text-sm lg:text-base touch-manipulation"
+                target={contact.type === 'whatsapp' ? '_blank' : undefined}
+                rel={contact.type === 'whatsapp' ? 'noopener noreferrer' : undefined}
+              >
+                <i className={`${contact.icon} text-sm sm:text-base`}></i>
+                <span className="leading-tight text-center">{contact.label}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <Footer />
+
+    
       <style jsx>{`
         @keyframes fade-in {
           from {
@@ -358,47 +453,12 @@ const FAQApp = () => {
           }
         }
         
-        @keyframes bounce {
-          0%, 20%, 53%, 80%, 100% {
-            transform: translate3d(0,0,0);
-          }
-          40%, 43% {
-            transform: translate3d(0, -8px, 0);
-          }
-          70% {
-            transform: translate3d(0, -4px, 0);
-          }
-          90% {
-            transform: translate3d(0, -2px, 0);
-          }
-        }
-        
-        @keyframes pulse {
-          0%, 100% {
-            opacity: 0.2;
-            transform: scale(1);
-          }
-          50% {
-            opacity: 0.3;
-            transform: scale(1.05);
-          }
-        }
-        
         .animate-fade-in {
           animation: fade-in 0.8s ease-out forwards;
         }
         
         .animate-fade-in-up {
           animation: fade-in-up 0.8s ease-out forwards;
-          opacity: 0;
-        }
-        
-        .animate-bounce {
-          animation: bounce 2s infinite;
-        }
-        
-        .animate-pulse {
-          animation: pulse 3s ease-in-out infinite;
         }
         
         .delay-500 {
@@ -413,12 +473,10 @@ const FAQApp = () => {
           animation-delay: 2s;
         }
         
-        .hover\\:scale-\\[1\\.02\\]:hover {
-          transform: scale(1.02);
-        }
-        
-        .hover\\:shadow-3xl:hover {
-          box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.25);
+        /* Touch optimization */
+        .touch-manipulation {
+          touch-action: manipulation;
+          -webkit-tap-highlight-color: transparent;
         }
         
         /* Smooth scrolling */
@@ -426,9 +484,9 @@ const FAQApp = () => {
           scroll-behavior: smooth;
         }
         
-        /* Custom scrollbar */
+        /* Custom scrollbar - mobile optimized */
         ::-webkit-scrollbar {
-          width: 8px;
+          width: 6px;
         }
         
         ::-webkit-scrollbar-track {
@@ -444,93 +502,14 @@ const FAQApp = () => {
         ::-webkit-scrollbar-thumb:hover {
           background: linear-gradient(45deg, #2563eb, #7c3aed);
         }
-      `}</style>
-      
-      <link 
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" 
-        rel="stylesheet" 
-      />
-      
-      {/* Floating shapes background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-20 h-20 bg-blue-200 rounded-full opacity-20 animate-pulse"></div>
-        <div className="absolute top-40 right-20 w-16 h-16 bg-purple-200 rounded-full opacity-20 animate-pulse delay-1000"></div>
-        <div className="absolute bottom-40 left-20 w-24 h-24 bg-green-200 rounded-full opacity-20 animate-pulse delay-2000"></div>
-        <div className="absolute bottom-20 right-10 w-18 h-18 bg-orange-200 rounded-full opacity-20 animate-pulse delay-500"></div>
-      </div>
-      
-      {/* Header */}
-      <div className="max-w-6xl mx-auto p-5 pt-27 relative z-10">
-        <div className="bg-gradient-to-br  text-white p-12 text-center mb-10 rounded-3xl shadow-2xl transform hover:scale-105 transition-all duration-300 hover:shadow-blue-500/25">
-          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent rounded-3xl"></div>
-          <div className="relative z-10">
-          
-            <div className="text-center mb-16 animate-bounce">
-          <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-6">
-            Tanya <span className="bg-gradient-to-r from-blue-600 to-emerald-600 bg-clip-text text-transparent">PAUD HI</span>
-          </h2>
         
-        </div>
-            
-          </div>
-        </div>
-      </div>
-
-      {/* FAQ Content */}
-      <div className="max-w-6xl mx-auto px-5 relative z-10">
-        {/* FAQ Section Umum */}
-        {(activeCategory === 'all' || activeCategory !== 'pemerintah') && visibleGeneralFAQs.length > 0 && (
-          <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl overflow-hidden mb-12 border border-white/20 hover:shadow-3xl transition-all duration-500 hover:bg-white/95" id="faq-umum">
-            <div className="bg-gradient-to-r from-blue-600 to-emerald-600 text-white p-8 flex items-center gap-4 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent"></div>
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-16 translate-x-16"></div>
-              <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 -translate-x-12"></div>
-              <i className="fas fa-baby text-3xl animate-bounce relative z-10"></i>
-              <h2 className="text-3xl font-bold relative z-10">Pertanyaan yang Sering Ditanyakan</h2>
-            </div>
-            <div className="p-10">
-              {visibleGeneralFAQs.map((faq, index) => (
-                <div 
-                  key={faq.id}
-                  style={{ animationDelay: `${index * 700}ms` }}
-                  className="animate-fade-in-up"
-                >
-                  <FAQItem faq={faq} />
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Contact Section */}
-      <div className="max-w-6xl mx-auto px-5 mb-10">
-        <div className="bg-gradient-to-br from-blue-600 to-emerald-600 text-white p-10 rounded-2xl text-center" id="bantuan">
-          <h3 className="text-3xl font-bold mb-4">
-            <i className="fas fa-headset mr-3"></i>
-            Masih Ada Pertanyaan?
-          </h3>
-          
-          <div className="flex gap-4 justify-center flex-wrap">
-            {contactMethods.map((contact, index) => (
-              <a
-                key={index}
-                href={contact.href}
-                onClick={(e) => handleContactClick(e, contact)}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-white text-gray-600 border-none rounded-lg font-semibold no-underline transition-all duration-200 cursor-pointer hover:-translate-y-0.5 hover:shadow-2xl"
-                target={contact.type === 'whatsapp' ? '_blank' : undefined}
-                rel={contact.type === 'whatsapp' ? 'noopener noreferrer' : undefined}
-              >
-                <i className={contact.icon}></i>
-                {contact.label}
-              </a>
-            ))}
-          </div>
-          
-       
-        </div>
-      </div>
-      < Footer />
+        /* Mobile-specific optimizations */
+        @media (max-width: 640px) {
+          .animate-bounce {
+            animation-duration: 1.5s;
+          }
+        }
+      `}</style>
     </div>
   );
 };
