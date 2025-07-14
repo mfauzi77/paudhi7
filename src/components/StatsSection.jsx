@@ -26,7 +26,7 @@ const StatsSection = () => {
       id: 'children',
       number: 191079,
       label: 'Lembaga PAUD telah menyelenggarakan layanan PAUD HI',
-      description: 'Setara dengan 91,57% dari total lembaga PAUD di Indonesia pada tahun 2024',
+      description: 'dari 208.682 lembaga PAUD yang telah menjalankan PAUD HI',
       icon: 'fas fa-child',
       color: 'text-blue-400'
     },
@@ -50,7 +50,7 @@ const StatsSection = () => {
       id: 'cakupan',
       number: 61.72,
       label: 'Desa/kelurahan yang telah memiliki layanan PAUD HI terintegrasi',
-      description: 'ini menunjukkan progres cakupan wilayah dan keberhasilan dalam pemerataan akses.',
+      description: 'progres cakupan wilayah dan keberhasilan pemerataan akses.',
       icon: 'fas fa-map-marker-alt',
       color: 'text-lime-400'
     },
