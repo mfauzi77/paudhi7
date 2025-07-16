@@ -1,13 +1,121 @@
 // src/components/EducationSection/ToolsAssessment.jsx
-import React from 'react';
+import React, { useRef } from 'react';
 import { toolsData } from './data';
 
 const ToolsAssessment = ({ onItemClick }) => {
+  const scrollContainerRef = useRef(null);
+
+  const scrollLeft = () => {
+    if (scrollContainerRef.current) {
+      const container = scrollContainerRef.current;
+      const cardWidth = container.children[0].offsetWidth;
+      const gap = window.innerWidth >= 640 ? 24 : 16;
+      container.scrollBy({
+        left: -(cardWidth + gap),
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollContainerRef.current) {
+      const container = scrollContainerRef.current;
+      const cardWidth = container.children[0].offsetWidth;
+      const gap = window.innerWidth >= 640 ? 24 : 16;
+      container.scrollBy({
+        left: cardWidth + gap,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
-      {toolsData.map((item) => (
-        <ToolsCard key={item.id} item={item} onItemClick={onItemClick} />
-      ))}
+    <div>
+      {/* Mobile Swipe Indicator */}
+      <div className="flex justify-center mb-4 sm:hidden">
+        <div className="flex items-center gap-1 bg-emerald-50 px-3 py-1 rounded-full">
+          <div className="flex gap-1">
+            <div className="w-1 h-1 bg-emerald-400 rounded-full animate-pulse"></div>
+            <div className="w-1 h-1 bg-emerald-400 rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
+            <div className="w-1 h-1 bg-emerald-400 rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
+          </div>
+        </div>
+      </div>
+
+      {/* Container with Navigation */}
+      <div className="relative flex items-center">
+        {/* Left Navigation Button */}
+        {toolsData.length > 3 && (
+          <button
+            onClick={scrollLeft}
+            className="absolute left-0 z-10 w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white items-center justify-center hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:scale-110 shadow-xl -translate-x-3 hidden sm:flex"
+            aria-label="Scroll Left"
+          >
+            <i className="fas fa-chevron-left text-sm lg:text-base"></i>
+          </button>
+        )}
+
+        {/* Right Navigation Button */}
+        {toolsData.length > 3 && (
+          <button
+            onClick={scrollRight}
+            className="absolute right-0 z-10 w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white items-center justify-center hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:scale-110 shadow-xl translate-x-3 hidden sm:flex"
+            aria-label="Scroll Right"
+          >
+            <i className="fas fa-chevron-right text-sm lg:text-base"></i>
+          </button>
+        )}
+
+        {/* Cards Container - Horizontal Scroll */}
+        <div
+          ref={scrollContainerRef}
+          className={`flex gap-3 sm:gap-6 overflow-x-auto scrollbar-hide pb-4 px-1 ${
+            toolsData.length > 3 ? 'sm:mx-16 lg:mx-20' : ''
+          }`}
+          style={{
+            scrollSnapType: 'x mandatory',
+            scrollBehavior: 'smooth',
+            scrollPaddingLeft: '16px',
+            scrollPaddingRight: '16px'
+          }}
+        >
+          {toolsData.map((item) => (
+            <ToolsCard key={item.id} item={item} onItemClick={onItemClick} />
+          ))}
+        </div>
+      </div>
+
+      {/* Scroll Indicators */}
+      {toolsData.length > 3 && (
+        <div className="flex justify-center mt-6">
+          <div className="flex gap-2">
+            {Array.from({ length: Math.max(1, toolsData.length - 2) }, (_, i) => (
+              <div
+                key={i}
+                className="w-2 h-2 rounded-full bg-emerald-300 opacity-60"
+              ></div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Custom CSS */}
+      <style jsx>{`
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        
+        @media (max-width: 640px) {
+          .scrollbar-hide {
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+          }
+        }
+      `}</style>
     </div>
   );
 };
@@ -26,12 +134,13 @@ const ToolsCard = React.memo(({ item, onItemClick }) => {
 
   return (
     <article 
-      className="group bg-white rounded-xl lg:rounded-2xl border border-gray-200 overflow-hidden hover:shadow-xl hover:-translate-y-1 lg:hover:-translate-y-2 transition-all duration-300 cursor-pointer focus-within:ring-2 focus-within:ring-emerald-500 min-h-[280px] sm:min-h-[320px] lg:min-h-[400px] flex flex-col"
+      className="group bg-white rounded-xl lg:rounded-2xl border border-gray-200 overflow-hidden hover:shadow-xl hover:-translate-y-1 lg:hover:-translate-y-2 transition-all duration-300 cursor-pointer focus-within:ring-2 focus-within:ring-emerald-500 min-h-[280px] sm:min-h-[320px] lg:min-h-[400px] flex flex-col flex-shrink-0 w-64 sm:w-80 lg:w-96"
       onClick={handleClick}
       onKeyDown={handleKeyDown}
       tabIndex={0}
       role="button"
       aria-label={`Download tool: ${item.title}`}
+      style={{ scrollSnapAlign: 'start' }}
     >
       <div className="relative h-24 sm:h-32 lg:h-48 overflow-hidden flex-shrink-0">
         <img 
@@ -70,7 +179,7 @@ const ToolsCard = React.memo(({ item, onItemClick }) => {
             </span>
             <span className="flex items-center gap-1 hidden lg:flex">
               <i className="fas fa-calendar" aria-hidden="true"></i>
-              {item.publishDate}
+              {item.publishDate || '2025'}
             </span>
           </div>
 
@@ -93,6 +202,7 @@ const ToolsCard = React.memo(({ item, onItemClick }) => {
             onClick={(e) => {
               e.stopPropagation();
               // Handle download logic here
+              console.log('Download tool:', item.title);
             }}
             className="w-full bg-emerald-600 text-white py-2 sm:py-2.5 lg:py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-colors duration-300 flex items-center justify-center gap-1 sm:gap-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 text-xs sm:text-sm"
             aria-label={`Download tool ${item.title}`}

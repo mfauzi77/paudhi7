@@ -50,27 +50,20 @@ const AboutHero = ({
               ) : (
                 <>
                   <button
-                    onClick={onWatchVideo}
+                    onClick={() => window.location.href = '/maknalogo'}
                     className="bg-blue-600 text-white px-6 py-3 rounded-full font-semibold shadow-md hover:bg-blue-700 transition-all duration-300"
                   >
-                    🎥 Tonton Video PAUD HI
+                    Makna Logo PAUD HI
                   </button>
-                  <button
-                    onClick={onDownloadGuide}
-                    className="bg-white border border-emerald-600 text-emerald-700 px-6 py-3 rounded-full font-semibold hover:bg-emerald-50 transition-all duration-300"
-                  >
-                    📥 Unduh Panduan
-                  </button>
+                  <a href="/logo.png" download
+  className="inline-block bg-white border border-emerald-600 text-emerald-700 px-6 py-3 rounded-full font-semibold hover:bg-emerald-50 transition-all duration-300"
+>
+  📥 Unduh Logo
+</a>
                 </>
               )}
             </div>
           )}
-
-          {/* Scroll indicator */}
-          <div className="mt-14 flex flex-col items-center animate-pulse">
-            <i className="fas fa-chevron-down text-2xl text-blue-500"></i>
-            <p className="text-sm mt-2 text-gray-500">Scroll untuk lanjut</p>
-          </div>
         </div>
       </div>
 

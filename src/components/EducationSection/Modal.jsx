@@ -1,3 +1,4 @@
+// src/components/EducationSection/Modal.jsx
 import React, { useCallback } from 'react';
 
 const Modal = React.memo(({ item, activeTab, onClose }) => {
@@ -75,27 +76,35 @@ const Modal = React.memo(({ item, activeTab, onClose }) => {
             <div className="bg-gradient-to-r from-blue-50 to-emerald-50 rounded-xl p-6">
               <h4 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
                 <i className="fas fa-lightbulb text-amber-500" aria-hidden="true"></i>
-                Preview Konten Holistik:
+                Tentang Panduan Ini:
               </h4>
-              <p className="text-gray-700 leading-relaxed mb-4">{item.preview}</p>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                Panduan ini dirancang untuk mendukung implementasi PAUD Holistik Integratif yang mencakup 6 aspek perkembangan anak usia dini.
+              </p>
               
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <h5 className="font-semibold text-gray-800 mb-2">🎯 Learning Objectives:</h5>
+                  <h5 className="font-semibold text-gray-800 mb-2">🎯 Tujuan Pembelajaran:</h5>
                   <ul className="text-sm text-gray-600 space-y-1">
-                    {item.objectives.map((obj, index) => (
-                      <li key={index} className="flex items-start gap-2">
-                        <i className="fas fa-check-circle text-emerald-500 mt-0.5" aria-hidden="true"></i>
-                        {obj}
-                      </li>
-                    ))}
+                    <li className="flex items-start gap-2">
+                      <i className="fas fa-check-circle text-emerald-500 mt-0.5" aria-hidden="true"></i>
+                      Memahami konsep PAUD Holistik Integratif
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <i className="fas fa-check-circle text-emerald-500 mt-0.5" aria-hidden="true"></i>
+                      Menerapkan pendekatan multi-aspek dalam pembelajaran
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <i className="fas fa-check-circle text-emerald-500 mt-0.5" aria-hidden="true"></i>
+                      Mengintegrasikan 6 aspek perkembangan anak
+                    </li>
                   </ul>
                 </div>
                 <div>
-                  <h5 className="font-semibold text-gray-800 mb-2">📚 Learning Path:</h5>
-                  <p className="text-sm text-gray-600">{item.learningPath}</p>
-                  <h5 className="font-semibold text-gray-800 mb-2 mt-3">👥 Target Stakeholder:</h5>
-                  <p className="text-sm text-gray-600">{item.stakeholder}</p>
+                  <h5 className="font-semibold text-gray-800 mb-2">👥 Target Pengguna:</h5>
+                  <p className="text-sm text-gray-600 mb-3">Guru PAUD, Orang Tua, Pemerhati Anak</p>
+                  <h5 className="font-semibold text-gray-800 mb-2">📚 Level:</h5>
+                  <p className="text-sm text-gray-600">Pemula - Menengah</p>
                 </div>
               </div>
             </div>
@@ -150,33 +159,36 @@ const Modal = React.memo(({ item, activeTab, onClose }) => {
                   <div className="text-sm text-gray-600">Likes</div>
                 </div>
                 <div className="text-center p-3 bg-gray-50 rounded-lg">
-                  <div className="text-xl font-bold text-gray-900">{item.expert.split(' ')[0]}</div>
-                  <div className="text-sm text-gray-600">Expert</div>
+                  <div className="text-xl font-bold text-gray-900">{item.channel.split(' ')[0]}</div>
+                  <div className="text-sm text-gray-600">Channel</div>
                 </div>
               </div>
 
               <div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-xl p-6 mb-6">
                 <h4 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
                   <i className="fas fa-graduation-cap text-red-500" aria-hidden="true"></i>
-                  Learning Objectives:
+                  Tentang Video Ini:
                 </h4>
                 <ul className="space-y-2">
-                  {item.learningObjectives.map((obj, index) => (
-                    <li key={index} className="flex items-start gap-2 text-gray-700">
-                      <i className="fas fa-check-circle text-emerald-500 mt-0.5" aria-hidden="true"></i>
-                      {obj}
-                    </li>
-                  ))}
+                  <li className="flex items-start gap-2 text-gray-700">
+                    <i className="fas fa-check-circle text-emerald-500 mt-0.5" aria-hidden="true"></i>
+                    Video edukatif tentang PAUD Holistik Integratif
+                  </li>
+                  <li className="flex items-start gap-2 text-gray-700">
+                    <i className="fas fa-check-circle text-emerald-500 mt-0.5" aria-hidden="true"></i>
+                    Materi berkualitas dari expert terpercaya
+                  </li>
+                  <li className="flex items-start gap-2 text-gray-700">
+                    <i className="fas fa-check-circle text-emerald-500 mt-0.5" aria-hidden="true"></i>
+                    Dapat digunakan untuk pembelajaran mandiri
+                  </li>
                 </ul>
                 <div className="mt-4 pt-4 border-t border-gray-200">
                   <p className="text-sm text-gray-600">
                     <span className="font-semibold">Channel:</span> {item.channel}
                   </p>
                   <p className="text-sm text-gray-600">
-                    <span className="font-semibold">Expert:</span> {item.expert}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    <span className="font-semibold">Target:</span> {item.stakeholder}
+                    <span className="font-semibold">Target:</span> Guru & Orang Tua
                   </p>
                 </div>
               </div>
@@ -232,19 +244,25 @@ const Modal = React.memo(({ item, activeTab, onClose }) => {
               <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl p-6 mb-6">
                 <h4 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
                   <i className="fas fa-tools text-emerald-500" aria-hidden="true"></i>
-                  Features & Kegunaan:
+                  Tentang Tool Ini:
                 </h4>
                 
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <h5 className="font-semibold text-gray-800 mb-3">🛠️ Key Features:</h5>
+                    <h5 className="font-semibold text-gray-800 mb-3">🛠️ Fitur Utama:</h5>
                     <ul className="space-y-2">
-                      {item.features.map((feature, index) => (
-                        <li key={index} className="flex items-start gap-2 text-gray-700">
-                          <i className="fas fa-check-circle text-emerald-500 mt-0.5" aria-hidden="true"></i>
-                          {feature}
-                        </li>
-                      ))}
+                      <li className="flex items-start gap-2 text-gray-700">
+                        <i className="fas fa-check-circle text-emerald-500 mt-0.5" aria-hidden="true"></i>
+                        Tool assessment komprehensif
+                      </li>
+                      <li className="flex items-start gap-2 text-gray-700">
+                        <i className="fas fa-check-circle text-emerald-500 mt-0.5" aria-hidden="true"></i>
+                        Mudah digunakan dan dipahami
+                      </li>
+                      <li className="flex items-start gap-2 text-gray-700">
+                        <i className="fas fa-check-circle text-emerald-500 mt-0.5" aria-hidden="true"></i>
+                        Berbasis standar PAUD HI
+                      </li>
                     </ul>
                   </div>
                   
@@ -252,8 +270,8 @@ const Modal = React.memo(({ item, activeTab, onClose }) => {
                     <h5 className="font-semibold text-gray-800 mb-3">📋 Informasi Tool:</h5>
                     <div className="space-y-2 text-sm text-gray-600">
                       <p><span className="font-semibold">Format:</span> {item.format}</p>
-                      <p><span className="font-semibold">Penggunaan:</span> {item.usage}</p>
-                      <p><span className="font-semibold">Target User:</span> {item.stakeholder}</p>
+                      <p><span className="font-semibold">Penggunaan:</span> Assessment & Evaluasi</p>
+                      <p><span className="font-semibold">Target User:</span> Guru & Orang Tua</p>
                       <p><span className="font-semibold">Author:</span> {item.author}</p>
                     </div>
                   </div>

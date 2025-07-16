@@ -1,13 +1,121 @@
 // src/components/EducationSection/VideoIntegratif.jsx
-import React from 'react';
+import React, { useRef } from 'react';
 import { videoData } from './data';
 
 const VideoIntegratif = ({ onItemClick }) => {
+  const scrollContainerRef = useRef(null);
+
+  const scrollLeft = () => {
+    if (scrollContainerRef.current) {
+      const container = scrollContainerRef.current;
+      const cardWidth = container.children[0].offsetWidth;
+      const gap = window.innerWidth >= 640 ? 24 : 16;
+      container.scrollBy({
+        left: -(cardWidth + gap),
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollContainerRef.current) {
+      const container = scrollContainerRef.current;
+      const cardWidth = container.children[0].offsetWidth;
+      const gap = window.innerWidth >= 640 ? 24 : 16;
+      container.scrollBy({
+        left: cardWidth + gap,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
-      {videoData.map((item) => (
-        <VideoCard key={item.id} item={item} onItemClick={onItemClick} />
-      ))}
+    <div>
+      {/* Mobile Swipe Indicator */}
+      <div className="flex justify-center mb-4 sm:hidden">
+        <div className="flex items-center gap-1 bg-red-50 px-3 py-1 rounded-full">
+          <div className="flex gap-1">
+            <div className="w-1 h-1 bg-red-400 rounded-full animate-pulse"></div>
+            <div className="w-1 h-1 bg-red-400 rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
+            <div className="w-1 h-1 bg-red-400 rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
+          </div>
+        </div>
+      </div>
+
+      {/* Container with Navigation */}
+      <div className="relative flex items-center">
+        {/* Left Navigation Button */}
+        {videoData.length > 3 && (
+          <button
+            onClick={scrollLeft}
+            className="absolute left-0 z-10 w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-gradient-to-r from-red-600 to-orange-600 text-white items-center justify-center hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:scale-110 shadow-xl -translate-x-3 hidden sm:flex"
+            aria-label="Scroll Left"
+          >
+            <i className="fas fa-chevron-left text-sm lg:text-base"></i>
+          </button>
+        )}
+
+        {/* Right Navigation Button */}
+        {videoData.length > 3 && (
+          <button
+            onClick={scrollRight}
+            className="absolute right-0 z-10 w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-gradient-to-r from-red-600 to-orange-600 text-white items-center justify-center hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:scale-110 shadow-xl translate-x-3 hidden sm:flex"
+            aria-label="Scroll Right"
+          >
+            <i className="fas fa-chevron-right text-sm lg:text-base"></i>
+          </button>
+        )}
+
+        {/* Cards Container - Horizontal Scroll */}
+        <div
+          ref={scrollContainerRef}
+          className={`flex gap-3 sm:gap-6 overflow-x-auto scrollbar-hide pb-4 px-1 ${
+            videoData.length > 3 ? 'sm:mx-16 lg:mx-20' : ''
+          }`}
+          style={{
+            scrollSnapType: 'x mandatory',
+            scrollBehavior: 'smooth',
+            scrollPaddingLeft: '16px',
+            scrollPaddingRight: '16px'
+          }}
+        >
+          {videoData.map((item) => (
+            <VideoCard key={item.id} item={item} onItemClick={onItemClick} />
+          ))}
+        </div>
+      </div>
+
+      {/* Scroll Indicators */}
+      {videoData.length > 3 && (
+        <div className="flex justify-center mt-6">
+          <div className="flex gap-2">
+            {Array.from({ length: Math.max(1, videoData.length - 2) }, (_, i) => (
+              <div
+                key={i}
+                className="w-2 h-2 rounded-full bg-red-300 opacity-60"
+              ></div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Custom CSS */}
+      <style jsx>{`
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        
+        @media (max-width: 640px) {
+          .scrollbar-hide {
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+          }
+        }
+      `}</style>
     </div>
   );
 };
@@ -32,12 +140,13 @@ const VideoCard = React.memo(({ item, onItemClick }) => {
 
   return (
     <article 
-      className="group bg-white rounded-xl lg:rounded-2xl border border-gray-200 overflow-hidden hover:shadow-xl hover:-translate-y-1 lg:hover:-translate-y-2 transition-all duration-300 cursor-pointer focus-within:ring-2 focus-within:ring-red-500 min-h-[280px] sm:min-h-[320px] lg:min-h-[400px] flex flex-col"
+      className="group bg-white rounded-xl lg:rounded-2xl border border-gray-200 overflow-hidden hover:shadow-xl hover:-translate-y-1 lg:hover:-translate-y-2 transition-all duration-300 cursor-pointer focus-within:ring-2 focus-within:ring-red-500 min-h-[280px] sm:min-h-[320px] lg:min-h-[400px] flex flex-col flex-shrink-0 w-64 sm:w-80 lg:w-96"
       onClick={handleClick}
       onKeyDown={handleKeyDown}
       tabIndex={0}
       role="button"
       aria-label={`Tonton video: ${item.title}`}
+      style={{ scrollSnapAlign: 'start' }}
     >
       <div className="relative h-24 sm:h-32 lg:h-48 bg-gray-900 overflow-hidden flex-shrink-0">
         <img 
@@ -82,7 +191,7 @@ const VideoCard = React.memo(({ item, onItemClick }) => {
             </span>
             <span className="flex items-center gap-1 truncate hidden lg:flex">
               <i className="fas fa-user-tie" aria-hidden="true"></i>
-              <span className="truncate">{item.expert}</span>
+              <span className="truncate">{item.expert || 'Expert'}</span>
             </span>
           </div>
 
