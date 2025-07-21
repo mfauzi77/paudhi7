@@ -230,7 +230,7 @@ const AboutServices = ({
     {
       type: "MISI",
       title: "Misi SISMONEV PAUD HI", 
-      content: "Menyediakan sistem informasi terpadu yang memudahkan pemantauan, evaluasi, dan pengambilan kebijakan layanan PAUD HI. Dengan data yang akurat dan akses yang mudah, kami mendorong kolaborasi lintas sektor demi layanan PAUD yang berkualitas dan merata.",
+      content: "Menyediakan sistem informasi terpadu yang memudahkan pemantauan, evaluasi, dan pengambilan kebijakan layanan PAUD HI. Dengan data yang akurat dan akses yang mudah, kami mendorong kolaborasi lintas sektor demi layanan PAUD HI yang berkualitas dan merata.",
       icon: "fa-rocket",
       bgColor: "bg-gradient-to-br from-green-500 to-green-700"
     }

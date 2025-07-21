@@ -61,7 +61,7 @@ export default function Main() {
 
           {/* Mobile Header - Sticky */}
           <div className="md:hidden bg-white border-b border-gray-200 p-2 sm:p-2.5 flex items-center justify-between sticky top-0 z-30">
-            <h1 className="text-base sm:text-lg font-bold text-gray-800">PengasuhanAI Pro</h1>
+            <h1 className="text-base sm:text-lg font-bold text-gray-800">PengasuhanAI</h1>
             <button
               onClick={toggleSidebar}
               className="p-1.5 sm:p-2 rounded-lg bg-purple-100 text-purple-600 hover:bg-purple-200 transition-colors duration-200"

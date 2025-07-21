@@ -542,32 +542,32 @@ Sebagai Ketua Gugus Tugas PAUD Holistik Integratif (PAUD HI), Kemenko PMK telah 
                       <i className="fab fa-whatsapp" />
                       <span className="hidden sm:inline">WhatsApp</span>
                     </button>
-                    <button
+                    {/* <button
                       onClick={() => shareToSocial('facebook')}
                       className="bg-blue-700 hover:bg-blue-800 text-white px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition flex items-center gap-1 sm:gap-2 text-xs sm:text-sm"
                     >
                       <i className="fab fa-facebook-f" />
                       <span className="hidden sm:inline">Facebook</span>
-                    </button>
-                    <button
+                    </button> */}
+                    {/* <button
                       onClick={() => shareToSocial('twitter')}
                       className="bg-sky-500 hover:bg-sky-600 text-white px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition flex items-center gap-1 sm:gap-2 text-xs sm:text-sm"
                     >
                       <i className="fab fa-twitter" />
                       <span className="hidden sm:inline">Twitter</span>
-                    </button>
+                    </button> */}
                   </div>
                 </div>
 
                 {/* Action Buttons */}
                 <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-center">
-                  <button
+                  {/* <button
                     onClick={() => saveArticle(selectedNews)}
                     className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold transition flex items-center justify-center gap-2 text-xs sm:text-sm"
                   >
                     <i className="fas fa-bookmark" />
                     <span>Simpan Artikel</span>
-                  </button>
+                  </button> */}
                   <button
                     onClick={closePopup}
                     className="bg-blue-600 hover:bg-blue-700 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold transition flex items-center justify-center gap-2 text-xs sm:text-sm"

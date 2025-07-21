@@ -43,7 +43,7 @@ const ChatMessages = ({ messages, isTyping, onStartConsultation }) => {
           <span className="relative z-10">🌟</span>
         </div>
         <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 mb-2 sm:mb-3">
-          Selamat datang di PengasuhanAI Pro!
+          Selamat datang di PengasuhanAI!
         </h2>
         <p className="text-sm sm:text-base text-gray-600 leading-relaxed mb-4 sm:mb-6 px-2">
           Saya adalah asisten AI canggih yang siap membantu perjalanan parenting Anda dengan saran ahli, 

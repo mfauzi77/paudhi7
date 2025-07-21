@@ -30,7 +30,7 @@ const institutions = [
     programs: ["Imunisasi", "Gizi Balita", "Posyandu"],
   },
   {
-    name: "BKKBN",
+    name: "Kemendugbangga/BKKBN",
     role: "Program Keluarga & Kependudukan",
     logo: bkkbnLogo,
     programs: ["Keluarga Berencana", "BKB", "PIK-R"],
@@ -60,7 +60,7 @@ const institutions = [
     programs: ["RA/BA", "TPQ", "Madrasah"],
   },
   {
-    name: "Kemendesa",
+    name: "KemendesPDT",
     role: "Pembangunan Desa & Daerah",
     logo: kemendesaLogo,
     programs: ["Desa Prioritas", "BUMDes", "PKH"],
