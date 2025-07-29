@@ -214,35 +214,62 @@ const Chatbot = () => {
 
   // Handler untuk pengiriman formulir kontak
   const handleContactFormSubmit = () => {
-    if (!userInfo.name || !userInfo.email || !userInfo.whatsapp || !userInfo.question) {
-      addBotMessage('Mohon lengkapi semua field yang diperlukan.');
+    // Trim whitespace dari semua input
+    const trimmedInfo = {
+      name: userInfo.name?.trim() || '',
+      email: userInfo.email?.trim() || '',
+      whatsapp: userInfo.whatsapp?.trim() || '',
+      question: userInfo.question?.trim() || ''
+    };
+
+    // Validasi field yang wajib diisi
+    if (!trimmedInfo.name || !trimmedInfo.email || !trimmedInfo.whatsapp || !trimmedInfo.question) {
+      addBotMessage('❌ Mohon lengkapi semua field yang diperlukan (semua field bertanda *).');
       return;
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(userInfo.email)) {
-      addBotMessage('Format email tidak valid');
+    // Validasi panjang minimum
+    if (trimmedInfo.name.length < 2) {
+      addBotMessage('❌ Nama harus minimal 2 karakter.');
       return;
     }
 
-    const phoneRegex = /^[\d\s\-\+\(\)]+$/;
-    if (!phoneRegex.test(userInfo.whatsapp)) {
-      addBotMessage('Format nomor WhatsApp tidak valid');
+    if (trimmedInfo.question.length < 10) {
+      addBotMessage('❌ Pertanyaan harus minimal 10 karakter.');
       return;
     }
 
-    addUserMessage(`Form Kontak: Nama: ${userInfo.name}, Email: ${userInfo.email}, WhatsApp: ${userInfo.whatsapp}, Pertanyaan: ${userInfo.question}`);
+    // Validasi format email yang lebih ketat
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(trimmedInfo.email)) {
+      addBotMessage('❌ Format email tidak valid. Contoh: nama@domain.com');
+      return;
+    }
+
+    // Validasi format nomor WhatsApp yang lebih ketat
+    const phoneRegex = /^(\+62|62|0)[0-9]{9,13}$/;
+    const cleanPhone = trimmedInfo.whatsapp.replace(/[\s\-\(\)]/g, '');
+    if (!phoneRegex.test(cleanPhone)) {
+      addBotMessage('❌ Format nomor WhatsApp tidak valid. Gunakan format: 08xxxxxxxxx atau +628xxxxxxxxx');
+      return;
+    }
+
+    // Update userInfo dengan data yang sudah di-trim
+    setUserInfo(trimmedInfo);
+
+    addUserMessage(`Form Kontak: Nama: ${trimmedInfo.name}, Email: ${trimmedInfo.email}, WhatsApp: ${trimmedInfo.whatsapp}, Pertanyaan: ${trimmedInfo.question}`);
 
     setShowContactForm(false);
     setChatStep('completed');
 
     setTimeout(() => {
-      addBotMessage("Terima kasih! Form kontak Anda telah berhasil dikirim.");
+      addBotMessage("✅ Terima kasih! Form kontak Anda telah berhasil dikirim.");
       setTimeout(() => {
-        addBotMessage(`Ringkasan: Nama: ${userInfo.name}, Email: ${userInfo.email}, WhatsApp: ${userInfo.whatsapp}, Pertanyaan: ${userInfo.question}. Tim support kami akan menghubungi Anda dalam 1x24 jam. Ada yang bisa saya bantu lagi?`, true);
+        addBotMessage(`📋 Ringkasan data Anda:\n👤 Nama: ${trimmedInfo.name}\n📧 Email: ${trimmedInfo.email}\n📱 WhatsApp: ${trimmedInfo.whatsapp}\n❓ Pertanyaan: ${trimmedInfo.question}\n\n⏰ Tim support kami akan menghubungi Anda dalam 1x24 jam. Ada yang bisa saya bantu lagi?`, true);
       }, 1500);
     }, 500);
 
+    // Reset form setelah submit berhasil
     setUserInfo({ name: '', email: '', whatsapp: '', question: '' });
   };
 
