@@ -1,0 +1,60 @@
+// utils/imageUtils.js - Helper untuk handle image URLs
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
+/**
+ * Convert relative image URL to absolute URL
+ * @param {string} imageUrl - Relative or absolute image URL
+ * @returns {string} - Absolute image URL
+ */
+export const getImageUrl = (imageUrl) => {
+  if (!imageUrl) return null;
+  
+  // Jika sudah absolute URL (http/https), return as is
+  if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+    return imageUrl;
+  }
+  
+  // Jika relative URL (/uploads/...), tambahkan base URL
+  if (imageUrl.startsWith('/uploads/')) {
+    return `${API_BASE_URL}${imageUrl}`;
+  }
+  
+  // Jika base64 data URL, return as is
+  if (imageUrl.startsWith('data:')) {
+    return imageUrl;
+  }
+  
+  // Default: assume relative, add base URL
+  return `${API_BASE_URL}/${imageUrl}`;
+};
+
+/**
+ * Check if image URL is valid and accessible
+ * @param {string} imageUrl - Image URL to check
+ * @returns {Promise<boolean>} - True if image is accessible
+ */
+export const checkImageExists = async (imageUrl) => {
+  try {
+    const response = await fetch(imageUrl, { method: 'HEAD' });
+    return response.ok;
+  } catch (error) {
+    console.warn('Image check failed:', imageUrl, error);
+    return false;
+  }
+};
+
+/**
+ * Get image with fallback
+ * @param {string} imageUrl - Primary image URL
+ * @param {string} fallbackUrl - Fallback image URL
+ * @returns {string} - Image URL to use
+ */
+export const getImageWithFallback = (imageUrl, fallbackUrl = null) => {
+  const fullUrl = getImageUrl(imageUrl);
+  
+  if (!fullUrl && fallbackUrl) {
+    return getImageUrl(fallbackUrl);
+  }
+  
+  return fullUrl;
+};
