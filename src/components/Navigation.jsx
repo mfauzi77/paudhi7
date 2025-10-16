@@ -249,23 +249,14 @@ const Navigation = () => {
             >
               Pelaporan PAUD HI
             </a>
-            {/* <a
-              href="/pengasuhan"
+            <Link
+              to="/ceria"
               className={`text-sm font-medium transition-colors ${
-                isActive('/pengasuhan') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600'
+                isActive('/ceria') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600'
               }`}
             >
-              Pengasuhan AI
-            </a> */}
-           
-             <a
-              href="Https://ceria-ten.vercel.app/"
-              className={`text-sm font-medium transition-colors ${
-                isActive('/faq') ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600'
-              }`}
-            >
-             SISMONEV INTERAKTIF
-            </a>
+              CERIA Dashboard
+            </Link>
             {!user ? (
               <Link
                 to="/admin"
@@ -322,6 +313,14 @@ const Navigation = () => {
             >
               Dashboard RAN PAUD
             </a>
+            <Link
+              to="/ceria"
+              className={`block px-3 py-2 rounded-md text-base font-medium ${
+                isActive('/ceria') ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
+              }`}
+            >
+              CERIA Dashboard
+            </Link>
             <a
               href="/chatbot"
               className={`block px-3 py-2 rounded-md text-base font-medium ${

@@ -23,6 +23,7 @@ const MaknaLogo = lazy(() => import('./components/MaknaLogo'));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 const LoginForm = lazy(() => import('./pages/LoginForm'));
 const PublicRanPaudDashboard = lazy(() => import('./pages/ranpaud/PublicRanPaudDashboard'));
+const CeriaPage = lazy(() => import('./components/CeriaPage'));
 
 // ✅ Import AuthProvider, ProtectedRoute, and ErrorBoundary
 import { AuthProvider } from './pages/contexts/AuthContext';
@@ -106,6 +107,14 @@ function AppWrapper() {
           element={
             <Suspense fallback={<LoadingSpinner size="lg" text="Memuat dashboard RAN PAUD..." className="py-8" />}>
               <PublicRanPaudDashboard />
+            </Suspense>
+          } 
+        />
+        <Route 
+          path="/ceria" 
+          element={
+            <Suspense fallback={<LoadingSpinner size="lg" text="Memuat CERIA Dashboard..." className="py-8" />}>
+              <CeriaPage />
             </Suspense>
           } 
         />

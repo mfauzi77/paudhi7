@@ -1,24 +1,90 @@
-# Paudhi
+# PAUD HI - Sistem Monitoring dan Evaluasi PAUD Holistik Integratif
 
+Sistem web untuk monitoring dan evaluasi PAUD Holistik Integratif yang dikembangkan untuk Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan.
 
+## 🚀 Fitur Utama
 
-## Getting started
+- **Dashboard PAUD HI**: Monitoring data PAUD secara real-time
+- **Manajemen Berita**: Sistem CRUD untuk berita dan informasi
+- **FAQ Management**: Manajemen pertanyaan yang sering diajukan
+- **RAN PAUD**: Sistem manajemen Rencana Aksi Nasional PAUD
+- **Chatbot AI**: Asisten virtual dengan integrasi Gemini AI
+- **Upload & Media**: Manajemen file dan gambar
+- **User Management**: Sistem role-based access control
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## 🛠️ Teknologi
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+### Frontend
+- React 19.0.0
+- Vite (Build Tool)
+- Tailwind CSS 4.0.15
+- React Router DOM
+- Framer Motion (Animations)
+- Recharts (Data Visualization)
 
-## Add your files
+### Backend
+- Node.js
+- Express.js 4.18.2
+- MongoDB dengan Mongoose
+- JWT Authentication
+- Multer (File Upload)
+- Helmet (Security)
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+## 📋 Prasyarat
 
+- Node.js >= 16.0.0
+- npm >= 8.0.0
+- MongoDB (Local atau Cloud)
+
+## 🔧 Instalasi
+
+### 1. Clone Repository
+```bash
+git clone https://gitlab.kemenkopmk.go.id/tri.ardiansyah/paudhi.git
+cd paudhi
 ```
-cd existing_repo
-git remote add origin https://gitlab.kemenkopmk.go.id/tri.ardiansyah/paudhi.git
-git branch -M main
-git push -uf origin main
+
+### 2. Setup Environment Variables
+```bash
+# Copy file environment example
+cp env.example .env
+cp backend/env.example backend/.env
+
+# Edit file .env dengan konfigurasi yang sesuai
 ```
+
+### 3. Install Dependencies
+```bash
+# Install frontend dependencies
+npm install
+
+# Install backend dependencies
+cd backend
+npm install
+cd ..
+```
+
+### 4. Setup Database
+```bash
+# Pastikan MongoDB sudah berjalan
+# Jalankan script untuk inisialisasi database
+cd backend
+npm run seed
+```
+
+### 5. Jalankan Aplikasi
+```bash
+# Terminal 1 - Backend
+cd backend
+npm run dev
+
+# Terminal 2 - Frontend
+npm run dev
+```
+
+Aplikasi akan berjalan di:
+- Frontend: http://localhost:3000
+- Backend: http://localhost:5000
 
 ## Integrate with your tools
 
