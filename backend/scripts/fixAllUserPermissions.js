@@ -2,7 +2,7 @@
 const mongoose = require("mongoose");
 const User = require("../models/User");
 
-const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/paudhi7"; // Ganti jika perlu
+const MONGO_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/paudhi"; // Ganti jika perlu
 
 async function migratePermissions() {
   await mongoose.connect(MONGO_URI);

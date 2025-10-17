@@ -164,7 +164,7 @@ const Chatbot = () => {
       setTimeout(() => {
         addBotMessage("Mohon maaf jawaban saya kurang membantu. 🙏");
         setTimeout(() => {
-          addBotMessage("Silakan coba ajukan pertanyaan yang lebih spesifik atau hubungi staf kami langsung:", true);
+          addBotMessage("Silakan coba ajukan pertanyaan yang lebih spesifik", true);
           setChatStep('greeting'); // Return to greeting untuk opsi menu utama
         }, 1000);
       }, 500);
@@ -252,8 +252,8 @@ const Chatbot = () => {
       return [
         { label: "💬 Tanya Apa Saja (AI Chat)", type: "ai-chat" },
         { label: "📋 Lihat FAQ PAUD HI", type: "faq-list" },
-        { label: "📱 Tanya via WhatsApp Staf", type: "whatsapp" },
-        { label: "📝 Isi Form Kontak", type: "contact-form" }
+        // { label: "📱 Tanya via WhatsApp Staf", type: "whatsapp" },
+        // { label: "📝 Isi Form Kontak", type: "contact-form" }
       ];
     }
 

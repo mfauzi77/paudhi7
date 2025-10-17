@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const RanPaud = require('../models/RanPaud');
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/paudhi', {
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/paudhi', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });

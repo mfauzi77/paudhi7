@@ -2,17 +2,22 @@
 
 // Environment Variables
 const GEMINI_API_KEY = import.meta.env.VITE_REACT_APP_GEMINI_API_KEY;
-const GEMINI_MODEL = import.meta.env.VITE_REACT_APP_GEMINI_MODEL || 'gemini-2.0-flash';
-const GEMINI_API_URL = import.meta.env.VITE_REACT_APP_GEMINI_API_URL || 'https://generativelanguage.googleapis.com/v1beta/models';
-const WHATSAPP_NUMBER = import.meta.env.VITE_REACT_APP_WHATSAPP_NUMBER || '6281112345678';
-const SUPPORT_PHONE = import.meta.env.VITE_REACT_APP_SUPPORT_PHONE || '0811-1234-5678';
-const EMERGENCY_HOTLINE = import.meta.env.VITE_REACT_APP_EMERGENCY_HOTLINE || '129';
-
+const GEMINI_MODEL =
+  import.meta.env.VITE_REACT_APP_GEMINI_MODEL || "gemini-2.0-flash";
+const GEMINI_API_URL =
+  import.meta.env.VITE_REACT_APP_GEMINI_API_URL ||
+  "https://generativelanguage.googleapis.com/v1beta/models";
+const WHATSAPP_NUMBER =
+  import.meta.env.VITE_REACT_APP_WHATSAPP_NUMBER || "6281112345678";
+const SUPPORT_PHONE =
+  import.meta.env.VITE_REACT_APP_SUPPORT_PHONE || "0811-1234-5678";
 
 // Validation for API Key
 if (!GEMINI_API_KEY) {
-  console.error('❌ GEMINI API KEY tidak ditemukan di environment variables!');
-  console.log('💡 Pastikan file .env berisi: REACT_APP_GEMINI_API_KEY=your_key_here');
+  console.error("❌ GEMINI API KEY tidak ditemukan di environment variables!");
+  console.log(
+    "💡 Pastikan file .env berisi: REACT_APP_GEMINI_API_KEY=your_key_here"
+  );
 }
 
 // FAQ Data untuk fallback dan context
@@ -20,74 +25,137 @@ const faqData = [
   {
     id: 1,
     question: "Apa itu PAUD HI?",
-    answer: "PAUD HI (Pengembangan Anak Usia Dini Holistik Integratif) adalah pendekatan layanan pengembangan anak usia dini yang mencakup kebutuhan esensial anak usia 0-6 tahun secara menyeluruh dan terpadu. Kebutuhan tersebut meliputi kesehatan, gizi, pengasuhan, pendidikan, dan perlindungan, melalui keterlibatan lintas sektor.",
-    keywords: ["paud hi", "pengembangan anak", "holistik integratif", "usia dini"]
+    answer:
+      "PAUD HI (Pengembangan Anak Usia Dini Holistik Integratif) adalah pendekatan layanan pengembangan anak usia dini yang mencakup kebutuhan esensial anak usia 0-6 tahun secara menyeluruh dan terpadu. Kebutuhan tersebut meliputi kesehatan, gizi, pengasuhan, pendidikan, dan perlindungan, melalui keterlibatan lintas sektor.",
+    keywords: [
+      "paud hi",
+      "pengembangan anak",
+      "holistik integratif",
+      "usia dini",
+    ],
   },
   {
     id: 2,
     question: "Apa tujuan utama PAUD HI?",
-    answer: "Tujuan PAUD HI adalah memastikan setiap anak usia dini tumbuh dan berkembang secara optimal melalui layanan yang terpadu, berkualitas, dan mudah diakses oleh keluarga dan masyarakat.",
-    keywords: ["tujuan", "optimal", "berkembang", "layanan terpadu"]
+    answer:
+      "Tujuan PAUD HI adalah memastikan setiap anak usia dini tumbuh dan berkembang secara optimal melalui layanan yang terpadu, berkualitas, dan mudah diakses oleh keluarga dan masyarakat.",
+    keywords: ["tujuan", "optimal", "berkembang", "layanan terpadu"],
   },
   {
     id: 3,
     question: "Apa itu SISMONEV PAUD HI?",
-    answer: "SISMONEV PAUD HI adalah Sistem Informasi, Monitoring, dan Evaluasi nasional yang menyediakan platform digital terintegrasi untuk memantau pelaksanaan program PAUD HI lintas sektor secara efektif dan real time.",
-    keywords: ["sismonev", "sistem informasi", "monitoring", "evaluasi", "platform digital"]
+    answer:
+      "SISMONEV PAUD HI adalah Sistem Informasi, Monitoring, dan Evaluasi nasional yang menyediakan platform digital terintegrasi untuk memantau pelaksanaan program PAUD HI lintas sektor secara efektif dan real time.",
+    keywords: [
+      "sismonev",
+      "sistem informasi",
+      "monitoring",
+      "evaluasi",
+      "platform digital",
+    ],
   },
   {
     id: 4,
     question: "Kementerian/Lembaga mana saja yang terlibat dalam PAUD HI?",
-            answer: "PAUD HI melibatkan berbagai Kementerian/Lembaga, antara lain: Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan (koordinasi), Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi, Kementerian Kesehatan, Kementerian Pemberdayaan Perempuan dan Perlindungan Anak, Kementerian Sosial, Kementerian Agama, Kementerian Desa, Pembangunan Daerah Tertinggal, dan Transmigrasi, Kementerian PUPR, Kementerian Dalam Negeri, Kementerian Pembangunan Kependudukan dan Keluarga Berencana Nasional, BPOM, Badan Perencanaan Pembangunan Nasional, dll.",
-        keywords: ["kementerian", "lembaga", "kementerian koordinator bidang pembangunan manusia dan kebudayaan", "kementerian pendidikan kebudayaan riset dan teknologi", "kementerian kesehatan"]
+    answer:
+      "PAUD HI melibatkan berbagai Kementerian/Lembaga, antara lain: Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan (koordinasi), Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi, Kementerian Kesehatan, Kementerian Pemberdayaan Perempuan dan Perlindungan Anak, Kementerian Sosial, Kementerian Agama, Kementerian Desa, Pembangunan Daerah Tertinggal, dan Transmigrasi, Kementerian PUPR, Kementerian Dalam Negeri, Kementerian Pembangunan Kependudukan dan Keluarga Berencana Nasional, BPOM, Badan Perencanaan Pembangunan Nasional, dll.",
+    keywords: [
+      "kementerian",
+      "lembaga",
+      "kementerian koordinator bidang pembangunan manusia dan kebudayaan",
+      "kementerian pendidikan kebudayaan riset dan teknologi",
+      "kementerian kesehatan",
+    ],
   },
   {
     id: 5,
     question: "Apa saja indikator utama dalam PAUD HI?",
-    answer: "Indikator PAUD HI mencakup: Akses anak terhadap layanan PAUD, Status gizi dan kesehatan anak, Akses terhadap sanitasi dan air bersih, Layanan pengasuhan dan perlindungan anak, Partisipasi keluarga dan masyarakat.",
-    keywords: ["indikator", "akses", "gizi", "kesehatan", "sanitasi", "pengasuhan", "partisipasi"]
+    answer:
+      "Indikator PAUD HI mencakup: Akses anak terhadap layanan PAUD, Status gizi dan kesehatan anak, Akses terhadap sanitasi dan air bersih, Layanan pengasuhan dan perlindungan anak, Partisipasi keluarga dan masyarakat.",
+    keywords: [
+      "indikator",
+      "akses",
+      "gizi",
+      "kesehatan",
+      "sanitasi",
+      "pengasuhan",
+      "partisipasi",
+    ],
   },
   {
     id: 6,
     question: "Bagaimana cara menggunakan SISMONEV PAUD HI?",
-    answer: "SISMONEV dapat diakses oleh K/L, pemerintah daerah, dan mitra lainnya melalui akun login masing-masing. Melalui dashboard admin, pengguna bisa: Menginput berita kegiatan PAUD HI, Memasukkan data statistik, Memantau indikator lintas sektor, Melihat laporan dan grafik perkembangan.",
-    keywords: ["cara menggunakan", "akses", "login", "dashboard", "input data"]
+    answer:
+      "SISMONEV dapat diakses oleh K/L, pemerintah daerah, dan mitra lainnya melalui akun login masing-masing. Melalui dashboard admin, pengguna bisa: Menginput berita kegiatan PAUD HI, Memasukkan data statistik, Memantau indikator lintas sektor, Melihat laporan dan grafik perkembangan.",
+    keywords: ["cara menggunakan", "akses", "login", "dashboard", "input data"],
   },
   {
     id: 7,
     question: "Apa manfaat SISMONEV PAUD HI bagi pemerintah dan masyarakat?",
-    answer: "Manfaat SISMONEV PAUD HI: Menyediakan data real-time dan terintegrasi, Meningkatkan koordinasi lintas sektor, Membantu perencanaan program berbasis data, Mendukung kebijakan pembangunan anak usia dini.",
-    keywords: ["manfaat", "real-time", "koordinasi", "perencanaan", "kebijakan"]
+    answer:
+      "Manfaat SISMONEV PAUD HI: Menyediakan data real-time dan terintegrasi, Meningkatkan koordinasi lintas sektor, Membantu perencanaan program berbasis data, Mendukung kebijakan pembangunan anak usia dini.",
+    keywords: [
+      "manfaat",
+      "real-time",
+      "koordinasi",
+      "perencanaan",
+      "kebijakan",
+    ],
   },
   {
     id: 8,
     question: "Apakah ada inovasi dalam implementasi PAUD HI?",
-    answer: "Ya. PAUD HI terus dikembangkan melalui: Sistem Early Warning System (EWS), Integrasi dengan Google Sheets dan WhatsApp untuk monitoring lapangan, Dashboard analisis data yang user-friendly, Pendekatan berbasis budaya lokal.",
-    keywords: ["inovasi", "early warning", "google sheets", "whatsapp", "dashboard", "budaya lokal"]
+    answer:
+      "Ya. PAUD HI terus dikembangkan melalui: Sistem Early Warning System (EWS), Integrasi dengan Google Sheets dan WhatsApp untuk monitoring lapangan, Dashboard analisis data yang user-friendly, Pendekatan berbasis budaya lokal.",
+    keywords: [
+      "inovasi",
+      "early warning",
+      "google sheets",
+      "whatsapp",
+      "dashboard",
+      "budaya lokal",
+    ],
   },
   {
     id: 9,
     question: "Bagaimana strategi pembiayaan PAUD HI?",
-    answer: "Pembiayaan PAUD HI berasal dari APBN, APBD, serta sumber dana lain yang sah. K/L dan daerah juga diharapkan mengalokasikan anggaran untuk program PAUD HI sesuai kewenangannya.",
-    keywords: ["pembiayaan", "apbn", "apbd", "anggaran", "alokasi"]
+    answer:
+      "Pembiayaan PAUD HI berasal dari APBN, APBD, serta sumber dana lain yang sah. K/L dan daerah juga diharapkan mengalokasikan anggaran untuk program PAUD HI sesuai kewenangannya.",
+    keywords: ["pembiayaan", "apbn", "apbd", "anggaran", "alokasi"],
   },
   {
     id: 10,
     question: "Bagaimana cara mendukung program PAUD HI di daerah?",
-    answer: "Cara mendukung program PAUD HI di daerah: Mengintegrasikan layanan PAUD HI dalam RPJMD dan Renstra Daerah, Memperkuat koordinasi lintas sektor daerah, Melibatkan masyarakat dan kader dalam implementasi, Menggunakan data SISMONEV untuk intervensi yang tepat sasaran.",
-    keywords: ["dukung program", "daerah", "rpjmd", "koordinasi", "masyarakat", "kader", "intervensi"]
-  }
+    answer:
+      "Cara mendukung program PAUD HI di daerah: Mengintegrasikan layanan PAUD HI dalam RPJMD dan Renstra Daerah, Memperkuat koordinasi lintas sektor daerah, Melibatkan masyarakat dan kader dalam implementasi, Menggunakan data SISMONEV untuk intervensi yang tepat sasaran.",
+    keywords: [
+      "dukung program",
+      "daerah",
+      "rpjmd",
+      "koordinasi",
+      "masyarakat",
+      "kader",
+      "intervensi",
+    ],
+  },
 ];
 
 export async function callGeminiAPI(userPrompt) {
   // Check if API key is available
   if (!GEMINI_API_KEY) {
-    console.error('❌ Gemini API Key tidak tersedia');
+    console.error("❌ Gemini API Key tidak tersedia");
     // Fallback ke FAQ jika API key tidak ada
     const relevantFAQ = searchFAQ(userPrompt);
     if (relevantFAQ.length > 0) {
       const bestMatch = relevantFAQ[0];
-      return `📋 Berdasarkan FAQ PAUD HI:\n\n**${bestMatch.question}**\n\n${bestMatch.answer}\n\n💡 *API tidak tersedia, jawaban dari database FAQ.*`;
+     return `📋 Berdasarkan FAQ PAUD HI:
+
+${bestMatch.question}
+
+${bestMatch.answer}
+
+💡 Catatan: API tidak tersedia, jawaban diambil dari database FAQ.`;
+
     }
     return `❌ Maaf, layanan AI sedang tidak tersedia.\n\n💡 Silakan:\n• Hubungi staf via WhatsApp: ${SUPPORT_PHONE}\n• Isi form kontak untuk bantuan lebih lanjut`;
   }
@@ -129,31 +197,34 @@ Contoh sub-bidang yang kamu kuasai:
     -Jangan pakai kalimat yang terlalu panjang, gunakan kalimat singkat dan jelas.
     -Jangan gunakan kalimat "menurut anda" atau "menurut saya", gunakan kalimat yang lebih netral seperti "berdasarkan informasi yang tersedia" atau "berdasarkan panduan yang ada".
 
-    INFORMASI KONTAK:
-    - Jam operasional: Senin-Jumat 08:00-17:00 WIB, Sabtu 08:00-12:00 WIB, Minggu Tutup
-    - Hotline Darurat: ${EMERGENCY_HOTLINE} (24/7)
-    - WhatsApp Support: ${SUPPORT_PHONE}
-    - Chatbot tersedia 24/7
+  - Aturan penulisan:
+
+Jangan gunakan tanda bintang (*) (**) atau underscore (_) untuk membuat teks tebal atau miring.
+Jangan gunakan format Markdown seperti judul (#), teks tebal, teks miring, atau blok kode.
+Gunakan teks polos sepenuhnya.
+Pastikan paragraf tertata rapi: setiap ide utama ditulis dalam paragraf baru (pisahkan dengan satu baris kosong).
+Gunakan tanda titik, koma, dan kapitalisasi dengan baik agar teks terlihat profesional.
+Jika menjelaskan poin-poin, gunakan tanda “-” atau angka tanpa format khusus.
 
     DATABASE PENGETAHUAN PAUD HI:
-    ${faqData.map(faq => `${faq.question}: ${faq.answer}`).join('\n')}
+    ${faqData.map((faq) => `${faq.question}: ${faq.answer}`).join("\n")}
 
   `;
 
   try {
     const apiUrl = `${GEMINI_API_URL}/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
-    
+
     const response = await fetch(apiUrl, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         contents: [
-          { role: 'user', parts: [{ text: systemPrompt }] },
-          { role: 'user', parts: [{ text: userPrompt }] }
-        ]
-      })
+          { role: "user", parts: [{ text: systemPrompt }] },
+          { role: "user", parts: [{ text: userPrompt }] },
+        ],
+      }),
     });
 
     if (!response.ok) {
@@ -161,18 +232,27 @@ Contoh sub-bidang yang kamu kuasai:
     }
 
     const data = await response.json();
-    return data?.candidates?.[0]?.content?.parts?.[0]?.text || "❌ Tidak ada jawaban dari AI.";
-    
+    return (
+      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      "❌ Tidak ada jawaban dari AI."
+    );
   } catch (error) {
-    console.error('Error calling Gemini API:', error);
-    
+    console.error("Error calling Gemini API:", error);
+
     // Fallback ke FAQ jika API gagal
     const relevantFAQ = searchFAQ(userPrompt);
     if (relevantFAQ.length > 0) {
       const bestMatch = relevantFAQ[0];
-      return `📋 Berdasarkan FAQ PAUD HI:\n\n**${bestMatch.question}**\n\n${bestMatch.answer}\n\n💡 *AI sedang tidak tersedia, jawaban dari database FAQ.*`;
+      return `📋 Berdasarkan FAQ PAUD HI:
+
+${bestMatch.question}
+
+${bestMatch.answer}
+
+💡 Catatan: API tidak tersedia, jawaban diambil dari database FAQ.`;
+
     }
-    
+
     return `❌ Maaf, AI sedang mengalami gangguan dan saya tidak menemukan informasi spesifik di FAQ.\n\n💡 Silakan:\n• Hubungi staf via WhatsApp: ${SUPPORT_PHONE}\n• Isi form kontak untuk bantuan lebih lanjut\n• Coba pertanyaan dengan kata kunci yang berbeda`;
   }
 }
@@ -180,10 +260,11 @@ Contoh sub-bidang yang kamu kuasai:
 // Fungsi untuk mencari FAQ yang relevan
 function searchFAQ(query) {
   const queryLower = query.toLowerCase();
-  return faqData.filter(faq => 
-    faq.question.toLowerCase().includes(queryLower) ||
-    faq.answer.toLowerCase().includes(queryLower) ||
-    faq.keywords.some(keyword => queryLower.includes(keyword.toLowerCase()))
+  return faqData.filter(
+    (faq) =>
+      faq.question.toLowerCase().includes(queryLower) ||
+      faq.answer.toLowerCase().includes(queryLower) ||
+      faq.keywords.some((keyword) => queryLower.includes(keyword.toLowerCase()))
   );
 }
 

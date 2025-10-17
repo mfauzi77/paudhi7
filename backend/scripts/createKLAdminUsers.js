@@ -108,7 +108,7 @@ const klUsers = [
 async function createKLAdminUsers() {
   try {
     console.log("🔧 Connecting to MongoDB...");
-    await mongoose.connect("mongodb://localhost:27017/paudhi", {
+    await mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/paudhi", {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
