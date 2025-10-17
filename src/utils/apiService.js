@@ -29,7 +29,9 @@ class ApiService {
     if (options.body instanceof FormData) delete config.headers["Content-Type"];
 
     try {
-      console.log(`API Request: ${config.method || "GET"} ${url}`);
+      if (import.meta.env.DEV) {
+        console.log(`API Request: ${config.method || "GET"} ${url}`);
+      }
       const response = await fetch(url, config);
       const contentType = response.headers.get("content-type");
       const data = contentType && contentType.includes("application/json")
@@ -44,8 +46,8 @@ class ApiService {
       }
       return data;
     } catch (error) {
-      if (error.name === "TypeError" && error.message.includes("fetch")) {
-        const networkError = new Error("Koneksi ke server gagal. Pastikan backend berjalan di port 5000.");
+      if (error.name === "TypeError" && error.message?.toLowerCase().includes("fetch")) {
+        const networkError = new Error("Tidak dapat terhubung ke API. Periksa URL API (VITE_API_URL) dan status backend.");
         networkError.status = 0;
         throw networkError;
       }
