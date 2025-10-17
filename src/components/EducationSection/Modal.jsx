@@ -28,7 +28,7 @@ const Modal = React.memo(({ item, activeTab, onClose, onDownload }) => {
               // Image thumbnail for non-PDF guides
               <div className="flex items-start gap-6">
                 <img 
-                  src={item.thumbnail || item.thumbnailUrl || '/api/placeholder/400/300'} 
+                  src={item.thumbnail || item.thumbnailUrl || `${import.meta.env.VITE_API_URL?.replace('/api', '') || (import.meta.env.DEV ? 'http://localhost:5000' : '')}/api/placeholder/400/300`} 
                   alt=""
                   className="w-32 h-40 object-cover rounded-xl shadow-lg flex-shrink-0"
                   loading="lazy"
@@ -214,7 +214,7 @@ const Modal = React.memo(({ item, activeTab, onClose, onDownload }) => {
           <div className="space-y-6">
             <div className="bg-gray-100 rounded-xl overflow-hidden">
               <img 
-                src={item.thumbnail || item.thumbnailUrl || '/api/placeholder/400/300'} 
+                src={item.thumbnail || item.thumbnailUrl || `${import.meta.env.VITE_API_URL?.replace('/api', '') || (import.meta.env.DEV ? 'http://localhost:5000' : '')}/api/placeholder/400/300`} 
                 alt=""
                 className="w-full h-64 object-cover"
                 loading="lazy"

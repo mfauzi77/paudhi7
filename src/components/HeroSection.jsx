@@ -87,7 +87,7 @@ const HeroSection = () => {
               }`}
             >
               <h1 className="text-4xl md:text-5xl font-bold mb-2">CERIA</h1>
-              <h2 className="text-3xl md:text-4xl font-semibold mb-3 text-blue-700">
+              <h2 className="text-2xl md:text-4xl font-semibold mb-3 text-blue-700">
                 Cerdas, Efektif, Responsif, Inovatif, Akurat{" "}
               </h2>
 
@@ -147,17 +147,17 @@ const HeroSection = () => {
             }`}
           >
             <h1 className="text-xl font-bold text-gray-900 leading-tight mb-3">
-              Sistem Informasi, Monitoring, dan Evaluasi
+             CERIA
             </h1>
             <p className="text-sm text-gray-700 leading-relaxed mb-6 px-2">
-              CERIA
+               Cerdas, Efektif, Responsif, Inovatif, Akurat
             </p>
-            <h2 className="text-lg font-semibold text-blue-700 mb-4">
+            {/* <h2 className="text-lg font-semibold text-blue-700 mb-4">
               PAUD Holistik Integratif
             </h2>
             <p className="text-sm text-gray-700 leading-relaxed mb-6 px-2">
               Cerdas, Efektif, Responsif, Inovatif, Akurat
-            </p>
+            </p> */}
             <button
               onClick={handleManualStart}
               className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-6 py-3 rounded-lg shadow-lg transition duration-300 w-full max-w-xs"

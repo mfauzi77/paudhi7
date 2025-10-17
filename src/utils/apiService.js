@@ -113,6 +113,61 @@ class ApiService {
 
   async searchNews(query) { return this.request(`/news?search=${encodeURIComponent(query)}`); }
 
+  // ================= PEMBELAJARAN =================
+  // List (admin/internal)
+  async getPembelajaran(params = {}) {
+    const queryString = new URLSearchParams(params).toString();
+    return this.request(`/pembelajaran${queryString ? `?${queryString}` : ''}`);
+  }
+
+  // List publik (untuk halaman beranda/education section)
+  async getPembelajaranPublic(params = {}) {
+    const queryString = new URLSearchParams(params).toString();
+    // fallback ke endpoint utama bila endpoint /public tidak tersedia di backend
+    try {
+      return await this.request(`/pembelajaran/public${queryString ? `?${queryString}` : ''}`);
+    } catch (err) {
+      if (err.status === 404) {
+        return this.getPembelajaran(params);
+      }
+      throw err;
+    }
+  }
+
+  // Detail item pembelajaran
+  async getPembelajaranDetail(id) {
+    return this.request(`/pembelajaran/${id}`);
+  }
+
+  // CRUD pembelajaran (admin)
+  async createPembelajaran(data) {
+    const formData = new FormData();
+    Object.entries(data || {}).forEach(([key, value]) => {
+      if (value instanceof File) {
+        formData.append(key, value);
+      } else {
+        formData.append(key, typeof value === 'object' ? JSON.stringify(value) : value);
+      }
+    });
+    return this.request('/pembelajaran', { method: 'POST', body: formData });
+  }
+
+  async updatePembelajaran(id, data) {
+    const formData = new FormData();
+    Object.entries(data || {}).forEach(([key, value]) => {
+      if (value instanceof File) {
+        formData.append(key, value);
+      } else {
+        formData.append(key, typeof value === 'object' ? JSON.stringify(value) : value);
+      }
+    });
+    return this.request(`/pembelajaran/${id}`, { method: 'PUT', body: formData });
+  }
+
+  async deletePembelajaran(id) {
+    return this.request(`/pembelajaran/${id}`, { method: 'DELETE' });
+  }
+
   // ================= RAN PAUD =================
   async getRanPaudData(params = {}) {
     const queryString = new URLSearchParams(params).toString();

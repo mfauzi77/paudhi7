@@ -198,7 +198,7 @@ const PanduanCard = React.memo(({ item, onItemClick, onItemDownload }) => {
     >
       <div className="relative h-24 sm:h-32 lg:h-48 overflow-hidden flex-shrink-0">
         <img 
-          src={item.thumbnail || item.thumbnailUrl || '/api/placeholder/400/300'} 
+          src={item.thumbnail || item.thumbnailUrl || `${import.meta.env.VITE_API_URL?.replace('/api', '') || (import.meta.env.DEV ? 'http://localhost:5000' : '')}/api/placeholder/400/300`} 
           alt=""
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           loading="lazy"

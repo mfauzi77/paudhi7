@@ -7,9 +7,7 @@ const DYNAMIC_CACHE = 'paud-hi-dynamic-v1.0.0';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
-  '/logo.svg',
-  '/logo.png',
-  '/manifest.json',
+  '/manifest.json'
   // CSS dan JS akan di-cache otomatis oleh Vite
 ];
 
@@ -78,6 +76,11 @@ self.addEventListener('fetch', (event) => {
   // Skip chrome-extension and other non-http requests
   if (!url.protocol.startsWith('http')) {
     return;
+  }
+
+  // Skip service worker for development or problematic requests
+  if (url.pathname.includes('.jsx') || url.pathname.includes('.js') && !url.pathname.includes('node_modules')) {
+    return; // Let browser handle these requests normally
   }
 
   // Handle different types of requests

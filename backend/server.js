@@ -17,8 +17,10 @@ const app = express();
 const corsOptions = {
   origin: [
     "http://localhost:3000",
+    "http://localhost:5173",
     "http://127.0.0.1:3000",
-    process.env.FRONTEND_URL || "http://localhost:3000",
+    "http://127.0.0.1:5173",
+    process.env.FRONTEND_URL || "http://localhost:5173",
   ],
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
@@ -390,7 +392,7 @@ app.listen(PORT, () => {
   console.log("\n🚀 ================================");
   console.log(`🚀 Server berjalan di port ${PORT}`);
   console.log(
-    `📱 Frontend URL: ${process.env.FRONTEND_URL || "http://localhost:3000"}`
+    `📱 Frontend URL: ${process.env.FRONTEND_URL || "http://localhost:5173"}`
   );
   console.log(
     `🗄️ Database: ${
@@ -398,7 +400,7 @@ app.listen(PORT, () => {
     }`
   );
   console.log(`🌍 Environment: ${process.env.NODE_ENV || "development"}`);
-  console.log(`🖼️ Static files: http://localhost:${PORT}/uploads/`);
+  console.log(`🖼️ Static files: ${process.env.BASE_URL || `http://localhost:${PORT}`}/uploads/`);
   console.log("🚀 ================================\n");
 
   console.log("📋 Available routes:");

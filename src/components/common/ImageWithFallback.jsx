@@ -28,7 +28,7 @@ const ImageWithFallback = ({
   const resolveSrc = (raw) => {
     const apiBase = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_URL)
       ? import.meta.env.VITE_API_URL
-      : (window && window.PAUDHI_API_BASE) || import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      : (window && window.PAUDHI_API_BASE) || import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:5000/api' : '/api');
     const backendOrigin = apiBase.replace(/\/$/, '').replace(/\/api$/, '');
     if (!raw) return null;
     let value = raw;
@@ -47,7 +47,7 @@ const ImageWithFallback = ({
     const candidates = [];
     const apiBase = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_URL)
       ? import.meta.env.VITE_API_URL
-      : (window && window.PAUDHI_API_BASE) || import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      : (window && window.PAUDHI_API_BASE) || import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:5000/api' : '/api');
     const backendOrigin = apiBase.replace(/\/$/, '').replace(/\/api$/, '');
     if (!raw) return candidates;
     let value = raw;

@@ -275,7 +275,7 @@ router.post("/", authenticate, upload.single("image"), async (req, res) => {
     
     // Add image if uploaded - save full URL for consistency
     if (req.file) {
-      const baseUrl = process.env.BASE_URL || 'http://localhost:5000';
+      const baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || 5000}`;
       newsData.image = `${baseUrl}/uploads/news/${req.file.filename}`;
       console.log("🖼️ Image field saved:", {
         filename: req.file.filename,
@@ -286,7 +286,7 @@ router.post("/", authenticate, upload.single("image"), async (req, res) => {
       });
     } else if (req.body.image) {
       // Accept image as string URL, relative path, filename, or JSON object/string
-      const baseUrl = process.env.BASE_URL || 'http://localhost:5000';
+      const baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || 5000}`;
       const normalized = normalizeImageInput(req.body.image);
       newsData.image = toFullImageUrl(baseUrl, normalized);
       console.log("🖼️ Image field from body (normalized):", {
@@ -430,7 +430,7 @@ router.put("/:id", authenticate, upload.single("image"), async (req, res) => {
 
     // Handle image update - save full URL for consistency
     if (req.file) {
-      const baseUrl = process.env.BASE_URL || 'http://localhost:5000';
+      const baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || 5000}`;
       updateData.image = `${baseUrl}/uploads/news/${req.file.filename}`;
       console.log("🖼️ Image updated:", {
         filename: req.file.filename,
@@ -438,7 +438,7 @@ router.put("/:id", authenticate, upload.single("image"), async (req, res) => {
         imageType: typeof updateData.image
       });
     } else if (updateData.image) {
-      const baseUrl = process.env.BASE_URL || 'http://localhost:5000';
+      const baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || 5000}`;
       const normalized = normalizeImageInput(updateData.image);
       updateData.image = toFullImageUrl(baseUrl, normalized);
       console.log("🖼️ Image updated from body (normalized):", {
