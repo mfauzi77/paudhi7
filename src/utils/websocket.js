@@ -446,7 +446,7 @@ const clientWebSocketSetup = `
 // Frontend WebSocket Setup (React)
 import io from 'socket.io-client';
 
-const socket = io('http://localhost:5000', {
+const socket = io(import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000', {
   auth: {
     token: localStorage.getItem('authToken')
   }

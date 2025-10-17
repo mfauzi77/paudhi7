@@ -4,7 +4,8 @@ export const debugAPI = {
   // Test koneksi ke backend
   async testConnection() {
     try {
-      const response = await fetch("http://localhost:5000/api/health");
+      const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+      const response = await fetch(`${apiBase}/health`);
       const data = await response.json();
       console.log("✅ Backend connection test:", data);
       return { success: true, data };
@@ -22,7 +23,8 @@ export const debugAPI = {
         return { success: false, error: "No token found" };
       }
 
-      const response = await fetch("http://localhost:5000/api/auth/verify", {
+      const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+      const response = await fetch(`${apiBase}/auth/verify`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -38,20 +40,21 @@ export const debugAPI = {
 
   // Test RAN PAUD endpoints
   async testRanPaudEndpoints() {
+    const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
     const tests = [
       {
         name: "GET /ran-paud/data",
-        url: "http://localhost:5000/api/ran-paud/data",
+        url: `${apiBase}/ran-paud/data`,
         method: "GET",
       },
       {
         name: "GET /ran-paud/kl-list",
-        url: "http://localhost:5000/api/ran-paud/kl-list",
+        url: `${apiBase}/ran-paud/kl-list`,
         method: "GET",
       },
       {
         name: "GET /ran-paud/summary",
-        url: "http://localhost:5000/api/ran-paud/summary",
+        url: `${apiBase}/ran-paud/summary`,
         method: "GET",
       },
     ];

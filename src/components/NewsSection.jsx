@@ -352,7 +352,7 @@ const NewsSection = () => {
   const getImageUrl = (article) => {
     const apiBase = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_URL)
       ? import.meta.env.VITE_API_URL
-      : (window && window.PAUDHI_API_BASE) || 'http://localhost:5000/api';
+      : (window && window.PAUDHI_API_BASE) || import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
     const backendOrigin = apiBase.replace(/\/$/, '').replace(/\/api$/, '');
     
     // Debug logging

@@ -169,3 +169,16 @@ export const HandThumbDownIcon = ({ className = 'w-4 h-4' }) => (
         <path strokeLinecap="round" strokeLinejoin="round" d="M17.367 13.75c-.806 0-1.533-.446-1.91-1.16-.376-.714-.376-1.606 0-2.32.377-.714 1.104-1.16 1.91-1.16.806 0 1.533.446 1.91 1.16.376.714.376 1.606 0 2.32-.377.714-1.104 1.16-1.91 1.16zM16.5 13.75v-6.25a.75.75 0 01.75-.75h1.5a.75.75 0 01.75.75v6.25a.75.75 0 01-.75.75h-1.5a.75.75 0 01-.75-.75z" />
     </svg>
 );
+
+export const MapPinIcon = ({ className = 'w-6 h-6' }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 11a3 3 0 100-6 3 3 0 000 6z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 22s8-4.5 8-12a8 8 0 10-16 0c0 7.5 8 12 8 12z" />
+    </svg>
+);
+
+export const ArrowRightIcon = ({ className = 'w-4 h-4' }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+);
