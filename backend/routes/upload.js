@@ -27,7 +27,8 @@ router.post('/image',
       }
 
       const file = req.file;
-      const baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || 5000}`;
+     const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
+
       
       // Construct image URL
       const imageUrl = `${baseUrl}/uploads/news/${file.filename}`;
@@ -83,7 +84,8 @@ router.post('/multiple',
         });
       }
 
-      const baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || 5000}`;
+      const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
+
       const uploadedImages = [];
 
       for (const file of req.files) {
@@ -208,7 +210,8 @@ router.get('/image/metadata', async (req, res) => {
 
     // Get file stats
     const stats = fs.statSync(filePath);
-    const baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || 5000}`;
+   const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
+
 
     const metadata = {
       filename: targetFile,
@@ -254,7 +257,8 @@ router.get('/list', async (req, res) => {
     // Read directory
     const files = fs.readdirSync(uploadDir);
     const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
-    const baseUrl = process.env.BASE_URL || `http://localhost:${process.env.PORT || 5000}`;
+   const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
+
 
     const images = files
       .filter(file => {

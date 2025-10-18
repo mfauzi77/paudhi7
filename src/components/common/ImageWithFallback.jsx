@@ -26,10 +26,12 @@ const ImageWithFallback = ({
 
   // Resolve src robustly
   const resolveSrc = (raw) => {
-    const apiBase = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_URL)
-      ? import.meta.env.VITE_API_URL
-      : (window && window.PAUDHI_API_BASE) || import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:5000/api' : '/api');
-    const backendOrigin = apiBase.replace(/\/$/, '').replace(/\/api$/, '');
+   const apiBase =
+  (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.VITE_API_URL)
+    ? import.meta.env.VITE_API_URL
+    : `${window.location.origin}/api`;
+// Ambil origin backend (tanpa /api)
+const backendOrigin = apiBase.replace(/\/api$/, "");
     if (!raw) return null;
     let value = raw;
     if (typeof value === 'object' && value.url) value = value.url;
