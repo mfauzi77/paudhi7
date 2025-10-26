@@ -182,6 +182,10 @@ deploy_backend() {
     # Create uploads directories
     sudo -u $SERVICE_USER -H node scripts/createUploadDirs.js
 
+    # Ensure PM2 home exists and owned by service user
+    mkdir -p /var/www/.pm2
+    chown -R $SERVICE_USER:$SERVICE_USER /var/www/.pm2 || true
+
     # Start backend with PM2
     sudo -u $SERVICE_USER -H pm2 start server.js --name paudhi-backend
     sudo -u $SERVICE_USER -H pm2 save
