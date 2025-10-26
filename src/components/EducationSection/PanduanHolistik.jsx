@@ -1,5 +1,6 @@
 // src/components/EducationSection/PanduanHolistik.jsx - UPDATED FOR API
 import React, { useRef } from 'react';
+import ImageWithFallback from '../common/ImageWithFallback';
 
 const PanduanHolistik = ({ onItemClick, data = [], loading = false, error = null, onRefresh, onItemDownload }) => {
   const scrollContainerRef = useRef(null);
@@ -197,11 +198,11 @@ const PanduanCard = React.memo(({ item, onItemClick, onItemDownload }) => {
       style={{ scrollSnapAlign: 'start' }}
     >
       <div className="relative h-24 sm:h-32 lg:h-48 overflow-hidden flex-shrink-0">
-        <img 
-          src={item.thumbnail || item.thumbnailUrl || `${import.meta.env.VITE_API_URL?.replace('/api', '') || ''}/api/placeholder/400/300`} 
+        <ImageWithFallback
+          src={item.thumbnail || item.thumbnailUrl}
           alt=""
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-          loading="lazy"
+          hoverEffect={true}
         />
         <div className="absolute top-2 sm:top-3 lg:top-4 left-2 sm:left-3 lg:left-4">
           <span className="bg-blue-600 text-white px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-xs sm:text-sm font-semibold">

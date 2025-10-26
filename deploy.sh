@@ -249,12 +249,15 @@ setup_ssl() {
     # Create SSL directory
     mkdir -p $SSL_DIR
 
-    # Detect certificate filenames in repo (support server.* or paudhi.*)
+    # Detect certificate filenames in repo (support server.* or paudhi.* and fullchain.pem)
     local CRT_SRC=""
     local KEY_SRC=""
     local CHAIN_SRC=""
 
-    if [[ -f "srv/ssl/server.crt" && -f "srv/ssl/server.key" ]]; then
+    if [[ -f "srv/ssl/fullchain.pem" && -f "srv/ssl/server.key" ]]; then
+        CRT_SRC="srv/ssl/fullchain.pem"
+        KEY_SRC="srv/ssl/server.key"
+    elif [[ -f "srv/ssl/server.crt" && -f "srv/ssl/server.key" ]]; then
         CRT_SRC="srv/ssl/server.crt"
         KEY_SRC="srv/ssl/server.key"
         [[ -f "srv/ssl/server-chain.crt" ]] && CHAIN_SRC="srv/ssl/server-chain.crt"
@@ -265,16 +268,23 @@ setup_ssl() {
     fi
 
     if [[ -n "$CRT_SRC" && -n "$KEY_SRC" ]]; then
-        cp "$CRT_SRC" "$SSL_DIR/$(basename $CRT_SRC)"
-        cp "$KEY_SRC" "$SSL_DIR/$(basename $KEY_SRC)"
-        if [[ -n "$CHAIN_SRC" ]]; then
-            cp "$CHAIN_SRC" "$SSL_DIR/$(basename $CHAIN_SRC)"
+        # Normalize to filenames expected by Apache vhost
+        if [[ "$(basename \"$CRT_SRC\")" == "fullchain.pem" ]]; then
+            cp "$CRT_SRC" "$SSL_DIR/server.crt"
+            cp "$KEY_SRC" "$SSL_DIR/server.key"
+        else
+            cp "$CRT_SRC" "$SSL_DIR/$(basename $CRT_SRC)"
+            cp "$KEY_SRC" "$SSL_DIR/$(basename $KEY_SRC)"
+            if [[ -n "$CHAIN_SRC" ]]; then
+                cp "$CHAIN_SRC" "$SSL_DIR/$(basename $CHAIN_SRC)"
+            fi
         fi
         
         # Set secure permissions
         chown root:root $SSL_DIR/*
-        chmod 600 $SSL_DIR/*.key
-        chmod 644 $SSL_DIR/*.crt
+        chmod 600 $SSL_DIR/*.key || true
+        chmod 644 $SSL_DIR/*.crt || true
+        chmod 644 $SSL_DIR/*.pem || true
         
         log_success "SSL certificates installed to $SSL_DIR"
         
@@ -288,7 +298,7 @@ setup_ssl() {
             log_success "Let's Encrypt SSL certificate generated"
         else
             log_warning "Let's Encrypt failed. You need to manually install SSL certificates to $SSL_DIR/"
-            log_info "Supported files: server.crt/server.key/server-chain.crt or paudhi.crt/paudhi.key/paudhi-chain.crt"
+            log_info "Supported files: fullchain.pem + server.key, server.crt/server.key (+ optional server-chain.crt), or paudhi.crt/paudhi.key (+ optional paudhi-chain.crt)"
         fi
     fi
 }
