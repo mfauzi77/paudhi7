@@ -20,6 +20,9 @@ BACKEND_PORT="5000"
 SSL_DIR="/etc/ssl/kemenkopmk"
 WEB_ROOT="/var/www/html"
 SERVICE_USER="www-data"
+# Resolve project root to the directory of this script
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+PROJECT_ROOT="$SCRIPT_DIR"
 
 # Functions
 log_info() {
@@ -140,30 +143,37 @@ setup_mongodb() {
 
 deploy_backend() {
     log_info "Deploying backend..."
-    
+
+    # Validate project structure (backend must be alongside deploy.sh)
+    if [[ ! -f "$PROJECT_ROOT/backend/package.json" ]]; then
+        log_error "Struktur project tidak valid: $PROJECT_ROOT/backend/package.json tidak ditemukan"
+        exit 1
+    fi
+
     # Create backend directory
     mkdir -p /srv/paudhi/backend
-    
-    # Copy backend files
-    cp -r backend/* /srv/paudhi/backend/
-    
+
+    # Copy backend files (exclude node_modules if present)
+    cp -r "$PROJECT_ROOT/backend"/* /srv/paudhi/backend/
+    rm -rf /srv/paudhi/backend/node_modules
+
     # Set permissions
     chown -R $SERVICE_USER:$SERVICE_USER /srv/paudhi/backend
-    
-    # Install dependencies
+
+    # Install dependencies (production only, using --omit=dev)
     cd /srv/paudhi/backend
-    sudo -u $SERVICE_USER npm ci --only=production
-    
+    sudo -u $SERVICE_USER npm ci --omit=dev
+
     # Create uploads directories
     sudo -u $SERVICE_USER node scripts/createUploadDirs.js
-    
+
     # Start backend with PM2
     sudo -u $SERVICE_USER pm2 start server.js --name paudhi-backend
     sudo -u $SERVICE_USER pm2 save
-    
+
     # Setup PM2 startup
     pm2 startup systemd -u $SERVICE_USER --hp /var/www
-    
+
     log_success "Backend deployed and started"
 }
 
