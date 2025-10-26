@@ -868,7 +868,7 @@ const NewsSection = () => {
                     className="w-full bg-green-600 hover:bg-green-700 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold transition flex items-center justify-center gap-2 text-xs sm:text-sm"
                   >
                     <i className="fas fa-download mr-1"></i>
-                    <span>Download PDF Lengkap</span>
+                    <span>Unduh PDF Lengkap</span>
                   </button>
                 </div>
               </div>

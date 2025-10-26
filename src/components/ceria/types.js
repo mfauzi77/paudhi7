@@ -136,6 +136,42 @@ export const RegionalRiskScore = {
     score: Number
 };
 
+// Forecast Data Point type
+export const ForecastDataPoint = {
+    month: String,
+    actual: Number,
+    predicted: Number,
+    predicted_lower: Number,
+    predicted_upper: Number
+};
+
+// Regional Forecast Data type
+export const RegionalForecastData = {
+    id: String,
+    region: String,
+    domain: String,
+    currentRisk: Number,
+    predictedRisk: Number,
+    change: Number,
+    currentRiskLevel: String,
+    predictedRiskLevel: String
+};
+
+// Sort Key type
+export const SortKey = {
+    region: "region",
+    domain: "domain", 
+    currentRisk: "currentRisk",
+    predictedRisk: "predictedRisk",
+    change: "change"
+};
+
+// Sort Direction type
+export const SortDirection = {
+    ascending: "ascending",
+    descending: "descending"
+};
+
 // Export all types as objects for JavaScript compatibility
 export default {
     View,
@@ -149,5 +185,9 @@ export default {
     Domain,
     DomainFilter,
     KeyIndicatorData,
-    RegionalRiskScore
+    RegionalRiskScore,
+    ForecastDataPoint,
+    RegionalForecastData,
+    SortKey,
+    SortDirection
 };

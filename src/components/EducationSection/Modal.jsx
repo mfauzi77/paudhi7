@@ -267,7 +267,7 @@ const Modal = React.memo(({ item, activeTab, onClose, onDownload }) => {
                   <div>
                     <h5 className="font-semibold text-gray-800 mb-3">📋 Informasi Tool:</h5>
                     <div className="space-y-2 text-sm text-gray-600">
-                      <p><span className="font-semibold">Format:</span> {item.format || 'Digital Tool'}</p>
+                      <p><span className="font-semibold">Format:</span> {item.format || 'Alat Digital'}</p>
                       <p><span className="font-semibold">Penggunaan:</span> {item.usage || 'Assessment & Evaluasi'}</p>
                       <p><span className="font-semibold">Target User:</span> {item.stakeholder || 'Guru & Orang Tua'}</p>
                       <p><span className="font-semibold">Author:</span> {item.author || 'Unknown'}</p>

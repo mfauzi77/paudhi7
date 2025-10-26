@@ -4,9 +4,9 @@
 export const tabsConfig = [
   { id: 'panduan', label: 'Panduan Holistik', icon: 'fas fa-book-open', color: 'blue' },
   { id: 'video', label: 'Video Integratif', icon: 'fas fa-play-circle', color: 'red' },
-  { id: 'tools', label: 'Tools & Assessment', icon: 'fas fa-clipboard-check', color: 'emerald' },
+  { id: 'tools', label: 'Perangkat Evaluasi', icon: 'fas fa-clipboard-check', color: 'emerald' },
   { id: 'kasus', label: 'Studi Kasus', icon: 'fas fa-lightbulb', color: 'amber' },
-  { id: 'digital', label: 'Digital Resources', icon: 'fas fa-mobile-alt', color: 'purple' }
+  { id: 'digital', label: 'Materi Digital', icon: 'fas fa-mobile-alt', color: 'purple' }
 ];
 
 // ===== FALLBACK DATA (OPSIONAL) =====

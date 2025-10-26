@@ -8,7 +8,7 @@ const RegionalProfileRadarChart = ({ regionName, regionalProfile, nationalProfil
     const radius = Math.min(width, height) / 2 - 50;
     const levels = 4; // e.g., for 25, 50, 75, 100
     const maxValue = 100;
-    const totalAxes = regionalProfile.length;
+    const totalAxes = regionalProfile?.length || 0;
     
     if (totalAxes === 0) {
         return <p>Data tidak cukup untuk menampilkan grafik.</p>;
@@ -17,24 +17,24 @@ const RegionalProfileRadarChart = ({ regionName, regionalProfile, nationalProfil
     const allAxis = Array.from({ length: totalAxes }, (_, i) => {
         const angle = (Math.PI * 2 * i) / totalAxes - Math.PI / 2;
         return {
-            name: regionalProfile[i].axis,
+            name: regionalProfile[i]?.axis || `Domain ${i + 1}`,
             x: centerX + radius * Math.cos(angle),
             y: centerY + radius * Math.sin(angle),
         };
     });
 
-    const getCoordinatesForValue = (value: number, angleIndex: number): [number, number] => {
+    const getCoordinatesForValue = (value, angleIndex) => {
         const angle = (Math.PI * 2 * angleIndex) / totalAxes - Math.PI / 2;
         const r = (radius * value) / maxValue;
         return [centerX + r * Math.cos(angle), centerY + r * Math.sin(angle)];
     };
     
     const regionalPath = regionalProfile
-        .map((point, i) => getCoordinatesForValue(point.value, i).join(','))
+        .map((point, i) => getCoordinatesForValue(point?.value || 0, i).join(','))
         .join(' ');
         
     const nationalPath = nationalProfile
-        .map((point, i) => getCoordinatesForValue(point.value, i).join(','))
+        .map((point, i) => getCoordinatesForValue(point?.value || 0, i).join(','))
         .join(' ');
 
 
@@ -103,18 +103,18 @@ const RegionalProfileRadarChart = ({ regionName, regionalProfile, nationalProfil
                             strokeWidth="2.5"
                         />
                          {regionalProfile.map((point, i) => {
-                             const [x, y] = getCoordinatesForValue(point.value, i);
+                             const [x, y] = getCoordinatesForValue(point?.value || 0, i);
                              return (
                                 <circle key={`region-dot-${i}`} cx={x} cy={y} r="4" className="fill-indigo-600">
-                                    <title>{`Wilayah: ${point.axis} - ${point.value}`}</title>
+                                    <title>{`Wilayah: ${point?.axis || `Domain ${i + 1}`} - ${point?.value || 0}`}</title>
                                 </circle>
                              )
                          })}
                           {nationalProfile.map((point, i) => {
-                             const [x, y] = getCoordinatesForValue(point.value, i);
+                             const [x, y] = getCoordinatesForValue(point?.value || 0, i);
                              return (
                                 <circle key={`national-dot-${i}`} cx={x} cy={y} r="3" className="fill-slate-400">
-                                     <title>{`Nasional: ${point.axis} - ${point.value}`}</title>
+                                     <title>{`Nasional: ${point?.axis || `Domain ${i + 1}`} - ${point?.value || 0}`}</title>
                                 </circle>
                              )
                          })}

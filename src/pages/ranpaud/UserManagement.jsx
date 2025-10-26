@@ -87,7 +87,7 @@ const UserManagement = ({ currentUser, capabilities, onNotification }) => {
         color: 'blue',
         bgColor: 'bg-blue-100',
         textColor: 'text-blue-800',
-        description: 'Akses penuh kecuali user management'
+        description: 'Akses penuh kecuali manajemen pengguna'
       },
       kl_operator: {
         label: 'K/L Operator',
@@ -276,7 +276,7 @@ const UserManagement = ({ currentUser, capabilities, onNotification }) => {
           <form onSubmit={handleSubmit} className="p-6 space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Username *
+                Nama Pengguna *
               </label>
               <input
                 type="text"
@@ -412,7 +412,7 @@ const UserManagement = ({ currentUser, capabilities, onNotification }) => {
               <Users className="w-6 h-6 text-purple-600" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-gray-900">User Management</h2>
+              <h2 className="text-xl font-bold text-gray-900">Manajemen Pengguna</h2>
               <p className="text-sm text-gray-600">
                 Kelola pengguna dan akses sistem ({filteredUsers.length} pengguna)
               </p>
@@ -425,7 +425,7 @@ const UserManagement = ({ currentUser, capabilities, onNotification }) => {
               className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
             >
               <Plus className="w-4 h-4" />
-              Tambah User
+              Tambah Pengguna
             </button>
           </div>
         </div>
@@ -439,7 +439,7 @@ const UserManagement = ({ currentUser, capabilities, onNotification }) => {
               <Search className="w-4 h-4 text-gray-400 absolute left-3 top-3" />
               <input
                 type="text"
-                placeholder="Cari berdasarkan nama, email, atau username..."
+                placeholder="Cari berdasarkan nama, email, atau nama pengguna..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"

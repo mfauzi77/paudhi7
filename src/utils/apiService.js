@@ -180,6 +180,65 @@ class ApiService {
   async updateRanPaud(id, data) { return this.request(`/ran-paud/${id}`, { method: "PUT", body: JSON.stringify(data) }); }
   async deleteRanPaud(id) { return this.request(`/ran-paud/${id}`, { method: "DELETE" }); }
 
+  // RAN PAUD Dashboard functions
+  async getRanPaudDashboard(year = "all") {
+    const yearParam = year === "all" ? "all" : year;
+    return this.request(`/ran-paud/dashboard-summary-unified?year=${yearParam}`);
+  }
+
+  async getRanPaudSummary() {
+    return this.request("/ran-paud/summary");
+  }
+
+  async getRanPaudKLList() {
+    return this.request("/ran-paud/kl-list");
+  }
+
+  // RAN PAUD Public functions
+  async getRanPaudPublic(params = {}) {
+    const queryString = new URLSearchParams(params).toString();
+    return this.request(`/ran-paud/public?${queryString}`);
+  }
+
+  async getRanPaudPublicDashboard(year = "all") {
+    const yearParam = year === "all" ? "all" : year;
+    return this.request(`/ran-paud/dashboard-summary-unified/public?year=${yearParam}`);
+  }
+
+  // RAN PAUD Statistics
+  async getRanPaudKLStatistics(year) {
+    return this.request(`/ran-paud/kl-statistics?year=${year}`);
+  }
+
+  async getRanPaudAvailableYears() {
+    return this.request("/ran-paud/available-years");
+  }
+
+  // RAN PAUD Export/Import
+  async exportRanPaud(format = "excel", filters = {}) {
+    return this.request("/ran-paud/export", { 
+      method: "POST", 
+      body: JSON.stringify({ format, filters }) 
+    });
+  }
+
+  async importRanPaud(data, overwrite = false) {
+    return this.request("/ran-paud/import", { 
+      method: "POST", 
+      body: JSON.stringify({ data, overwrite }) 
+    });
+  }
+
+  // RAN PAUD Bulk operations
+  async bulkRanPaudOperation(operation, items, updateData = null) {
+    const body = { operation, items };
+    if (updateData) body.updateData = updateData;
+    return this.request("/ran-paud/bulk", { 
+      method: "POST", 
+      body: JSON.stringify(body) 
+    });
+  }
+
   // ================= USERS =================
   async getUsers() { return this.request("/users"); }
   async createUser(data) { return this.request("/users", { method: "POST", body: JSON.stringify(data) }); }

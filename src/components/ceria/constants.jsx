@@ -4,17 +4,17 @@ import { DashboardIcon, UsersIcon, ChartBarIcon, MapIcon, BellAlertIcon, LightBu
 
 export const NAVIGATION_ITEMS = [
     // { id: View.LandingPage, label: 'Landing Page', icon: <HomeIcon /> },
-    { id: View.Dashboard, label: 'Dashboard', icon: <DashboardIcon /> },
-    { id: View.Forecasting, label: 'Forecasting & Prediction', icon: <ChartBarIcon /> },
+    { id: View.Dashboard, label: 'Analisis Utama', icon: <DashboardIcon /> },
+    { id: View.Forecasting, label: 'Proyeksi & Prediksi', icon: <ChartBarIcon /> },
     { id: View.DataPerWilayah, label: 'Data per Wilayah', icon: <MapIcon /> },
     { id: View.EWSPerBidang, label: 'Analisis per Bidang', icon: <BellAlertIcon /> },
     { id: View.SmartRecommendations, label: 'Rekomendasi CERIA', icon: <LightBulbIcon /> },
-    { id: View.Intervensi, label: 'Manajemen Intervensi', icon: <BeakerIcon /> },
-    { id: View.DataProcessing, label: 'Manajemen Integrasi', icon: <WrenchScrewdriverIcon /> },
+    // { id: View.Intervensi, label: 'Manajemen Intervensi', icon: <BeakerIcon /> },
+    // { id: View.DataProcessing, label: 'Manajemen Integrasi', icon: <WrenchScrewdriverIcon /> },
 ];
 
 export const SUB_NAVIGATION_ITEMS = [
-    { id: View.ResourceAllocation, label: 'Resource Allocation', icon: <BriefcaseIcon /> },
+    // { id: View.ResourceAllocation, label: 'Resource Allocation', icon: <BriefcaseIcon /> },
     { id: View.Reports, label: 'Reports & Analytics', icon: <DocumentChartBarIcon /> },
 ];
 

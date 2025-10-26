@@ -36,9 +36,9 @@ const RegionSummary = ({ data, alertsCount }) => {
             />
             <StatCard 
                 icon={<UsersIcon className="w-8 h-8 text-indigo-500" />}
-                title="Populasi Anak"
-                value={Number(data.population).toLocaleString('id-ID')}
-                footer={<p>Estimasi populasi anak usia dini.</p>}
+                title="Populasi Anak Usia Dini"
+                value={Number(data.population || 0).toLocaleString('id-ID')}
+                footer={<p>Estimasi populasi anak usia dini di wilayah.</p>}
             />
             <StatCard 
                 icon={<BellAlertIcon className="w-8 h-8 text-indigo-500" />}

@@ -504,7 +504,7 @@ const FAQApp = () => {
       </div>
 
       {/* Contact Section */}
-      <div className="max-w-6xl mx-auto px-5 mb-10">
+      {/* <div className="max-w-6xl mx-auto px-5 mb-10">
         <div className="bg-gradient-to-br from-blue-600 to-emerald-600 text-white p-10 rounded-2xl text-center" id="bantuan">
           <h3 className="text-3xl font-bold mb-4">
             <i className="fas fa-headset mr-3"></i>
@@ -529,7 +529,7 @@ const FAQApp = () => {
           
        
         </div>
-      </div>
+      </div> */}
       < Footer />
     </div>
   );

@@ -22,16 +22,16 @@ const LoginForm = () => {
   const { success, error: toastError, loading: toastLoading } = useToast();
 
   const [formData, setFormData] = useState({
-    email: "admin@paudhi.kemenko.go.id",
-    password: "admin123",
+    email: "",
+    password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [selectedDemo, setSelectedDemo] = useState("super_admin");
 
   // ✅ Helper function untuk menentukan redirect path berdasarkan role
   const getRedirectPath = (userRole) => {
-    // Semua role diarahkan ke RAN PAUD dashboard
-    return "/admin/ran-paud-dashboard";
+    // Semua role diarahkan ke Manajemen Data RAN PAUD HI
+    return "/admin/ran-paud-data";
   };
 
   // ✅ Auto-redirect ketika sudah authenticated dengan debugging lebih detail
@@ -181,7 +181,7 @@ const LoginForm = () => {
           {/* Email Field */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Email Address
+              Alamat Email
             </label>
             <div className="relative">
               <input
@@ -191,7 +191,7 @@ const LoginForm = () => {
                 onChange={handleInputChange}
                 onKeyPress={handleKeyPress}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pl-11"
-                placeholder="Enter your email"
+                placeholder="Masukkan alamat email Anda"
                 required
               />
               <User className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" />
@@ -201,7 +201,7 @@ const LoginForm = () => {
           {/* Password Field */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Password
+              Kata Sandi
             </label>
             <div className="relative">
               <input
@@ -211,7 +211,7 @@ const LoginForm = () => {
                 onChange={handleInputChange}
                 onKeyPress={handleKeyPress}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pl-11 pr-11"
-                placeholder="Enter your password"
+                placeholder="Masukkan kata sandi Anda"
                 required
               />
               <Lock className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" />
@@ -249,10 +249,10 @@ const LoginForm = () => {
             {loading ? (
               <div className="flex items-center justify-center gap-2">
                 <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                <span>Signing In...</span>
+                <span>Sedang Masuk...</span>
               </div>
             ) : (
-              "Sign In"
+              "Masuk"
             )}
           </button>
         </form>

@@ -490,7 +490,7 @@ const Chatbot = () => {
         {(chatStep === 'greeting' || chatStep === 'faq-list' || chatStep === 'completed') && !showContactForm && (
           <div className="p-2 sm:p-4 border-t border-gray-200 bg-white rounded-b-xl sm:rounded-b-2xl">
             <div className="flex gap-1.5 sm:gap-2.5 text-xs sm:text-sm">
-              <button
+              {/* <button
                 onClick={() => {
                   const waNumber = '6281112345678';
                   const waMessage = encodeURIComponent('Halo, saya ingin bertanya tentang SISMONEV PAUD HI...');
@@ -499,8 +499,8 @@ const Chatbot = () => {
                 className="flex-1 p-1.5 sm:p-2.5 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
               >
                 📱 WhatsApp
-              </button>
-              <button
+              </button> */}
+              {/* <button
                 onClick={() => {
                   addUserMessage("🕐 Jam operasional");
                   setTimeout(() => {
@@ -510,7 +510,7 @@ const Chatbot = () => {
                 className="flex-1 p-1.5 sm:p-2.5 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
               >
                 🕐 Jam Kerja
-              </button>
+              </button> */}
             </div>
           </div>
         )}

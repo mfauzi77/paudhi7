@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { DOMAIN_FILTER_ITEMS } from '../constants';
 import { fetchIndicators, fetchAlerts, fetchRegionalRisks } from '../services/dataService';
-import { allActiveAlerts, keyIndicatorsByDomain, regionsDetails } from '../services/mockData';
+import { getMockData } from '../services/mockData';
 import { useTheme } from './ThemeContext';
 import { getExecutiveBriefing } from '../services/geminiService';
 import NationalRiskOverview from './dashboard/RiskAssessment';
@@ -38,8 +38,17 @@ const Dashboard = ({ handleOpenInterventionModal }) => {
                     setFilteredAlerts(alerts);
                     setDynamicRegionalRiskScores(risks);
                 } else {
+                    // Load mock data dynamically
+                    const data = await getMockData();
+                    console.log('🔍 Dashboard received mock data:', data);
+                    const keyIndicatorsByDomain = data.keyIndicatorsByDomain || {};
+                    const allActiveAlerts = data.allActiveAlerts || [];
+                    const regionsDetails = data.regionsDetails || {};
+                    
+                    console.log('🔍 Key indicators for domain', activeDomain, ':', keyIndicatorsByDomain[activeDomain]);
+                    
                     // fallback to mock data
-                    setFilteredIndicators(keyIndicatorsByDomain[activeDomain]);
+                    setFilteredIndicators(keyIndicatorsByDomain[activeDomain] || []);
                     const alerts = activeDomain === 'Semua' ? allActiveAlerts : allActiveAlerts.filter(a => a.domain === activeDomain);
                     setFilteredAlerts(alerts);
                     setDynamicRegionalRiskScores(Object.values(regionsDetails).map(r => ({ name: r.name, score: r.overallRisk })));
@@ -47,10 +56,19 @@ const Dashboard = ({ handleOpenInterventionModal }) => {
             } catch (error) {
                 console.error('Error fetching dashboard data:', error);
                 // fallback to mock data on error
-                setFilteredIndicators(keyIndicatorsByDomain[activeDomain]);
-                const alerts = activeDomain === 'Semua' ? allActiveAlerts : allActiveAlerts.filter(a => a.domain === activeDomain);
-                setFilteredAlerts(alerts);
-                setDynamicRegionalRiskScores(Object.values(regionsDetails).map(r => ({ name: r.name, score: r.overallRisk })));
+                try {
+                    const data = await getMockData();
+                    const keyIndicatorsByDomain = data.keyIndicatorsByDomain || {};
+                    const allActiveAlerts = data.allActiveAlerts || [];
+                    const regionsDetails = data.regionsDetails || {};
+                    
+                    setFilteredIndicators(keyIndicatorsByDomain[activeDomain] || []);
+                    const alerts = activeDomain === 'Semua' ? allActiveAlerts : allActiveAlerts.filter(a => a.domain === activeDomain);
+                    setFilteredAlerts(alerts);
+                    setDynamicRegionalRiskScores(Object.values(regionsDetails).map(r => ({ name: r.name, score: r.overallRisk })));
+                } catch (err) {
+                    console.error('Error loading fallback data:', err);
+                }
             }
         })();
     }, [activeDomain, useIntegration]);
@@ -60,7 +78,7 @@ const Dashboard = ({ handleOpenInterventionModal }) => {
             try {
                 setIsBriefingLoading(true);
                 setBriefingError(null);
-                const briefingText = await getExecutiveBriefing(filteredIndicators, filteredAlerts, dynamicRegionalRiskScores);
+                const briefingText = await getExecutiveBriefing(activeDomain, filteredIndicators, filteredAlerts);
                 setBriefing(briefingText);
             } catch (error) {
                 console.error('Error fetching executive briefing:', error);

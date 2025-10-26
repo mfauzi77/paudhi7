@@ -43,7 +43,7 @@ const DashboardStats = ({ setActiveTab }) => {
     { title: 'Total Berita', value: stats.newsCount.toString(), icon: FileText, color: 'bg-blue-500', change: '+5%' },
     { title: 'FAQ Aktif', value: stats.faqCount.toString(), icon: MessageSquare, color: 'bg-green-500', change: '+2%' },
     { title: 'Total Views', value: stats.totalViews.toLocaleString(), icon: Eye, color: 'bg-purple-500', change: '+12%' },
-    { title: 'Total Users', value: stats.userCount.toString(), icon: User, color: 'bg-orange-500', change: '0%' }
+    { title: 'Total Pengguna', value: stats.userCount.toString(), icon: User, color: 'bg-orange-500', change: '0%' }
   ];
 
   // RAN PAUD stats data for display

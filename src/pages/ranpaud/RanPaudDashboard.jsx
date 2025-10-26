@@ -78,21 +78,19 @@ const RanPaudDashboard = ({ setActiveTab }) => {
       const response = await apiService.getRanPaudDashboard(selectedYear);
       console.log("📊 Dashboard response:", response);
       
-      if (response.success) {
-        setDashboardData(response.data);
-        // ✅ REMOVED: processChartData(response.data) - will be calculated manually in useEffect
-        
-        // ✅ REMOVED: Update total stats from API - will be calculated manually in useEffect
-        // setTotalStats({
-        //   totalProgram: response.data.totalProgram || 0,
-        //   totalRO: response.data.totalRO || 0,
-        //   totalTercapai: response.data.totalDone || 0,
-        //   totalTidakTercapai: response.data.totalProgress || 0,
-        //   totalBelumLapor: response.data.totalBelum || 0,
-        // });
+      // Handle response structure from backend
+      let dashboardData = {};
+      if (response.success && response.data) {
+        dashboardData = response.data;
+      } else if (response.data) {
+        dashboardData = response.data;
       } else {
-        throw new Error(response.message || "Gagal mengambil data dashboard");
+        dashboardData = response;
       }
+      
+      console.log("📊 Processed dashboard data:", dashboardData);
+      setDashboardData(dashboardData);
+      
     } catch (error) {
       console.error("❌ Error fetching dashboard data:", error);
       throw new Error("Gagal mengambil data dashboard: " + error.message);

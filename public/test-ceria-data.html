@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test CERIA Data</title>
+</head>
+<body>
+    <h1>Test CERIA Data Loading</h1>
+    <div id="output"></div>
+    
+    <script>
+        async function testCeriaData() {
+            const output = document.getElementById('output');
+            
+            try {
+                output.innerHTML += '<p>🧪 Testing CERIA data loading...</p>';
+                
+                // Test fetch data JSON
+                const response = await fetch('/data/gizi.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const giziData = await response.json();
+                output.innerHTML += `<p>✅ Gizi data loaded: ${Object.keys(giziData).length} provinces</p>`;
+                
+                // Test fetch partisipasi PAUD
+                const paudResponse = await fetch('/data/partisipasi_paud.json');
+                const paudData = await paudResponse.json();
+                output.innerHTML += `<p>✅ PAUD data loaded: ${Object.keys(paudData).length} provinces</p>`;
+                
+                // Test fetch akta
+                const aktaResponse = await fetch('/data/akta.json');
+                const aktaData = await aktaResponse.json();
+                output.innerHTML += `<p>✅ Akta data loaded: ${Object.keys(aktaData).length} provinces</p>`;
+                
+                output.innerHTML += '<p>✅ All JSON files accessible from /data/</p>';
+                
+            } catch (error) {
+                output.innerHTML += `<p>❌ Test failed: ${error.message}</p>`;
+            }
+        }
+        
+        // Jalankan test saat halaman dimuat
+        testCeriaData();
+    </script>
+</body>
+</html>
+

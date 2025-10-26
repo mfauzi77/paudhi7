@@ -71,7 +71,7 @@ const Sidebar = ({ user, activeTab, setActiveTab }) => {
     // HIDDEN: Grup RAN PAUD HI, jadikan "Input Data" top-level
     { id: "ran-paud-data", label: "Input Data", icon: Edit },
     // Users Management
-    { id: "users", label: "Users", icon: Users },
+    { id: "users", label: "Pengguna", icon: Users },
     // Analytics hanya untuk admin_utama dan super_admin
     // ...(["admin_utama", "super_admin"].includes(user?.role)
     //   ? [{ id: "analytics", label: "Analytics", icon: Activity }]
@@ -88,7 +88,7 @@ const Sidebar = ({ user, activeTab, setActiveTab }) => {
   const confirmLogout = async () => {
     try {
       await logout(); // Gunakan AuthContext logout
-      success('Logout berhasil! Sampai jumpa.');
+      success('Keluar berhasil! Sampai jumpa.');
       navigate("/login"); // Redirect ke login page
     } catch (error) {
       console.error("Logout error:", error);
@@ -326,7 +326,7 @@ const Sidebar = ({ user, activeTab, setActiveTab }) => {
           className="w-full bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center gap-2"
         >
           <LogOut className="w-4 h-4" />
-          Logout
+          Keluar
         </button>
 
         {/* Version Info */}

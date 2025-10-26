@@ -30,7 +30,7 @@ const LogoutConfirmModal = ({ isOpen, onClose, onConfirm }) => {
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-gray-900">
-                  Konfirmasi Logout
+                  Konfirmasi Keluar
                 </h3>
                 <p className="text-sm text-gray-500">
                   Anda akan keluar dari sistem
@@ -74,7 +74,7 @@ const LogoutConfirmModal = ({ isOpen, onClose, onConfirm }) => {
                 onClick={onConfirm}
                 className="flex-1 px-4 py-2.5 text-white bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-2 shadow-lg hover:shadow-xl"
               >
-                Ya, Logout
+                Ya, Keluar
               </button>
             </div>
           </div>

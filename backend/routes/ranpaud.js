@@ -1625,6 +1625,7 @@ router.get("/dashboard-summary-unified/public", async (req, res) => {
     let totalBelum = 0;
     let totalRO = 0;
     let totalProgram = allData.length; // Count actual programs
+    let totalIndikator = 0; // ✅ ADDED: Count total indicators
 
     // Create KL summary with accurate data
     const klMap = new Map();
@@ -1649,6 +1650,9 @@ router.get("/dashboard-summary-unified/public", async (req, res) => {
 
       // Count indicators by tahunData kategori
       if (item.indikators && item.indikators.length > 0) {
+        // ✅ ADDED: Count total indicators for new structure
+        totalIndikator += item.indikators.length;
+        
         item.indikators.forEach((indikator) => {
           if (indikator.tahunData && indikator.tahunData.length > 0) {
             indikator.tahunData.forEach((tahunData) => {
@@ -1671,6 +1675,9 @@ router.get("/dashboard-summary-unified/public", async (req, res) => {
       } else {
         // Legacy support
         if (item.tahunData && item.tahunData.length > 0) {
+          // ✅ ADDED: Count total indicators for legacy structure
+          totalIndikator += 1; // Legacy structure has 1 indicator per program
+          
           item.tahunData.forEach((tahunData) => {
             // Filter by year if not "all"
             if (isAllYears || tahunData.tahun === selectedYear) {
@@ -1697,6 +1704,7 @@ router.get("/dashboard-summary-unified/public", async (req, res) => {
       totalTercapai,
       totalProgress,
       totalBelum,
+      totalIndikator, // ✅ ADDED: Log total indicators
       totalRO: klSummary.reduce((sum, kl) => sum + kl.totalRO, 0),
       klSummaryCount: klSummary.length,
       isAllYears,
@@ -1713,6 +1721,7 @@ router.get("/dashboard-summary-unified/public", async (req, res) => {
         totalDone: totalTercapai,
         totalProgress,
         totalBelum,
+        totalIndikator, // ✅ ADDED: Return total indicators
         year: isAllYears ? "all" : selectedYear.toString()
       }
     });

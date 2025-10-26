@@ -317,14 +317,15 @@ function PublicRanPaudDashboard() {
         totalIndikators += indikators.length;
       });
 
-      // Update total stats based on filtered data
+      // Update total stats based on filtered data (but preserve API data if available)
       setTotalStats(prev => ({
         ...prev,
         totalProgram: totalPrograms,
         totalTercapai: tercapai,
         totalTidakTercapai: tidakTercapai,
         totalBelumLapor: belumLapor,
-        totalIndikator: totalIndikators,
+        // ✅ FIXED: Only update totalIndikator if not provided by API
+        totalIndikator: prev.totalIndikator || totalIndikators,
       }));
 
       // Update indicator summary for pie chart
@@ -534,6 +535,7 @@ function PublicRanPaudDashboard() {
   useEffect(() => {
     try {
       if (dashboardData) {
+        console.log("📊 Dashboard data received:", dashboardData); // ✅ ADDED: Debug log
         setTotalStats({
           totalProgram: dashboardData.totalProgram || 0,
           totalRO: dashboardData.totalRO || 0,
@@ -542,9 +544,13 @@ function PublicRanPaudDashboard() {
           totalBelumLapor: dashboardData.totalBelum || 0,
           totalIndikator: dashboardData.totalIndikator || 0, // ✅ ADDED: Update totalIndikator
         });
+        console.log("📊 Total stats updated:", {
+          totalIndikator: dashboardData.totalIndikator || 0,
+          totalProgram: dashboardData.totalProgram || 0
+        }); // ✅ ADDED: Debug log
       }
     } catch (e) {
-      // noop
+      console.error("❌ Error updating total stats:", e); // ✅ ADDED: Error log
     }
   }, [dashboardData]);
 

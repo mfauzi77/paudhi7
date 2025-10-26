@@ -102,7 +102,7 @@ export const AuthProvider = ({ children }) => {
       isSuperAdmin: user.role === "super_admin",
       isKLOperator: user.role === "kl_operator",
       isViewer: user.role === "viewer",
-      canManageUsers: user.role === "super_admin",
+      canManagePengguna: user.role === "super_admin",
       canImportData: ["super_admin", "admin"].includes(user.role),
       canExportData: true,
       canBulkOperation: ["super_admin", "admin"].includes(user.role),

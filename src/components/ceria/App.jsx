@@ -12,7 +12,7 @@ import Placeholder from './components/Placeholder';
 import { View, InterventionPlan, ActiveAlertData, AlertLevel, ActionItem, InterventionStatus } from './types';
 import ResourceAllocation from './components/ResourceAllocation';
 import InterventionFormModal from './components/interventions/InterventionFormModal';
-import { mockInterventionPlans, regionsDetails, kabupatenKotaDetails, allActiveAlerts } from './services/mockData';
+import { getMockData } from './services/mockData';
 import LandingPage from './components/LandingPage';
 import Reports from './components/Reports';
 import ParentDashboard from './components/ParentDashboard';
@@ -26,6 +26,7 @@ import { useTheme } from './components/ThemeContext';
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [mockData, setMockData] = useState(null);
 
   const [activeView, setActiveView] = useState(View.Dashboard);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -38,14 +39,29 @@ const App = () => {
   // Get theme context
   const { isAdmin, useIntegration } = useTheme();
 
+  // Load mock data
   useEffect(() => {
-    setIsLoading(false);
+    const loadData = async () => {
+      try {
+        const data = await getMockData();
+        setMockData(data);
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Error loading mock data:', error);
+        setIsLoading(false);
+      }
+    };
+    loadData();
+  }, []);
+
+  useEffect(() => {
+    if (!mockData) return;
 
     // Simulate receiving a high-priority alert after a delay (only for mock data)
     const timer = setTimeout(() => {
         // Only show toast notifications for mock data, not for data integration
-        if (!useIntegration) {
-            const highPriorityAlerts = allActiveAlerts.filter(
+        if (!useIntegration && mockData.allActiveAlerts) {
+            const highPriorityAlerts = mockData.allActiveAlerts.filter(
                 a => a.level === AlertLevel.Critical || a.level === AlertLevel.High
             );
             if (highPriorityAlerts.length > 0) {
@@ -56,7 +72,7 @@ const App = () => {
     }, 7000); // 7-second delay after app loads
 
     return () => clearTimeout(timer);
-  }, [useIntegration]);
+  }, [useIntegration, mockData]);
 
   // Effect to manage intervention plans based on data source
   useEffect(() => {
@@ -65,9 +81,9 @@ const App = () => {
       setInterventionPlans([]);
     } else {
       // For mock data, use mock intervention plans
-      setInterventionPlans(mockInterventionPlans);
+      setInterventionPlans(mockData?.mockInterventionPlans || []);
     }
-  }, [useIntegration]);
+  }, [useIntegration, mockData]);
 
   const handleLogout = () => {
       setActiveView(View.Dashboard); // Reset view to default for next login
@@ -91,18 +107,19 @@ const App = () => {
   };
 
   const regionNameToIdMap = useMemo(() => {
+    if (!mockData) return new Map();
     const map = new Map();
-    Object.values(regionsDetails).forEach(prov => {
+    Object.values(mockData.regionsDetails || {}).forEach(prov => {
       map.set(prov.name.toLowerCase(), { regionId: prov.id });
       prov.kabupatenKotaIds?.forEach(kabKotaId => {
-        const kabKota = kabupatenKotaDetails[kabKotaId];
+        const kabKota = mockData.kabupatenKotaDetails?.[kabKotaId];
         if (kabKota) {
           map.set(kabKota.name.toLowerCase(), { regionId: prov.id, kabKotaId: kabKota.id });
         }
       });
     });
     return map;
-  }, []);
+  }, [mockData]);
 
   const handleNavigateToRegion = (regionName) => {
     const locationInfo = regionNameToIdMap.get(regionName.toLowerCase());
@@ -170,6 +187,8 @@ const App = () => {
                     handleOpenInterventionModal={handleOpenInterventionModal}
                     navigationContext={navigationContext}
                     onContextHandled={() => setNavigationContext(null)}
+                    regionsDetails={mockData?.regionsDetails || {}}
+                    kabupatenKotaDetails={mockData?.kabupatenKotaDetails || {}}
                 />;
       case View.EWSPerBidang:
         return <EWSPerBidang />;

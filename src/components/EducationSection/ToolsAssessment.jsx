@@ -1,4 +1,4 @@
-// src/components/EducationSection/ToolsAssessment.jsx - UPDATED FOR API
+// src/components/EducationSection/ToolsAssessment.jsx - VERSI INDONESIA TEKNIS
 import React, { useRef } from 'react';
 
 const ToolsAssessment = ({ onItemClick, data = [], loading = false, error = null, onRefresh, onItemDownload }) => {
@@ -28,17 +28,17 @@ const ToolsAssessment = ({ onItemClick, data = [], loading = false, error = null
     }
   };
 
-  // Loading state
+  // Status Memuat
   if (loading) {
     return (
       <div className="flex justify-center items-center py-12">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500"></div>
-        <span className="ml-3 text-gray-600">Memuat tools...</span>
+        <span className="ml-3 text-gray-600">Memuat alat dan asesmen...</span>
       </div>
     );
   }
 
-  // Error state
+  // Status Error
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center py-12">
@@ -57,20 +57,20 @@ const ToolsAssessment = ({ onItemClick, data = [], loading = false, error = null
     );
   }
 
-  // Empty state
+  // Status Kosong
   if (!data || data.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12">
         <div className="text-gray-300 text-6xl mb-4">🛠️</div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">Belum Ada Tools</h3>
-        <p className="text-gray-600 text-center">Tools dan assessment akan ditampilkan di sini</p>
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">Belum Ada Alat</h3>
+        <p className="text-gray-600 text-center">Alat dan asesmen akan ditampilkan di sini</p>
       </div>
     );
   }
 
   return (
     <div>
-      {/* Mobile Swipe Indicator */}
+      {/* Indikator Geser Mobile */}
       <div className="flex justify-center mb-4 sm:hidden">
         <div className="flex items-center gap-1 bg-emerald-50 px-3 py-1 rounded-full">
           <div className="flex gap-1">
@@ -81,31 +81,31 @@ const ToolsAssessment = ({ onItemClick, data = [], loading = false, error = null
         </div>
       </div>
 
-      {/* Container with Navigation */}
+      {/* Kontainer dengan Navigasi */}
       <div className="relative flex items-center">
-        {/* Left Navigation Button */}
+        {/* Tombol Geser Kiri */}
         {data.length > 3 && (
           <button
             onClick={scrollLeft}
             className="absolute left-0 z-10 w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white items-center justify-center hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:scale-110 shadow-xl -translate-x-3 hidden sm:flex"
-            aria-label="Scroll Left"
+            aria-label="Geser ke Kiri"
           >
             <i className="fas fa-chevron-left text-sm lg:text-base"></i>
           </button>
         )}
 
-        {/* Right Navigation Button */}
+        {/* Tombol Geser Kanan */}
         {data.length > 3 && (
           <button
             onClick={scrollRight}
             className="absolute right-0 z-10 w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white items-center justify-center hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:scale-110 shadow-xl translate-x-3 hidden sm:flex"
-            aria-label="Scroll Right"
+            aria-label="Geser ke Kanan"
           >
             <i className="fas fa-chevron-right text-sm lg:text-base"></i>
           </button>
         )}
 
-        {/* Cards Container - Horizontal Scroll */}
+        {/* Kontainer Kartu - Geser Horizontal */}
         <div
           ref={scrollContainerRef}
           className={`flex gap-3 sm:gap-6 overflow-x-auto scrollbar-hide pb-4 px-1 ${
@@ -129,7 +129,7 @@ const ToolsAssessment = ({ onItemClick, data = [], loading = false, error = null
         </div>
       </div>
 
-      {/* Scroll Indicators */}
+      {/* Indikator Scroll */}
       {data.length > 3 && (
         <div className="flex justify-center mt-6">
           <div className="flex gap-2">
@@ -143,7 +143,7 @@ const ToolsAssessment = ({ onItemClick, data = [], loading = false, error = null
         </div>
       )}
 
-      {/* Custom CSS */}
+      {/* CSS Kustom */}
       <style jsx="true">{`
         .scrollbar-hide {
           -ms-overflow-style: none;
@@ -181,8 +181,7 @@ const ToolsCard = React.memo(({ item, onItemClick, onItemDownload }) => {
     if (onItemDownload) {
       onItemDownload(item);
     }
-    // Handle download logic here
-    console.log('Download tool:', item.title);
+    console.log('Unduh alat:', item.title);
   };
 
   return (
@@ -192,7 +191,7 @@ const ToolsCard = React.memo(({ item, onItemClick, onItemDownload }) => {
       onKeyDown={handleKeyDown}
       tabIndex={0}
       role="button"
-      aria-label={`Download tool: ${item.title}`}
+      aria-label={`Unduh alat: ${item.title}`}
       style={{ scrollSnapAlign: 'start' }}
     >
       <div className="relative h-24 sm:h-32 lg:h-48 overflow-hidden flex-shrink-0">
@@ -224,7 +223,7 @@ const ToolsCard = React.memo(({ item, onItemClick, onItemDownload }) => {
         </p>
 
         <div className="space-y-2 sm:space-y-3 lg:space-y-4">
-          {/* Author and Date - Hidden on mobile for space */}
+          {/* Penulis dan Tanggal */}
           <div className="hidden sm:flex items-center gap-2 lg:gap-3 text-xs text-gray-500">
             <span className="flex items-center gap-1 truncate">
               <i className="fas fa-user" aria-hidden="true"></i>
@@ -236,12 +235,12 @@ const ToolsCard = React.memo(({ item, onItemClick, onItemDownload }) => {
             </span>
           </div>
 
-          {/* Format and Downloads */}
+          {/* Format dan Unduhan */}
           <div className="flex items-center justify-between text-xs sm:text-sm text-gray-600">
             <span className="flex items-center gap-1">
               <i className="fas fa-file-code" aria-hidden="true"></i>
               <span className="hidden sm:inline">{item.format}</span>
-              <span className="sm:hidden">{(item.format || 'Tool').split(' ')[0]}</span>
+              <span className="sm:hidden">{(item.format || 'Alat').split(' ')[0]}</span>
             </span>
             <span className="flex items-center gap-1">
               <i className="fas fa-download" aria-hidden="true"></i>
@@ -250,15 +249,15 @@ const ToolsCard = React.memo(({ item, onItemClick, onItemDownload }) => {
             </span>
           </div>
 
-          {/* Download Button */}
+          {/* Tombol Unduh */}
           <button 
             onClick={handleDownload}
             className="w-full bg-emerald-600 text-white py-2 sm:py-2.5 lg:py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-colors duration-300 flex items-center justify-center gap-1 sm:gap-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 text-xs sm:text-sm"
-            aria-label={`Download tool ${item.title}`}
+            aria-label={`Unduh alat ${item.title}`}
           >
             <i className="fas fa-download" aria-hidden="true"></i>
-            <span className="hidden sm:inline">Download Tool</span>
-            <span className="sm:hidden">Download</span>
+            <span className="hidden sm:inline">Unduh Alat</span>
+            <span className="sm:hidden">Unduh</span>
           </button>
         </div>
       </div>

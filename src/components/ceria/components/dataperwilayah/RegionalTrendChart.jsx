@@ -6,6 +6,11 @@ const RegionalTrendChart = ({ regionName, regionHistory, nationalHistory }) => {
     const padding = 40;
     const yMax = 100;
 
+    // Ensure we have data
+    if (!regionHistory || regionHistory.length === 0) {
+        return <p>Data tren tidak tersedia.</p>;
+    }
+
     const getX = (index) => padding + (index * (chartWidth - padding * 2)) / (regionHistory.length - 1);
     const getY = (value) => chartHeight - padding - ((value / yMax) * (chartHeight - padding * 2));
 

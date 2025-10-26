@@ -221,7 +221,7 @@ const UserManagement = ({ setActiveTab }) => {
             </div>
             <div>
               <h2 className="text-2xl font-bold text-gray-900">
-                User Management
+                Manajemen Pengguna
               </h2>
               <p className="text-gray-600">Memuat data user...</p>
             </div>
@@ -242,7 +242,7 @@ const UserManagement = ({ setActiveTab }) => {
             </div>
             <div>
               <h2 className="text-2xl font-bold text-gray-900">
-                User Management
+                Manajemen Pengguna
               </h2>
               <p className="text-gray-600">
                 Kelola user dan akses untuk sistem RAN PAUD HI
@@ -258,7 +258,7 @@ const UserManagement = ({ setActiveTab }) => {
             className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2"
           >
             <UserPlus className="w-4 h-4" />
-            Tambah User
+            Tambah Pengguna
           </button>
         </div>
       </div>
@@ -330,7 +330,7 @@ const UserManagement = ({ setActiveTab }) => {
           <div className="bg-white rounded-xl p-6 w-full max-w-md mx-4">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-gray-900">
-                {editingUser ? "Edit User" : "Tambah User Baru"}
+                {editingUser ? "Edit Pengguna" : "Tambah Pengguna Baru"}
               </h3>
               <button
                 onClick={() => setShowForm(false)}
@@ -343,7 +343,7 @@ const UserManagement = ({ setActiveTab }) => {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Username
+                  Nama Pengguna
                 </label>
                 <input
                   type="text"
@@ -371,7 +371,7 @@ const UserManagement = ({ setActiveTab }) => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   {editingUser
                     ? "Password Baru (kosongkan jika tidak diubah)"
-                    : "Password"}
+                  : "Kata Sandi"}
                 </label>
                 <input
                   type="password"
@@ -442,7 +442,7 @@ const UserManagement = ({ setActiveTab }) => {
                   className="w-4 h-4 text-purple-600 rounded focus:ring-purple-500"
                 />
                 <label htmlFor="isActive" className="text-sm text-gray-700">
-                  User Aktif
+                  Pengguna Aktif
                 </label>
               </div>
 

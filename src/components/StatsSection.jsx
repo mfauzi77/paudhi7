@@ -8,9 +8,9 @@ const StatsSection = () => {
   const stats = [
     {
       id: 'anak',
-      number: 10214464,
+      number: 31474106,
       label: 'Jumlah anak usia dini (0–6 tahun) di Indonesia',
-              description: 'Sumber: Proyeksi Penduduk Badan Pusat Statistik & Kementerian Kesehatan, 2024',
+              description: 'Sumber: Badan Pusat Statistik (BPS), 2024',
       icon: 'fas fa-child',
       color: 'text-purple-400'
     },

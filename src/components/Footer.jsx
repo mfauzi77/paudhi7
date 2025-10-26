@@ -53,12 +53,7 @@ const Footer = () => {
                   </a>
                 </li>
                 <li>
-                  <a 
-                    href="/pengasuhan"
-                    className="text-gray-300 hover:text-white transition-colors duration-200"
-                  >
-                    Edukasi Parenting
-                  </a>
+                
                 </li>
               </ul>
             </nav>
@@ -67,7 +62,7 @@ const Footer = () => {
           {/* Company */}
           <div>
             <h3 className="text-white text-lg font-semibold mb-6">
-              Company
+              Profil
             </h3>
             <nav>
               <ul className="space-y-4">
@@ -76,7 +71,7 @@ const Footer = () => {
                     href="/about"
                     className="text-gray-300 hover:text-white transition-colors duration-200"
                   >
-                    About Us
+                    Tentang
                   </a>
                 </li>
                 <li>
@@ -84,7 +79,7 @@ const Footer = () => {
                     href="/faq"
                     className="text-gray-300 hover:text-white transition-colors duration-200"
                   >
-                    FAQs
+                    Tanya Jawab PAUD HI
                   </a>
                 </li>
               </ul>

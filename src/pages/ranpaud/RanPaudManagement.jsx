@@ -124,8 +124,18 @@ const RanPaudManagement = ({ setActiveTab }) => {
   const fetchKLList = async () => {
     try {
       const response = await apiService.getRanPaudKLList();
-      // Ensure we get an array from the response
-      const klData = Array.isArray(response) ? response : response.data || [];
+      console.log("📋 KL list response:", response);
+      
+      // Handle response structure from backend
+      let klData = [];
+      if (response.success && response.data) {
+        klData = response.data;
+      } else if (Array.isArray(response)) {
+        klData = response;
+      } else if (response.data) {
+        klData = response.data;
+      }
+      
       console.log("📋 Fetched KL list:", klData);
       setKlList(klData);
     } catch (error) {
@@ -208,8 +218,15 @@ const RanPaudManagement = ({ setActiveTab }) => {
       const response = await apiService.getRanPaudSummary();
       console.log("📊 Summary response:", response);
 
-      // Extract data from response
-      const stats = response.data || response;
+      // Handle response structure from backend
+      let stats = {};
+      if (response.success && response.data) {
+        stats = response.data;
+      } else if (response.data) {
+        stats = response.data;
+      } else {
+        stats = response;
+      }
 
       // Map backend field names to frontend field names
       const mappedStats = {
