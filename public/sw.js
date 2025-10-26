@@ -5,10 +5,8 @@ const DYNAMIC_CACHE = 'paud-hi-dynamic-v1.0.0';
 
 // Assets yang akan di-cache saat install
 const STATIC_ASSETS = [
-  '/',
   '/index.html',
   '/manifest.json'
-  // CSS dan JS akan di-cache otomatis oleh Vite
 ];
 
 // Assets yang akan di-cache secara dinamis
@@ -19,24 +17,23 @@ const DYNAMIC_ASSETS = [
   '/api/pembelajaran'
 ];
 
-// Install event - cache static assets
+// Install event - cache static assets (robust)
 self.addEventListener('install', (event) => {
   console.log('🔧 Service Worker installing...');
-  
-  event.waitUntil(
-    caches.open(STATIC_CACHE)
-      .then((cache) => {
-        console.log('📦 Caching static assets...');
-        return cache.addAll(STATIC_ASSETS);
-      })
-      .then(() => {
-        console.log('✅ Static assets cached successfully');
-        return self.skipWaiting();
-      })
-      .catch((error) => {
-        console.error('❌ Failed to cache static assets:', error);
-      })
-  );
+  event.waitUntil((async () => {
+    try {
+      const cache = await caches.open(STATIC_CACHE);
+      for (const url of STATIC_ASSETS) {
+        const resp = await fetch(url, { cache: 'no-cache' });
+        if (!resp.ok) throw new Error(`Failed to fetch ${url}: ${resp.status}`);
+        await cache.put(url, resp.clone());
+      }
+      console.log('✅ Static assets cached successfully');
+      await self.skipWaiting();
+    } catch (error) {
+      console.error('❌ Failed to cache static assets:', error);
+    }
+  })());
 });
 
 // Activate event - clean up old caches
