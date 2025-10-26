@@ -45,13 +45,27 @@ check_root() {
     fi
 }
 
+# Helper: detect MongoDB installation
+is_mongodb_installed() {
+    if command -v mongod >/dev/null 2>&1; then
+        return 0
+    fi
+    if [[ -x "/usr/bin/mongod" ]]; then
+        return 0
+    fi
+    if dpkg -l | grep -q "^ii  mongodb-org"; then
+        return 0
+    fi
+    return 1
+}
+
 install_dependencies() {
     log_info "Installing system dependencies..."
     
     # Update system
     apt update && apt upgrade -y
     
-    # Install required packages
+    # Install required packages (exclude deprecated 'mongodb' meta-package)
     apt install -y \
         curl \
         wget \
@@ -59,9 +73,19 @@ install_dependencies() {
         build-essential \
         apache2 \
         apache2-utils \
-        mongodb \
         certbot \
         python3-certbot-apache
+
+    # Conditionally add MongoDB repo and install only if not installed
+    if is_mongodb_installed; then
+        log_info "MongoDB terdeteksi sudah terpasang – melewati instalasi dan konfigurasi repo."
+    else
+        log_info "Menambahkan repository resmi MongoDB 7.0 dan menginstall mongodb-org..."
+        curl -fsSL https://pgp.mongodb.com/server-7.0.asc | gpg --dearmor -o /usr/share/keyrings/mongodb-server-7.0.gpg
+        echo "deb [ signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse main" > /etc/apt/sources.list.d/mongodb-org-7.0.list
+        apt update
+        apt-get install -y mongodb-org
+    fi
     
     # Enable Apache modules
     a2enmod rewrite
@@ -95,19 +119,22 @@ install_nodejs() {
 setup_mongodb() {
     log_info "Setting up MongoDB..."
     
-    # Start and enable MongoDB
-    systemctl start mongod
-    systemctl enable mongod
-    
-    # Wait for MongoDB to start
-    sleep 5
-    
-    # Check if MongoDB is running
-    if systemctl is-active --quiet mongod; then
-        log_success "MongoDB is running"
+    # Only start/enable if systemd service exists
+    if systemctl list-unit-files | grep -q '^mongod.service'; then
+        systemctl start mongod || true
+        systemctl enable mongod || true
+        
+        # Wait for MongoDB to start
+        sleep 5
+        
+        # Check if MongoDB is running
+        if systemctl is-active --quiet mongod; then
+            log_success "MongoDB is running"
+        else
+            log_warning "MongoDB service ditemukan tapi tidak aktif. Periksa konfigurasi Anda."
+        fi
     else
-        log_error "Failed to start MongoDB"
-        exit 1
+        log_info "Service 'mongod' tidak ditemukan. Melewati langkah start/enable (MongoDB sudah terpasang manual)."
     fi
 }
 
