@@ -192,6 +192,7 @@ deploy_backend() {
 
     # Setup PM2 startup
     pm2 startup systemd -u $SERVICE_USER --hp /var/www
++    env PATH=$PATH:/usr/bin pm2 startup systemd -u $SERVICE_USER --hp /var/www -y
 
     log_success "Backend deployed and started"
 }
@@ -306,41 +307,43 @@ setup_firewall() {
 }
 
 create_systemd_service() {
-    log_info "Creating systemd service for backend..."
-    
-    cat > /etc/systemd/system/paudhi-backend.service << EOF
-[Unit]
-Description=PAUD HI Backend Service
-After=network.target mongod.service
-Wants=mongod.service
-
-[Service]
-Type=simple
-User=$SERVICE_USER
-WorkingDirectory=/srv/paudhi/backend
-ExecStart=/usr/bin/node server.js
-Restart=always
-RestartSec=10
-Environment=NODE_ENV=production
-Environment=PORT=$BACKEND_PORT
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-    # Reload systemd and start service
-    systemctl daemon-reload
-    systemctl enable paudhi-backend
-    systemctl start paudhi-backend
-    
-    log_success "Systemd service created and started"
+-    log_info "Creating systemd service for backend..."
+-    
+-    cat > /etc/systemd/system/paudhi-backend.service << EOF
+-[Unit]
+-Description=PAUD HI Backend Service
+-After=network.target mongod.service
+-Wants=mongod.service
+-
+-[Service]
+-Type=simple
+-User=$SERVICE_USER
+-WorkingDirectory=/srv/paudhi/backend
+-ExecStart=/usr/bin/node server.js
+-Restart=always
+-RestartSec=10
+-Environment=NODE_ENV=production
+-Environment=PORT=$BACKEND_PORT
+-
+-[Install]
+-WantedBy=multi-user.target
+-EOF
+-
+-    # Reload systemd and start service
+-    systemctl daemon-reload
+-    systemctl enable paudhi-backend
+-    systemctl start paudhi-backend
+-    
+-    log_success "Systemd service created and started"
++    log_info "Skipping systemd Node service; backend is managed by PM2."
 }
 
 verify_deployment() {
     log_info "Verifying deployment..."
     
     # Check services
-    services=("apache2" "mongod" "paudhi-backend")
+-    services=("apache2" "mongod" "paudhi-backend")
++    services=("apache2" "mongod")
     for service in "${services[@]}"; do
         if systemctl is-active --quiet $service; then
             log_success "$service is running"
@@ -348,6 +351,13 @@ verify_deployment() {
             log_error "$service is not running"
         fi
     done
++
++    # Check PM2 process
++    if sudo -u $SERVICE_USER -H pm2 describe paudhi-backend >/dev/null 2>&1; then
++        log_success "PM2 process 'paudhi-backend' is running"
++    else
++        log_error "PM2 process 'paudhi-backend' is not running"
++    fi
     
     # Check backend API
     sleep 5
@@ -404,7 +414,7 @@ main() {
     setup_apache
     setup_ssl
     setup_firewall
-    create_systemd_service
+-    create_systemd_service
     verify_deployment
     show_summary
     
