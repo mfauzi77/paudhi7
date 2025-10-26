@@ -191,7 +191,7 @@ deploy_backend() {
     sudo -u $SERVICE_USER -H pm2 save
 
     # Setup PM2 startup
-    env PATH=$PATH:/usr/bin pm2 startup systemd -u $SERVICE_USER --hp /var/www -y
+    env PATH=$PATH:/usr/bin pm2 startup systemd -u $SERVICE_USER --hp /var/www
 
     log_success "Backend deployed and started"
 }
