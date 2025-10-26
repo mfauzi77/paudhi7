@@ -138,7 +138,7 @@ const Navigation = () => {
             <div className="flex-shrink-0">
               <img
                 className="h-8 w-auto"
-                src="/src/images/logo.svg"
+                src="/logo.svg"
                 alt="PAUD HI Logo"
               />
             </div>
