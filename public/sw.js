@@ -1,7 +1,7 @@
 // Service Worker untuk PAUD HI
-const CACHE_NAME = 'paud-hi-v1.0.0';
-const STATIC_CACHE = 'paud-hi-static-v1.0.0';
-const DYNAMIC_CACHE = 'paud-hi-dynamic-v1.0.0';
+const CACHE_NAME = 'paud-hi-v1.0.1';
+const STATIC_CACHE = 'paud-hi-static-v1.0.1';
+const DYNAMIC_CACHE = 'paud-hi-dynamic-v1.0.1';
 
 // Assets yang akan di-cache saat install
 const STATIC_ASSETS = [
@@ -121,11 +121,17 @@ async function cacheFirst(request, cacheName) {
       return cachedResponse;
     }
 
-    const networkResponse = await fetch(request);
+    const networkResponse = await fetch(request, { cache: 'no-cache' });
     if (networkResponse.ok) {
-      const cache = await caches.open(cacheName);
-      cache.put(request, networkResponse.clone());
-      console.log('💾 Cached new resource:', request.url);
+      const ct = networkResponse.headers.get('content-type') || '';
+      // Hindari meng-cache HTML untuk permintaan aset/gambar
+      if (!ct.includes('text/html')) {
+        const cache = await caches.open(cacheName);
+        await cache.put(request, networkResponse.clone());
+        console.log('💾 Cached new resource:', request.url);
+      } else {
+        console.warn('↩️ Skip caching (HTML detected for asset):', request.url);
+      }
     }
     return networkResponse;
   } catch (error) {
@@ -137,11 +143,16 @@ async function cacheFirst(request, cacheName) {
 // Network first strategy
 async function networkFirst(request, cacheName) {
   try {
-    const networkResponse = await fetch(request);
+    const networkResponse = await fetch(request, { cache: 'no-cache' });
     if (networkResponse.ok) {
-      const cache = await caches.open(cacheName);
-      cache.put(request, networkResponse.clone());
-      console.log('🌐 Network response cached:', request.url);
+      const ct = networkResponse.headers.get('content-type') || '';
+      if (!ct.includes('text/html')) {
+        const cache = await caches.open(cacheName);
+        await cache.put(request, networkResponse.clone());
+        console.log('🌐 Network response cached:', request.url);
+      } else {
+        console.warn('↩️ Skip caching network response (HTML):', request.url);
+      }
     }
     return networkResponse;
   } catch (error) {
