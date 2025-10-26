@@ -201,7 +201,11 @@ deploy_frontend() {
     
     # Install frontend dependencies and build at project root
     cd "$PROJECT_ROOT"
-    npm ci --no-audit --no-fund
+    # Try deterministic install; fallback if lockfile is out-of-sync
+    if ! env NPM_CONFIG_LOGLEVEL=error npm ci --no-audit --no-fund; then
+        log_warning "npm ci gagal; lock file tidak sinkron. Fallback ke npm install."
+        env NPM_CONFIG_LOGLEVEL=error npm install --no-audit --no-fund
+    fi
     npm run build
     
     # Clear web root
