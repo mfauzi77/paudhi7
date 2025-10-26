@@ -73,6 +73,7 @@ install_dependencies() {
         curl \
         wget \
         git \
+        rsync \
         build-essential \
         apache2 \
         apache2-utils \
@@ -150,26 +151,40 @@ deploy_backend() {
         exit 1
     fi
 
+    local DEPLOY_ROOT="/srv/paudhi"
+    local BACKEND_DIR="$DEPLOY_ROOT/backend"
+
     # Create backend directory
-    mkdir -p /srv/paudhi/backend
+    mkdir -p "$BACKEND_DIR"
 
-    # Copy backend files (exclude node_modules if present)
-    cp -r "$PROJECT_ROOT/backend"/* /srv/paudhi/backend/
-    rm -rf /srv/paudhi/backend/node_modules
+    # Copy backend files with rsync (exclude unnecessary dirs)
+    rsync -a --delete \
+        --exclude 'node_modules' \
+        --exclude '.git' \
+        --exclude '.cache' \
+        "$PROJECT_ROOT/backend/" "$BACKEND_DIR/"
 
-    # Set permissions
-    chown -R $SERVICE_USER:$SERVICE_USER /srv/paudhi/backend
+    # Ensure clean install
+    rm -rf "$BACKEND_DIR/node_modules"
 
-    # Install dependencies (production only, using --omit=dev)
-    cd /srv/paudhi/backend
-    sudo -u $SERVICE_USER npm ci --omit=dev
+    # Set permissions on backend dir
+    chown -R $SERVICE_USER:$SERVICE_USER "$BACKEND_DIR"
+
+    # Prepare npm cache for SERVICE_USER to avoid EACCES errors
+    mkdir -p /var/www/.npm
+    chown -R $SERVICE_USER:$SERVICE_USER /var/www/.npm || true
+    
+    # Install dependencies (production only, omit dev, suppress audits/fund, clean cache first)
+    cd "$BACKEND_DIR"
+    sudo -u $SERVICE_USER -H npm cache clean --force || true
+    sudo -u $SERVICE_USER -H env NPM_CONFIG_LOGLEVEL=error npm ci --omit=dev --no-audit --no-fund
 
     # Create uploads directories
-    sudo -u $SERVICE_USER node scripts/createUploadDirs.js
+    sudo -u $SERVICE_USER -H node scripts/createUploadDirs.js
 
     # Start backend with PM2
-    sudo -u $SERVICE_USER pm2 start server.js --name paudhi-backend
-    sudo -u $SERVICE_USER pm2 save
+    sudo -u $SERVICE_USER -H pm2 start server.js --name paudhi-backend
+    sudo -u $SERVICE_USER -H pm2 save
 
     # Setup PM2 startup
     pm2 startup systemd -u $SERVICE_USER --hp /var/www
@@ -180,10 +195,9 @@ deploy_backend() {
 deploy_frontend() {
     log_info "Deploying frontend..."
     
-    # Install frontend dependencies
-    npm ci
-    
-    # Build frontend
+    # Install frontend dependencies and build at project root
+    cd "$PROJECT_ROOT"
+    npm ci --no-audit --no-fund
     npm run build
     
     # Clear web root
