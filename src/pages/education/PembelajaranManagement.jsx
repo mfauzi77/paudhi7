@@ -1185,7 +1185,7 @@ const PembelajaranManagement = ({ activeTab, setActiveTab }) => {
                             src={
                               item.thumbnail ||
                               `https://img.youtube.com/vi/${item.youtubeId}/mqdefault.jpg` ||
-                              `${import.meta.env.VITE_API_URL?.replace('/api', '') || (import.meta.env.DEV ? 'http://localhost:5000' : '')}/api/placeholder/60/60`
+                              `${import.meta.env.VITE_API_URL?.replace('/api', '') || ''}/api/placeholder/60/60`
                             }
                             alt=""
                             className="w-16 h-12 rounded-lg object-cover bg-gray-100"

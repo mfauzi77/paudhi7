@@ -59,3 +59,4 @@ const RiskMap = ({ regions }) => {
 };
 
 export default RiskMap;
+

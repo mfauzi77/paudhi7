@@ -49,14 +49,24 @@ const backendOrigin = apiBase.replace(/\/api$/, "");
     const candidates = [];
     const apiBase = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_URL)
       ? import.meta.env.VITE_API_URL
-      : (window && window.PAUDHI_API_BASE) || import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:5000/api' : '/api');
+      : (window && window.PAUDHI_API_BASE) || import.meta.env.VITE_API_URL || '/api';
     const backendOrigin = apiBase.replace(/\/$/, '').replace(/\/api$/, '');
     if (!raw) return candidates;
     let value = raw;
     if (typeof value === 'object' && value.url) value = value.url;
     if (typeof value !== 'string') return candidates;
-    // Full URL first
-    if (value.startsWith('http')) candidates.push(value);
+    // Full URL first, tapi cek localhost
+    if (value.startsWith('http')) {
+      // Jika localhost, ganti dengan production URL
+      if (value.includes('localhost:5000')) {
+        const filename = value.split('/').pop();
+        const productionUrl = `${backendOrigin}/uploads/news/${filename}`;
+        console.log('🔄 ImageWithFallback: Converting localhost to production URL:', productionUrl);
+        candidates.push(productionUrl);
+      } else {
+        candidates.push(value);
+      }
+    }
     // Relative /uploads
     if (value.startsWith('/uploads/')) candidates.push(`${backendOrigin}${value}`);
     // uploads/... path

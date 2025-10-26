@@ -8,6 +8,7 @@
     "dev": "nodemon server.js",
     "seed": "node scripts/seedData.js",
     "create-sample-public": "node scripts/createSamplePublicData.js",
+    "fix-image-urls": "node scripts/fixImageUrls.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

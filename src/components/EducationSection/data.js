@@ -29,7 +29,7 @@ export const panduanData = [
     publishDate: '2025',
     tags: ['Fallback'],
     stakeholder: 'System',
-    thumbnail: `${import.meta.env.VITE_API_URL?.replace('/api', '') || (import.meta.env.DEV ? 'http://localhost:5000' : '')}/api/placeholder/400/300`,
+    thumbnail: `${import.meta.env.VITE_API_URL?.replace('/api', '') || ''}/api/placeholder/400/300`,
     pdfUrl: '#'
   }
 ];
@@ -67,7 +67,7 @@ export const toolsData = [
     tags: ['Fallback'],
     stakeholder: 'System',
     author: 'System',
-    thumbnail: `${import.meta.env.VITE_API_URL?.replace('/api', '') || (import.meta.env.DEV ? 'http://localhost:5000' : '')}/api/placeholder/400/300`,
+    thumbnail: `${import.meta.env.VITE_API_URL?.replace('/api', '') || ''}/api/placeholder/400/300`,
     features: ['Fallback'],
     format: 'System',
     usage: 'Fallback mode'

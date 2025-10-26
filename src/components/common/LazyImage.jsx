@@ -55,7 +55,7 @@ const LazyImage = ({
     
     const apiBase = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_URL)
       ? import.meta.env.VITE_API_URL
-      : (window && window.PAUDHI_API_BASE) || import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:5000/api' : '/api');
+      : (window && window.PAUDHI_API_BASE) || import.meta.env.VITE_API_URL || '/api';
     const backendOrigin = apiBase.replace(/\/$/, '').replace(/\/api$/, '');
     
     let value = rawSrc;
@@ -72,8 +72,15 @@ const LazyImage = ({
     // Resolve base URL - menggunakan logic yang sama dengan getImageUrl
     let baseUrl;
     if (value.startsWith('http')) {
-      baseUrl = value;
-      console.log('✅ LazyImage: Full URL image:', baseUrl);
+      // Jika localhost, ganti dengan production URL
+      if (value.includes('localhost:5000')) {
+        const filename = value.split('/').pop();
+        baseUrl = `${backendOrigin}/uploads/news/${filename}`;
+        console.log('🔄 LazyImage: Converting localhost to production URL:', baseUrl);
+      } else {
+        baseUrl = value;
+        console.log('✅ LazyImage: Full URL image:', baseUrl);
+      }
     } else if (value.startsWith('/uploads/')) {
       baseUrl = `${backendOrigin}${value}`;
       console.log('✅ LazyImage: Constructed image URL (relative /uploads):', baseUrl);

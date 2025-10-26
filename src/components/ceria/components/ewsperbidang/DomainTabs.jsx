@@ -58,3 +58,4 @@ const DomainTabs = ({ domains, selectedDomain, setSelectedDomain }) => {
 };
 
 export default DomainTabs;
+

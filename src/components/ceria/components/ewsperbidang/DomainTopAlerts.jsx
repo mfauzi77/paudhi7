@@ -34,3 +34,4 @@ const DomainTopAlerts = ({ alerts, domainName }) => {
 };
 
 export default DomainTopAlerts;
+

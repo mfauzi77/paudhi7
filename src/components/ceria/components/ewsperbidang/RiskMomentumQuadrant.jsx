@@ -104,3 +104,4 @@ const RiskMomentumQuadrant = ({ regions, onRegionSelect, selectedRegionId }) => 
 };
 
 export default RiskMomentumQuadrant;
+

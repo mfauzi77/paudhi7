@@ -41,3 +41,4 @@ const DomainSummary = ({ data }) => {
 };
 
 export default DomainSummary;
+

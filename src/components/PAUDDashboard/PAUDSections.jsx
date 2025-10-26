@@ -272,10 +272,10 @@ export const PAUDKLHeader = ({
       <div className="flex flex-col lg:flex-row items-center gap-8">
      {/* Logo  <div className="flex-shrink-0">
           <img 
-            src={klData.logo || `${import.meta.env.VITE_API_URL?.replace('/api', '') || (import.meta.env.DEV ? 'http://localhost:5000' : '')}/api/placeholder/120/120`}
+            src={klData.logo || `${import.meta.env.VITE_API_URL?.replace('/api', '') || ''}/api/placeholder/120/120`}
             alt={`Logo ${klData.name}`}
             className="w-30 h-30 object-contain rounded-lg bg-white p-4 shadow-md"
-            onError={(e) => { e.target.src = `${import.meta.env.VITE_API_URL?.replace('/api', '') || (import.meta.env.DEV ? 'http://localhost:5000' : '')}/api/placeholder/120/120`; }}
+            onError={(e) => { e.target.src = `${import.meta.env.VITE_API_URL?.replace('/api', '') || ''}/api/placeholder/120/120`; }}
           />
         </div> */}
         

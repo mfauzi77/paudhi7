@@ -48,3 +48,4 @@ const RegionRankingList = ({ regions }) => {
 };
 
 export default RegionRankingList;
+

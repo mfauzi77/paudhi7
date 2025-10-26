@@ -352,7 +352,7 @@ const NewsSection = () => {
   const getImageUrl = (article) => {
     const apiBase = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_URL)
       ? import.meta.env.VITE_API_URL
-      : (window && window.PAUDHI_API_BASE) || import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:5000/api' : '/api');
+      : (window && window.PAUDHI_API_BASE) || import.meta.env.VITE_API_URL || '/api';
     const backendOrigin = apiBase.replace(/\/$/, '').replace(/\/api$/, '');
     
     // Debug logging
@@ -371,8 +371,15 @@ const NewsSection = () => {
 
     // Jika image adalah string (filename atau URL dari backend)
     if (typeof article.image === 'string') {
-      // Jika sudah http, return langsung
+      // Jika sudah http, tapi cek localhost
       if (article.image.startsWith('http')) {
+        // Jika localhost, ganti dengan production URL
+        if (article.image.includes('localhost:5000')) {
+          const filename = article.image.split('/').pop();
+          const productionUrl = `${backendOrigin}/uploads/news/${filename}`;
+          console.log('🔄 NewsSection: Converting localhost to production URL:', productionUrl);
+          return productionUrl;
+        }
         console.log('✅ Full URL image:', article.image);
         return article.image;
       }

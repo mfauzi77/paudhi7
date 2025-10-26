@@ -4,7 +4,7 @@ export const debugAPI = {
   // Test koneksi ke backend
   async testConnection() {
     try {
-      const apiBase = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? "http://localhost:5000/api" : "/api");
+      const apiBase = import.meta.env.VITE_API_URL || "/api";
       const response = await fetch(`${apiBase}/health`);
       const data = await response.json();
       console.log("✅ Backend connection test:", data);
@@ -23,7 +23,7 @@ export const debugAPI = {
         return { success: false, error: "No token found" };
       }
 
-      const apiBase = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? "http://localhost:5000/api" : "/api");
+      const apiBase = import.meta.env.VITE_API_URL || "/api";
       const response = await fetch(`${apiBase}/auth/verify`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -40,7 +40,7 @@ export const debugAPI = {
 
   // Test RAN PAUD endpoints
   async testRanPaudEndpoints() {
-    const apiBase = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? "http://localhost:5000/api" : "/api");
+    const apiBase = import.meta.env.VITE_API_URL || "/api";
     const tests = [
       {
         name: "GET /ran-paud/data",

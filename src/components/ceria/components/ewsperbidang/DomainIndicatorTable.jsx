@@ -60,3 +60,4 @@ const DomainIndicatorTable = ({ indicators }) => {
 };
 
 export default DomainIndicatorTable;
+
