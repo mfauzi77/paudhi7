@@ -270,12 +270,7 @@ const NewsSection = () => {
                 <svg class="meta-icon" viewBox="0 0 24 24">
                   <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
                 </svg>
-                <span>${new Date(newsItem.createdAt).toLocaleDateString('id-ID', { 
-                  weekday: 'long', 
-                  year: 'numeric', 
-                  month: 'long', 
-                  day: 'numeric' 
-                })}</span>
+                <span>${new Date(newsItem.createdAt).toLocaleDateString('id-ID')}</span>
               </div>
               <div class="meta-item">
                 <svg class="meta-icon" viewBox="0 0 24 24">
@@ -352,9 +347,11 @@ const NewsSection = () => {
   const getImageUrl = (article) => {
     const apiBase = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_URL)
       ? import.meta.env.VITE_API_URL
-      : (window && window.PAUDHI_API_BASE) || import.meta.env.VITE_API_URL || '/api';
-    const backendOrigin = apiBase.replace(/\/$/, '').replace(/\/api$/, '');
-    
+      : (window && window.PAUDHI_API_BASE) || import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:5000/api' : '/api');
+    const backendOrigin = apiBase && /^https?:\/\//.test(apiBase)
+      ? apiBase.replace(/\/$/, '').replace(/\/api$/, '')
+      : window.location.origin;
+
     // Debug logging
     console.log('🔍 getImageUrl called with:', {
       article: article._id,
@@ -362,8 +359,7 @@ const NewsSection = () => {
       imageType: typeof article.image,
       imageValue: article.image
     });
-    
-    // Cek apakah artikel memiliki image
+
     if (!article.image) {
       console.log('❌ No image field for article:', article._id);
       return null;
@@ -371,15 +367,18 @@ const NewsSection = () => {
 
     // Jika image adalah string (filename atau URL dari backend)
     if (typeof article.image === 'string') {
-      // Jika sudah http, tapi cek localhost
+      // Jika absolute URL, normalisasi jika dari localhost/http dan path /uploads
       if (article.image.startsWith('http')) {
-        // Jika localhost, ganti dengan production URL
-        if (article.image.includes('localhost:5000')) {
-          const filename = article.image.split('/').pop();
-          const productionUrl = `${backendOrigin}/uploads/news/${filename}`;
-          console.log('🔄 NewsSection: Converting localhost to production URL:', productionUrl);
-          return productionUrl;
-        }
+        try {
+          const u = new URL(article.image);
+          const isLocal = /localhost|127\.0\.0\.1/.test(u.hostname) || u.protocol === 'http:';
+          const isUploads = u.pathname.startsWith('/uploads');
+          if (isUploads && (isLocal || u.origin !== backendOrigin)) {
+            const imageUrl = `${backendOrigin}${u.pathname}`;
+            console.log('✅ Normalized absolute uploads URL:', imageUrl);
+            return imageUrl;
+          }
+        } catch (e) {}
         console.log('✅ Full URL image:', article.image);
         return article.image;
       }
@@ -402,19 +401,25 @@ const NewsSection = () => {
     // Fallback untuk object (jika masih ada masalah)
     if (article.image && typeof article.image === 'object') {
       console.log('⚠️ Image is object, trying to extract filename:', article.image);
-      
       if (article.image.url) {
-        if (article.image.url.startsWith('http')) {
-          console.log('✅ Object with full URL:', article.image.url);
-          return article.image.url;
-        }
+        try {
+          if (article.image.url.startsWith('http')) {
+            const u = new URL(article.image.url);
+            const isLocal = /localhost|127\.0\.0\.1/.test(u.hostname) || u.protocol === 'http:';
+            const isUploads = u.pathname.startsWith('/uploads');
+            if (isUploads && (isLocal || u.origin !== backendOrigin)) {
+              const imageUrl = `${backendOrigin}${u.pathname}`;
+              console.log('✅ Normalized object absolute URL:', imageUrl);
+              return imageUrl;
+            }
+          }
+        } catch (e) {}
         const rel = article.image.url.startsWith('/uploads/')
           ? `${backendOrigin}${article.image.url}`
           : `${backendOrigin}/${article.image.url.replace(/^\//,'')}`;
         console.log('✅ Object with relative URL:', rel);
         return rel;
       }
-      
       if (article.image.filename) {
         const imageUrl = `${backendOrigin}/uploads/news/${article.image.filename}`;
         console.log('✅ Object with filename:', imageUrl);

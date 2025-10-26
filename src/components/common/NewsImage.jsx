@@ -47,8 +47,10 @@ const NewsImage = ({
     
     const apiBase = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_URL)
       ? import.meta.env.VITE_API_URL
-      : (window && window.PAUDHI_API_BASE) || import.meta.env.VITE_API_URL || '/api';
-    const backendOrigin = apiBase.replace(/\/$/, '').replace(/\/api$/, '');
+      : (window && window.PAUDHI_API_BASE) || import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:5000/api' : '/api');
+    const backendOrigin = apiBase && /^https?:\/\//.test(apiBase)
+      ? apiBase.replace(/\/$/, '').replace(/\/api$/, '')
+      : window.location.origin;
     
     // Debug logging
     console.log('🔍 NewsImage getImageUrl called with:', {
@@ -64,15 +66,18 @@ const NewsImage = ({
 
     // Jika image adalah string (filename atau URL dari backend)
     if (typeof rawSrc === 'string') {
-      // Jika sudah http, tapi cek apakah localhost
+      // Jika absolute URL, normalisasi jika dari localhost/http dan path /uploads
       if (rawSrc.startsWith('http')) {
-        // Jika localhost, ganti dengan production URL
-        if (rawSrc.includes('localhost:5000')) {
-          const filename = rawSrc.split('/').pop();
-          const productionUrl = `${backendOrigin}/uploads/news/${filename}`;
-          console.log('🔄 NewsImage: Converting localhost to production URL:', productionUrl);
-          return productionUrl;
-        }
+        try {
+          const u = new URL(rawSrc);
+          const isLocal = /localhost|127\.0\.0\.1/.test(u.hostname) || u.protocol === 'http:';
+          const isUploads = u.pathname.startsWith('/uploads');
+          if (isUploads && (isLocal || u.origin !== backendOrigin)) {
+            const imageUrl = `${backendOrigin}${u.pathname}`;
+            console.log('✅ NewsImage: Normalized absolute uploads URL:', imageUrl);
+            return imageUrl;
+          }
+        } catch (e) {}
         console.log('✅ NewsImage: Full URL image:', rawSrc);
         return rawSrc;
       }
@@ -97,7 +102,21 @@ const NewsImage = ({
       console.log('⚠️ NewsImage: Image is object, trying to extract filename:', rawSrc);
       
       if (rawSrc.url) {
-        const imageUrl = getImageUrl(rawSrc.url);
+        try {
+          if (rawSrc.url.startsWith('http')) {
+            const u = new URL(rawSrc.url);
+            const isLocal = /localhost|127\.0\.0\.1/.test(u.hostname) || u.protocol === 'http:';
+            const isUploads = u.pathname.startsWith('/uploads');
+            if (isUploads && (isLocal || u.origin !== backendOrigin)) {
+              const imageUrl = `${backendOrigin}${u.pathname}`;
+              console.log('✅ NewsImage: Normalized object absolute URL:', imageUrl);
+              return imageUrl;
+            }
+          }
+        } catch (e) {}
+        const imageUrl = rawSrc.url.startsWith('/uploads/')
+          ? `${backendOrigin}${rawSrc.url}`
+          : `${backendOrigin}/${rawSrc.url.replace(/^\//,'')}`;
         console.log('✅ NewsImage: Extracted URL from object:', imageUrl);
         return imageUrl;
       }
