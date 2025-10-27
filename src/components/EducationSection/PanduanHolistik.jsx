@@ -200,7 +200,7 @@ const PanduanCard = React.memo(({ item, onItemClick, onItemDownload }) => {
       <div className="relative h-24 sm:h-32 lg:h-48 overflow-hidden flex-shrink-0">
         <ImageWithFallback
           src={item.thumbnail || item.thumbnailUrl}
-          alt=""
+          alt={item.title || "Panduan Holistik"}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           hoverEffect={true}
         />

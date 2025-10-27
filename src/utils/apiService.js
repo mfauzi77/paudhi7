@@ -267,7 +267,33 @@ class ApiService {
       reader.readAsDataURL(file);
     });
   }
+
+  formatFileSize(bytes) {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+  }
+
+  formatDate(dateString) {
+    if (!dateString) return "-";
+    const date = new Date(dateString);
+    if (isNaN(date)) return "-";
+    return date.toLocaleDateString("id-ID", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  }
+
+  formatNumber(value) {
+    if (value === null || value === undefined || isNaN(value)) return "-";
+    return new Intl.NumberFormat("id-ID").format(value);
+  }
 }
+
+
 
 // Singleton instance
 const apiService = new ApiService();
