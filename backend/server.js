@@ -13,6 +13,9 @@ const createUploadDirectories = require("./scripts/createUploadDirs");
 
 const app = express();
 
+// Trust reverse proxy (Apache/Nginx) so req.ip reflects real client IP
+app.set('trust proxy', true);
+
 // ✅ CORS configuration - UNCHANGED
 const corsOptions = {
   origin: [
@@ -64,18 +67,36 @@ app.use(
 const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per windowMs
+  standardHeaders: true,
+  legacyHeaders: false,
   message: "Too many requests from this IP, please try again later.",
+});
+
+// 🆕 Pembelajaran-specific limiter (more permissive for public reads)
+const pembelajaranLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 200, // allow bursty dashboard reads
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: "Too many requests to pembelajaran, please slow down.",
 });
 
 // 🆕 RAN PAUD specific rate limiter
 const ranPaudLimiter = rateLimit({
   windowMs: 5 * 60 * 1000, // 5 minutes
   max: 200, // Higher limit for RAN PAUD operations
+  standardHeaders: true,
+  legacyHeaders: false,
   message: "Too many RAN PAUD requests, please slow down.",
 });
 
-app.use("/api/", generalLimiter);
-app.use("/api/ran-paud", ranPaudLimiter); // ← NEW: Rate limiting untuk RAN PAUD
+// Apply limiters (skip general limiter for pembelajaran path)
+app.use('/api/pembelajaran', pembelajaranLimiter);
+app.use('/api/ran-paud', ranPaudLimiter);
+app.use('/api/', (req, res, next) => {
+  if (req.path.startsWith('/pembelajaran')) return next();
+  return generalLimiter(req, res, next);
+});
 
 // Body parsing middleware
 app.use(express.json({ limit: "10mb" }));

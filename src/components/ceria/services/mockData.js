@@ -31,6 +31,21 @@ const generateHistoricalData = (baseScore, length = 6) => {
 // --- DATA LOADING & PROCESSING ---
 export const loadAndProcessData = async () => {
     try {
+        // Helper to robustly fetch JSON with content-type checks
+        const fetchJson = async (url) => {
+            const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+            if (!res.ok) {
+                const txt = await res.text().catch(() => '');
+                throw new Error(`Failed to fetch ${url}: ${res.status}. First 120 chars: ${txt.slice(0,120)}`);
+            }
+            const ct = res.headers.get('content-type') || '';
+            if (!ct.includes('application/json')) {
+                const txt = await res.text().catch(() => '');
+                throw new Error(`Non-JSON response for ${url}: ${ct}. First 120 chars: ${txt.slice(0,120)}`);
+            }
+            return res.json();
+        };
+
         // --- FETCH RAW DATA FROM JSON FILES ---
         const [
             kesehatanLingkunganRawData,
@@ -48,20 +63,20 @@ export const loadAndProcessData = async () => {
             anakUsiaDiniPopulationRawData,
             paudParticipationRawData,
         ] = await Promise.all([
-            fetch('/data/kesehatan_lingkungan.json').then(res => res.json()),
-            fetch('/data/perkawinan_anak.json').then(res => res.json()),
-            fetch('/data/kasus_perlindungan_anak.json').then(res => res.json()),
-            fetch('/data/paud_akreditasi.json').then(res => res.json()),
-            fetch('/data/paud_kualifikasi_guru.json').then(res => res.json()),
-            fetch('/data/anc.json').then(res => res.json()),
-            fetch('/data/gizi.json').then(res => res.json()),
-            fetch('/data/akta.json').then(res => res.json()),
-            fetch('/data/idl.json').then(res => res.json()),
-            fetch('/data/kemiskinan.json').then(res => res.json()),
-            fetch('/data/pkh.json').then(res => res.json()),
-            fetch('/data/sanitasi.json').then(res => res.json()),
-            fetch('/data/populasi_anak_usia_dini.json').then(res => res.json()),
-            fetch('/data/partisipasi_paud.json').then(res => res.json()),
+            fetchJson('/data/kesehatan_lingkungan.json'),
+            fetchJson('/data/perkawinan_anak.json'),
+            fetchJson('/data/kasus_perlindungan_anak.json'),
+            fetchJson('/data/paud_akreditasi.json'),
+            fetchJson('/data/paud_kualifikasi_guru.json'),
+            fetchJson('/data/anc.json'),
+            fetchJson('/data/gizi.json'),
+            fetchJson('/data/akta.json'),
+            fetchJson('/data/idl.json'),
+            fetchJson('/data/kemiskinan.json'),
+            fetchJson('/data/pkh.json'),
+            fetchJson('/data/sanitasi.json'),
+            fetchJson('/data/populasi_anak_usia_dini.json'),
+            fetchJson('/data/partisipasi_paud.json'),
         ]);
         
         console.log('📊 Raw data loaded:', {
