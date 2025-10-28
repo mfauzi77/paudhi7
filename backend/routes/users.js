@@ -115,6 +115,34 @@ router.post("/", authenticate, requireAdminUtama, async (req, res) => {
       createdBy: req.user.email || "admin@paudhi.kemenko.go.id",
     };
 
+    // Basic required field validation to avoid ambiguous 500s
+    const requiredFields = ["username", "email", "password", "fullName"];
+    for (const field of requiredFields) {
+      if (!userData[field] || (typeof userData[field] === "string" && !userData[field].trim())) {
+        return res.status(400).json({
+          success: false,
+          message: `Field '${field}' wajib diisi`,
+        });
+      }
+    }
+
+    // Ensure role is set explicitly to avoid defaulting to admin_kl unintentionally
+    if (!userData.role) {
+      return res.status(400).json({
+        success: false,
+        message: "Field 'role' wajib diisi",
+      });
+    }
+
+    // Sanitize permissions: if client sends old array format or invalid type, drop to use defaults
+    if (
+      userData.permissions &&
+      (Array.isArray(userData.permissions) || typeof userData.permissions !== "object")
+    ) {
+      console.warn("⚠️ Invalid permissions format in request; applying defaults.");
+      delete userData.permissions; // model hook will set defaults
+    }
+
     // Normalize role-related fields to avoid enum/required issues
     if (userData.role !== "admin_kl") {
       userData.klId = undefined;
@@ -127,6 +155,26 @@ router.post("/", authenticate, requireAdminUtama, async (req, res) => {
           message: "Untuk role Admin K/L, K/L wajib dipilih",
         });
       }
+    }
+
+    // For admin_daerah, regionName is required and must be valid
+    if (userData.role === "admin_daerah") {
+      const regions = (User.getRegionList && User.getRegionList()) || [];
+      const rn = (userData.regionName || "").trim();
+      if (!rn) {
+        return res.status(400).json({
+          success: false,
+          message: "Untuk role Admin Daerah, nama daerah wajib dipilih",
+        });
+      }
+      if (!regions.includes(rn)) {
+        return res.status(400).json({
+          success: false,
+          message: "Nama daerah tidak valid",
+          allowed: regions,
+        });
+      }
+      userData.regionName = rn; // normalized
     }
 
     // Check if username or email already exists
@@ -161,6 +209,9 @@ router.post("/", authenticate, requireAdminUtama, async (req, res) => {
       if (saveErr.name === 'ValidationError') {
         return res.status(400).json({ success: false, message: 'ValidationError', errors: Object.values(saveErr.errors).map(e => e.message) });
       }
+      if (saveErr.name === 'CastError') {
+        return res.status(400).json({ success: false, message: 'CastError pada field', error: saveErr.message });
+      }
       if (saveErr.code === 11000) {
         const field = Object.keys(saveErr.keyValue || {})[0];
         return res.status(400).json({ success: false, message: `Duplicate ${field}: ${saveErr.keyValue[field]}` });
@@ -189,6 +240,15 @@ router.put("/:id", authenticate, requireAdminUtama, async (req, res) => {
       updatedBy: req.user.email || "admin@paudhi.kemenko.go.id",
     };
 
+    // Sanitize permissions on update as well
+    if (
+      updateData.permissions &&
+      (Array.isArray(updateData.permissions) || typeof updateData.permissions !== "object")
+    ) {
+      console.warn("⚠️ Invalid permissions format in update; dropping provided permissions.");
+      delete updateData.permissions; // keep existing or model defaults
+    }
+
     // If password is empty, don't update it
     if (!updateData.password) {
       delete updateData.password;
@@ -206,6 +266,26 @@ router.put("/:id", authenticate, requireAdminUtama, async (req, res) => {
           message: "Untuk role Admin K/L, K/L wajib dipilih",
         });
       }
+    }
+
+    // For admin_daerah, validate regionName on update when role set
+    if (updateData.role === "admin_daerah") {
+      const regions = (User.getRegionList && User.getRegionList()) || [];
+      const rn = (updateData.regionName || "").trim();
+      if (!rn) {
+        return res.status(400).json({
+          success: false,
+          message: "Untuk role Admin Daerah, nama daerah wajib dipilih",
+        });
+      }
+      if (!regions.includes(rn)) {
+        return res.status(400).json({
+          success: false,
+          message: "Nama daerah tidak valid",
+          allowed: regions,
+        });
+      }
+      updateData.regionName = rn;
     }
 
     const updatedUser = await User.findByIdAndUpdate(
@@ -339,6 +419,19 @@ router.get("/kl-list", authenticate, requireAdminUtama, async (req, res) => {
       message: "Error saat mengambil daftar K/L",
       error: error.message,
     });
+  }
+});
+
+// GET /api/users/region-list - Get region list for admin_daerah
+router.get("/region-list", authenticate, requireAdminUtama, async (req, res) => {
+  try {
+    console.log("📋 Getting region list for admin_daerah...");
+    const regions = User.getRegionList();
+    console.log("✅ Region list retrieved");
+    res.json({ success: true, message: "Daftar daerah berhasil diambil", data: regions });
+  } catch (error) {
+    console.error("❌ Region list error:", error);
+    res.status(500).json({ success: false, message: "Error saat mengambil daftar daerah", error: error.message });
   }
 });
 
