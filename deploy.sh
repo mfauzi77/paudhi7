@@ -186,8 +186,14 @@ deploy_backend() {
     mkdir -p /var/www/.pm2
     chown -R $SERVICE_USER:$SERVICE_USER /var/www/.pm2 || true
 
-    # Start backend with PM2
-    sudo -u $SERVICE_USER -H pm2 start server.js --name paudhi-backend
+    # Start or reload backend with PM2 (avoid "already launched" errors)
+    if sudo -u $SERVICE_USER -H pm2 describe paudhi-backend >/dev/null 2>&1; then
+        log_info "PM2 process 'paudhi-backend' ditemukan, melakukan reload dengan update env"
+        sudo -u $SERVICE_USER -H pm2 reload paudhi-backend --update-env
+    else
+        log_info "PM2 process 'paudhi-backend' belum ada, melakukan start"
+        sudo -u $SERVICE_USER -H pm2 start server.js --name paudhi-backend
+    fi
     sudo -u $SERVICE_USER -H pm2 save
 
     # Setup PM2 startup
