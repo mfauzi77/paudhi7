@@ -11,7 +11,7 @@ const ProgramDetailModal = ({ program, isOpen, onClose }) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex items-center justify-between">
-          <h2 className="text-xl font-bold text-gray-900">Detail Program RAN PAUD HI</h2>
+          <h2 className="text-xl font-bold text-gray-900">Detail Program PAUD HI</h2>
           <button
             onClick={onClose}
             className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
@@ -38,6 +38,22 @@ const ProgramDetailModal = ({ program, isOpen, onClose }) => {
 
           {/* Indikators */}
           <div>
+          {/* Dokumen Regulasi (Optional) */}
+          {program.regulationDocName || program.regulationDocUrl ? (
+            <div className="bg-gray-50 rounded-lg p-4">
+              <h3 className="font-semibold text-gray-900 mb-2">📘 Dokumen Regulasi</h3>
+              <div className="space-y-1">
+                {program.regulationDocName && (
+                  <p className="text-gray-800">{program.regulationDocName}</p>
+                )}
+                {program.regulationDocUrl && (
+                  <a href={program.regulationDocUrl} target="_blank" rel="noreferrer" className="text-blue-600 hover:text-blue-800 underline">
+                    Buka Dokumen
+                  </a>
+                )}
+              </div>
+            </div>
+          ) : null}
             <h3 className="font-semibold text-gray-900 mb-4">Indikator Program</h3>
             <div className="space-y-4">
               {program.indikators && program.indikators.length > 0 ? (

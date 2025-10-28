@@ -646,10 +646,10 @@ const RanPaudForm = ({ item, onSave, onCancel }) => {
           </div>
           <div>
             <h2 className="text-2xl font-bold text-gray-900">
-              {item ? "Edit Data RAN PAUD HI" : "Tambah Data RAN PAUD HI"}
+              {item ? "Edit Data PAUD HI" : "Tambah Data PAUD HI"}
             </h2>
             <p className="text-gray-600">
-              Formulir input data RAN PAUD Holistik Integratif
+              Formulir input data PAUD Holistik Integratif
             </p>
           </div>
         </div>
@@ -729,6 +729,37 @@ const RanPaudForm = ({ item, onSave, onCancel }) => {
           </div>
         </div>
       </div>
+
+      {/* Section tambahan untuk admin_daerah: Dokumen Regulasi (Opsional) */}
+      {user?.role === 'admin_daerah' && (
+        <div className="mb-8">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            Dokumen Regulasi (Opsional)
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Nama Dokumen Regulasi</label>
+              <input
+                type="text"
+                value={formData.regulationDocName || ''}
+                onChange={(e) => setFormData(prev => ({ ...prev, regulationDocName: e.target.value }))}
+                placeholder="Contoh: Perbup No. 3 Tahun 2024 tentang PAUD HI"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Tautan Dokumen (URL)</label>
+              <input
+                type="url"
+                value={formData.regulationDocUrl || ''}
+                onChange={(e) => setFormData(prev => ({ ...prev, regulationDocUrl: e.target.value }))}
+                placeholder="https://drive.google.com/... atau situs pemerintah daerah"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* BAGIAN 2: DAFTAR INDIKATOR/OUTPUT */}
       <div className="mb-8">

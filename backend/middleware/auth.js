@@ -104,7 +104,7 @@ const ranPaudAuth = (req, res, next) => {
   }
 
   // Check if user has access to RAN PAUD module
-  const allowedRoles = ["super_admin", "admin_kl", "admin", "super_admin"];
+  const allowedRoles = ["super_admin", "admin_kl", "admin_daerah", "admin", "super_admin"];
 
   if (!allowedRoles.includes(req.user.role)) {
     return res.status(403).json({
@@ -125,7 +125,7 @@ const ranPaudWriteAccess = (req, res, next) => {
     });
   }
 
-  const writeRoles = ["super_admin", "admin_kl", "admin", "super_admin"];
+  const writeRoles = ["super_admin", "admin_kl", "admin_daerah", "admin", "super_admin"];
 
   if (!writeRoles.includes(req.user.role)) {
     return res.status(403).json({
@@ -146,7 +146,7 @@ const ranPaudReadAccess = (req, res, next) => {
     });
   }
 
-  const readRoles = ["super_admin", "admin_kl", "admin", "super_admin"];
+  const readRoles = ["super_admin", "admin_kl", "admin_daerah", "admin", "super_admin"];
 
   if (!readRoles.includes(req.user.role)) {
     return res.status(403).json({
@@ -210,6 +210,11 @@ const requireKLAccess = (req, res, next) => {
         message: "Tidak memiliki akses ke K/L ini",
       });
     }
+  }
+
+  // Admin daerah: tidak memerlukan klId, akses akan dibatasi oleh UI, namun tetap melewati middleware ini
+  if (req.user.role === "admin_daerah") {
+    return next();
   }
 
   next();

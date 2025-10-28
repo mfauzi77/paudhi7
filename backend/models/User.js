@@ -19,6 +19,7 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
+      select: false,
     },
     fullName: {
       type: String,
@@ -27,7 +28,7 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["admin_kl", "admin", "super_admin"],
+      enum: ["admin_kl", "admin_daerah", "admin", "super_admin", "admin_utama"],
       default: "admin_kl",
     },
     klId: {
@@ -54,6 +55,19 @@ const userSchema = new mongoose.Schema(
       required: function () {
         return this.role === "admin_kl";
       },
+      trim: true,
+    },
+    // Admin daerah optional fields
+    regionName: {
+      type: String,
+      required: function () {
+        return false;
+      },
+      trim: true,
+    },
+    regionNote: {
+      type: String,
+      trim: true,
     },
     isActive: {
       type: Boolean,
@@ -113,6 +127,41 @@ userSchema.pre("save", async function (next) {
   }
 });
 
+// Normalize and validate fields before validation
+userSchema.pre("validate", function (next) {
+  // Normalize email: trim + lowercase
+  if (typeof this.email === "string") {
+    this.email = this.email.trim().toLowerCase();
+  }
+
+  // Normalize username: trim
+  if (typeof this.username === "string") {
+    this.username = this.username.trim();
+  }
+
+  // For non admin_kl, clear KL fields to avoid enum/required issues
+  if (this.role !== "admin_kl") {
+    this.klId = undefined;
+    this.klName = undefined;
+  }
+
+  // For admin_kl, enforce klId/klName consistency with official list
+  if (this.role === "admin_kl") {
+    const klList = (this.constructor.getKLList && this.constructor.getKLList()) || [];
+    const klMap = new Map(klList.map((k) => [k.id, k.name]));
+    if (!this.klId || !klMap.has(this.klId)) {
+      return next(new Error("K/L ID tidak valid untuk role admin_kl"));
+    }
+    const expectedName = klMap.get(this.klId);
+    if (!this.klName || this.klName.trim() !== expectedName) {
+      // Auto-correct klName if possible
+      this.klName = expectedName;
+    }
+  }
+
+  next();
+});
+
 // Add default permissions if missing
 userSchema.pre("save", function (next) {
   if (!this.permissions) {
@@ -133,7 +182,7 @@ userSchema.pre("save", function (next) {
         faq: { create: true, read: true, update: true, delete: true },
         users: { create: false, read: false, update: false, delete: false },
       };
-    } else if (this.role === "admin_kl") {
+    } else if (this.role === "admin_kl" || this.role === "admin_daerah") {
       this.permissions = {
         ranPaud: { create: true, read: true, update: true, delete: true },
         news: { create: true, read: true, update: true, delete: true },
@@ -197,5 +246,21 @@ userSchema.methods.getAccessibleKLIds = function () {
   }
   return this.klId ? [this.klId] : [];
 };
+
+// Hide sensitive fields on toJSON/toObject
+function transformDoc(doc, ret) {
+  delete ret.password;
+  return ret;
+}
+userSchema.set("toJSON", { virtuals: true, transform: transformDoc });
+userSchema.set("toObject", { virtuals: true, transform: transformDoc });
+
+// Indexes
+// Case-insensitive unique indexes for email and username
+userSchema.index({ email: 1 }, { unique: true, collation: { locale: "en", strength: 2 } });
+userSchema.index({ username: 1 }, { unique: true, collation: { locale: "en", strength: 2 } });
+// Helpful query indexes
+userSchema.index({ role: 1, isActive: 1 });
+userSchema.index({ klId: 1 });
 
 module.exports = mongoose.model("User", userSchema);

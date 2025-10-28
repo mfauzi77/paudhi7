@@ -186,6 +186,9 @@ router.post("/", authenticate, restrictToOwnKL, async (req, res) => {
       createdBy: req.user._id,
       updatedBy: req.user._id,
     };
+    // Optional regional regulation fields (accepted from admin_daerah)
+    if (req.body.regulationDocName) ranPaudData.regulationDocName = String(req.body.regulationDocName);
+    if (req.body.regulationDocUrl) ranPaudData.regulationDocUrl = String(req.body.regulationDocUrl);
 
     const newRanPaud = new RanPaud(ranPaudData);
     const savedData = await newRanPaud.save();
@@ -258,6 +261,8 @@ router.put("/:id", authenticate, validateDataAccess("RanPaud"), restrictToOwnKL,
       jumlahRO: totalUpdateRO,
       updatedBy: req.user._id,
     };
+    if (req.body.regulationDocName !== undefined) updateData.regulationDocName = String(req.body.regulationDocName || '');
+    if (req.body.regulationDocUrl !== undefined) updateData.regulationDocUrl = String(req.body.regulationDocUrl || '');
 
     const updatedData = await RanPaud.findByIdAndUpdate(
       req.params.id,

@@ -21,8 +21,8 @@ const restrictToOwnKL = (req, res, next) => {
     return next();
   }
 
-  // Admin_kl hanya bisa akses data K/L mereka sendiri
-  if (req.user.role === "admin_kl") {
+  // Admin_kl dan admin_daerah hanya bisa akses data K/L mereka sendiri (atau wilayahnya)
+  if (req.user.role === "admin_kl" || req.user.role === "admin_daerah") {
     if (!req.user.klId) {
       return res.status(403).json({
         success: false,
@@ -66,8 +66,8 @@ const filterByKL = (req, res, next) => {
     return next();
   }
 
-  // Admin_kl hanya bisa lihat data K/L mereka sendiri
-  if (req.user.role === "admin_kl") {
+  // Admin_kl dan admin_daerah hanya bisa lihat data K/L mereka sendiri
+  if (req.user.role === "admin_kl" || req.user.role === "admin_daerah") {
     if (!req.user.klId) {
       return res.status(403).json({
         success: false,
@@ -95,12 +95,12 @@ const validateDataAccess = (modelName) => {
     }
 
     // Super_admin dan admin bisa akses semua data
-    if (req.user.role === "super_admin" || req.user.role === "admin") {
+  if (req.user.role === "super_admin" || req.user.role === "admin") {
       return next();
     }
 
-    // Admin_kl perlu validasi data ownership
-    if (req.user.role === "admin_kl") {
+    // Admin_kl dan admin_daerah perlu validasi data ownership
+    if (req.user.role === "admin_kl" || req.user.role === "admin_daerah") {
       if (!req.user.klId) {
         return res.status(403).json({
           success: false,
@@ -163,8 +163,8 @@ const validateBulkKLAccess = (req, res, next) => {
     return next();
   }
 
-  // Admin_kl perlu validasi K/L untuk bulk operations
-  if (req.user.role === "admin_kl") {
+  // Admin_kl dan admin_daerah perlu validasi K/L untuk bulk operations
+  if (req.user.role === "admin_kl" || req.user.role === "admin_daerah") {
     if (!req.user.klId) {
       return res.status(403).json({
         success: false,
@@ -196,7 +196,7 @@ const getKLFilter = (user) => {
     return {}; // Tidak ada filter, bisa akses semua
   }
   
-  if (user.role === "admin_kl" && user.klId) {
+  if ((user.role === "admin_kl" || user.role === "admin_daerah") && user.klId) {
     return { klId: user.klId };
   }
   

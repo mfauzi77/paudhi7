@@ -122,6 +122,17 @@ const ranPaudSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
+    // Optional regional regulation document (admin_daerah only)
+    regulationDocName: {
+      type: String,
+      default: null,
+      trim: true,
+    },
+    regulationDocUrl: {
+      type: String,
+      default: null,
+      trim: true,
+    },
   },
   {
     timestamps: true,

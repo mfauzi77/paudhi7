@@ -115,6 +115,20 @@ router.post("/", authenticate, requireAdminUtama, async (req, res) => {
       createdBy: req.user.email || "admin@paudhi.kemenko.go.id",
     };
 
+    // Normalize role-related fields to avoid enum/required issues
+    if (userData.role !== "admin_kl") {
+      userData.klId = undefined;
+      userData.klName = undefined;
+    } else {
+      // For admin_kl, both klId and klName are required
+      if (!userData.klId || !userData.klName) {
+        return res.status(400).json({
+          success: false,
+          message: "Untuk role Admin K/L, K/L wajib dipilih",
+        });
+      }
+    }
+
     // Check if username or email already exists
     const existingUser = await User.findOne({
       $or: [{ username: userData.username }, { email: userData.email }],
@@ -127,20 +141,32 @@ router.post("/", authenticate, requireAdminUtama, async (req, res) => {
       });
     }
 
-    const newUser = new User(userData);
-    const savedUser = await newUser.save();
+    try {
+      const newUser = new User(userData);
+      const savedUser = await newUser.save();
 
-    // Remove password from response
-    const userResponse = savedUser.toObject();
-    delete userResponse.password;
+      // Remove password from response
+      const userResponse = savedUser.toObject();
+      delete userResponse.password;
 
-    console.log("✅ User created successfully");
+      console.log("✅ User created successfully");
 
-    res.status(201).json({
-      success: true,
-      message: "User berhasil dibuat",
-      data: userResponse,
-    });
+      return res.status(201).json({
+        success: true,
+        message: "User berhasil dibuat",
+        data: userResponse,
+      });
+    } catch (saveErr) {
+      console.error("❌ Error creating user (save):", saveErr);
+      if (saveErr.name === 'ValidationError') {
+        return res.status(400).json({ success: false, message: 'ValidationError', errors: Object.values(saveErr.errors).map(e => e.message) });
+      }
+      if (saveErr.code === 11000) {
+        const field = Object.keys(saveErr.keyValue || {})[0];
+        return res.status(400).json({ success: false, message: `Duplicate ${field}: ${saveErr.keyValue[field]}` });
+      }
+      return res.status(500).json({ success: false, message: 'Error saat membuat user', error: saveErr.message });
+    }
   } catch (error) {
     console.error("❌ User POST error:", error);
     res.status(500).json({
@@ -166,6 +192,20 @@ router.put("/:id", authenticate, requireAdminUtama, async (req, res) => {
     // If password is empty, don't update it
     if (!updateData.password) {
       delete updateData.password;
+    }
+
+    // Normalize role-related fields on update as well
+    if (updateData.role && updateData.role !== "admin_kl") {
+      updateData.klId = undefined;
+      updateData.klName = undefined;
+    }
+    if (updateData.role === "admin_kl") {
+      if (!updateData.klId || !updateData.klName) {
+        return res.status(400).json({
+          success: false,
+          message: "Untuk role Admin K/L, K/L wajib dipilih",
+        });
+      }
     }
 
     const updatedUser = await User.findByIdAndUpdate(

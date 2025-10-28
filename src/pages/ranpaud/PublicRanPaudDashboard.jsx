@@ -1097,6 +1097,22 @@ function PublicRanPaudDashboard() {
 
             {/* Content */}
             <div className="p-6">
+              {/* Dokumen Regulasi */}
+              {(selectedProgram.regulationDocName || selectedProgram.regulationDocUrl) && (
+                <div className="mb-6 bg-gray-50 rounded-lg p-4">
+                  <h3 className="font-semibold text-gray-900 mb-2">📘 Dokumen Regulasi</h3>
+                  <div className="space-y-1">
+                    {selectedProgram.regulationDocName && (
+                      <p className="text-gray-800">{selectedProgram.regulationDocName}</p>
+                    )}
+                    {selectedProgram.regulationDocUrl && (
+                      <a href={selectedProgram.regulationDocUrl} target="_blank" rel="noreferrer" className="text-blue-600 hover:text-blue-800 underline">
+                        Buka Dokumen
+                      </a>
+                    )}
+                  </div>
+                </div>
+              )}
               {programDetailLoading ? (
                 <div className="text-center py-8">
                   <RefreshCw className="h-8 w-8 text-blue-600 animate-spin mx-auto mb-4" />

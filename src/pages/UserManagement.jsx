@@ -99,6 +99,8 @@ const UserManagement = ({ setActiveTab }) => {
       role: "admin_kl",
       klId: "",
       klName: "",
+      regionName: "",
+      regionNote: "",
       isActive: true,
     });
     setEditingUser(null);
@@ -141,6 +143,8 @@ const UserManagement = ({ setActiveTab }) => {
       role: user.role,
       klId: user.klId || "",
       klName: user.klName || "",
+      regionName: user.regionName || "",
+      regionNote: user.regionNote || "",
       isActive: user.isActive,
     });
     setShowForm(true);
@@ -406,6 +410,7 @@ const UserManagement = ({ setActiveTab }) => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                 >
                   <option value="admin_kl">Admin K/L</option>
+                  <option value="admin_daerah">Admin Daerah</option>
                   <option value="admin_utama">Admin Utama</option>
                 </select>
               </div>
@@ -429,6 +434,34 @@ const UserManagement = ({ setActiveTab }) => {
                     ))}
                   </select>
                 </div>
+              )}
+
+              {formData.role === "admin_daerah" && (
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Nama Daerah
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.regionName}
+                      onChange={(e) => handleFormChange("regionName", e.target.value)}
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Keterangan Tambahan (opsional)
+                    </label>
+                    <textarea
+                      value={formData.regionNote}
+                      onChange={(e) => handleFormChange("regionNote", e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      rows={3}
+                    />
+                  </div>
+                </>
               )}
 
               <div className="flex items-center gap-2">

@@ -16,35 +16,10 @@ const app = express();
 // Trust reverse proxy (Apache/Nginx) so req.ip reflects real client IP
 app.set('trust proxy', true);
 
-// ✅ CORS configuration - UNCHANGED
-const corsOptions = {
-  origin: [
-    "http://localhost:3000",
-    "http://localhost:5173",
-    "http://127.0.0.1:3000",
-    "http://127.0.0.1:5173",
-    "https://yourdomain.go.id", // Production domain
-    process.env.FRONTEND_URL || "http://localhost:5173",
-  ],
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-  allowedHeaders: [
-    "Content-Type",
-    "Authorization",
-    "X-Requested-With",
-    "Accept",
-    "Origin",
-    "Access-Control-Request-Method",
-    "Access-Control-Request-Headers",
-  ],
-  exposedHeaders: ["Content-Length", "Content-Type"],
-  optionsSuccessStatus: 200, // Some legacy browsers choke on 204
-};
-
-app.use(cors(corsOptions));
-
-// ✅ Handle preflight requests
-app.options("*", cors(corsOptions));
+// ✅ CORS configuration - dynamic based on FRONTEND_URL
+const allowedOrigin = process.env.FRONTEND_URL || "http://localhost:5173";
+app.use(cors({ origin: allowedOrigin, credentials: true }));
+app.options("*", cors({ origin: allowedOrigin, credentials: true }));
 
 // Security middleware - UNCHANGED
 app.use(
@@ -180,21 +155,31 @@ function getContentType(filename) {
   }
 }
 
-// Database connection
+// Database connection and server startup
 const mongoURI = process.env.MONGODB_URI;
 
 if (!mongoURI) {
   throw new Error("❌ MONGODB_URI is not defined in environment variables");
 }
 
-mongoose
-  .connect(mongoURI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => {
+async function start() {
+  try {
+    console.log("⏳ Connecting to MongoDB...");
+    await mongoose.connect(mongoURI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 10000,
+    });
     console.log("✅ MongoDB connected");
     console.log(`📊 Database: ${mongoURI}`);
+
+    // Ping to ensure the connection is healthy
+    try {
+      const ping = await mongoose.connection.db.admin().ping();
+      console.log("📡 MongoDB ping:", ping);
+    } catch (pingErr) {
+      console.warn("⚠️ MongoDB ping failed:", pingErr?.message || pingErr);
+    }
 
     // Create upload directories after database connection
     try {
@@ -202,11 +187,52 @@ mongoose
     } catch (error) {
       console.warn("⚠️ Failed to create upload directories:", error.message);
     }
-  })
-  .catch((err) => {
-    console.error("❌ MongoDB connection error:", err);
-    // Jangan exit, biarkan server tetap jalan
-  });
+
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => {
+      console.log("\n🚀 ================================");
+      console.log(`🚀 Server berjalan di port ${PORT}`);
+      console.log(
+        `📱 Frontend URL: ${process.env.FRONTEND_URL || "http://localhost:5173"}`
+      );
+      console.log(
+        `🗄️ Database: ${
+          process.env.MONGODB_URI || "NOT SET"
+        }`
+      );
+      console.log(`🌍 Environment: ${process.env.NODE_ENV || "development"}`);
+      console.log(`🖼️ Static files: ${process.env.BASE_URL || `http://localhost:${PORT}`}/uploads/`);
+      console.log("🚀 ================================\n");
+
+      console.log("📋 Available routes:");
+      console.log("   ⚕️  GET    /api/health");
+      console.log("   🧪 GET    /api/test-cors");
+      console.log("   🔐 POST   /api/auth/login");
+      console.log("   📰 CRUD   /api/news");
+      console.log("   ❓ CRUD   /api/faq");
+      console.log("   📚 CRUD   /api/pembelajaran");
+      console.log("   🎯 CRUD   /api/ran-paud ← NEW RAN PAUD HI");
+      console.log("   📊 GET    /api/ran-paud/dashboard ← Dashboard data");
+      console.log("   📈 GET    /api/ran-paud/stats/summary ← Summary stats");
+      console.log("   📥 POST   /api/ran-paud/import ← Import Excel");
+      console.log("   📤 GET    /api/ran-paud/export/:format ← Export data");
+      console.log("   🏢 GET    /api/ran-paud/kl/list ← K/L list");
+      console.log("   🔄 POST   /api/ran-paud/bulk ← Bulk operations");
+      console.log("   🖼️ POST   /api/upload/image");
+      console.log("   🗑️ DELETE /api/upload/image");
+      console.log("   📁 GET    /uploads/:category/:filename ← Static images");
+      console.log("\n🎯 RAN PAUD HI Module: READY");
+      console.log("📊 Enhanced error handling: ACTIVE");
+      console.log("🔒 Security & rate limiting: ACTIVE\n");
+    });
+  } catch (err) {
+    console.error("❌ Failed to start server due to MongoDB connection error:", err);
+    // Fail fast to respect requirement: ensure DB connection before Express runs
+    process.exit(1);
+  }
+}
+
+start();
 
 
 // ===== API ROUTES - SINGLE DECLARATION ONLY =====
@@ -218,6 +244,7 @@ app.use("/api/news", require("./routes/news"));
 app.use("/api/faq", require("./routes/faq"));
 app.use("/api/pembelajaran", require("./routes/pembelajaran.js"));
 app.use("/api/upload", uploadRoutes);
+app.use("/api/db", require("./routes/db"));
 
 // 🆕 RAN PAUD HI Routes (with error handling)
 try {
@@ -409,40 +436,4 @@ process.on("unhandledRejection", (reason, promise) => {
   }
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log("\n🚀 ================================");
-  console.log(`🚀 Server berjalan di port ${PORT}`);
-  console.log(
-    `📱 Frontend URL: ${process.env.FRONTEND_URL || "http://localhost:5173"}`
-  );
-  console.log(
-    `🗄️ Database: ${
-      process.env.MONGODB_URI || "NOT SET"
-    }`
-  );
-  console.log(`🌍 Environment: ${process.env.NODE_ENV || "development"}`);
-  console.log(`🖼️ Static files: ${process.env.BASE_URL || `http://localhost:${PORT}`}/uploads/`);
-  console.log("🚀 ================================\n");
-
-  console.log("📋 Available routes:");
-  console.log("   ⚕️  GET    /api/health");
-  console.log("   🧪 GET    /api/test-cors");
-  console.log("   🔐 POST   /api/auth/login");
-  console.log("   📰 CRUD   /api/news");
-  console.log("   ❓ CRUD   /api/faq");
-  console.log("   📚 CRUD   /api/pembelajaran");
-  console.log("   🎯 CRUD   /api/ran-paud ← NEW RAN PAUD HI");
-  console.log("   📊 GET    /api/ran-paud/dashboard ← Dashboard data");
-  console.log("   📈 GET    /api/ran-paud/stats/summary ← Summary stats");
-  console.log("   📥 POST   /api/ran-paud/import ← Import Excel");
-  console.log("   📤 GET    /api/ran-paud/export/:format ← Export data");
-  console.log("   🏢 GET    /api/ran-paud/kl/list ← K/L list");
-  console.log("   🔄 POST   /api/ran-paud/bulk ← Bulk operations");
-  console.log("   🖼️ POST   /api/upload/image");
-  console.log("   🗑️ DELETE /api/upload/image");
-  console.log("   📁 GET    /uploads/:category/:filename ← Static images");
-  console.log("\n🎯 RAN PAUD HI Module: READY");
-  console.log("📊 Enhanced error handling: ACTIVE");
-  console.log("🔒 Security & rate limiting: ACTIVE\n");
-});
+// app.listen now starts only after successful MongoDB connection in start()
