@@ -15,6 +15,14 @@ const StatsSection = () => {
       color: 'text-purple-400'
     },
     {
+      id: 'imunisasi',
+      number: 87.7,
+      label: 'anak umur 24-59 bulan berkembang sesuai usia tumbuh kembangnya',
+      description: 'Sumber: ECDI, 2024',
+      icon: 'fas fa-syringe',
+      color: 'text-emerald-400'
+    },
+    {
       id: 'guru',
       number: 495018,
       label: 'Guru & tenaga pendidik PAUD terlibat dalam program PAUD HI',
@@ -53,14 +61,6 @@ const StatsSection = () => {
       description: 'progres cakupan wilayah dan keberhasilan pemerataan akses.',
       icon: 'fas fa-map-marker-alt',
       color: 'text-lime-400'
-    },
-    {
-      id: 'imunisasi',
-      number: 87.3,
-      label: 'Capaian imunisasi dasar lengkap untuk bayi tahun 2024',
-      description: 'Sumber: Kemenkes, 2024',
-      icon: 'fas fa-syringe',
-      color: 'text-emerald-400'
     },
     {
       id: 'puspaga',
