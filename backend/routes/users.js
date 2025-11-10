@@ -116,10 +116,7 @@ router.post("/", authenticate, requireAdminUtama, async (req, res) => {
     };
 
     // Normalize role-related fields to avoid enum/required issues
-    if (userData.role !== "admin_kl") {
-      userData.klId = undefined;
-      userData.klName = undefined;
-    } else {
+    if (userData.role === "admin_kl") {
       // For admin_kl, both klId and klName are required
       if (!userData.klId || !userData.klName) {
         return res.status(400).json({
@@ -127,6 +124,26 @@ router.post("/", authenticate, requireAdminUtama, async (req, res) => {
           message: "Untuk role Admin K/L, K/L wajib dipilih",
         });
       }
+      userData.province = null;
+      userData.city = null;
+      userData.regionName = null;
+    } else if (userData.role === "admin_daerah") {
+      // For admin_daerah, province is required, city is optional
+      if (!userData.province) {
+        return res.status(400).json({
+          success: false,
+          message: "Untuk role Admin Daerah, Provinsi wajib dipilih",
+        });
+      }
+      userData.klId = null;
+      userData.klName = null;
+    } else {
+      // For other roles, clear all role-specific fields
+      userData.klId = null;
+      userData.klName = null;
+      userData.province = null;
+      userData.city = null;
+      userData.regionName = null;
     }
 
     // Check if username or email already exists
@@ -158,14 +175,25 @@ router.post("/", authenticate, requireAdminUtama, async (req, res) => {
       });
     } catch (saveErr) {
       console.error("❌ Error creating user (save):", saveErr);
-      if (saveErr.name === 'ValidationError') {
-        return res.status(400).json({ success: false, message: 'ValidationError', errors: Object.values(saveErr.errors).map(e => e.message) });
+      if (saveErr.name === "ValidationError") {
+        return res.status(400).json({
+          success: false,
+          message: "ValidationError",
+          errors: Object.values(saveErr.errors).map((e) => e.message),
+        });
       }
       if (saveErr.code === 11000) {
         const field = Object.keys(saveErr.keyValue || {})[0];
-        return res.status(400).json({ success: false, message: `Duplicate ${field}: ${saveErr.keyValue[field]}` });
+        return res.status(400).json({
+          success: false,
+          message: `Duplicate ${field}: ${saveErr.keyValue[field]}`,
+        });
       }
-      return res.status(500).json({ success: false, message: 'Error saat membuat user', error: saveErr.message });
+      return res.status(500).json({
+        success: false,
+        message: "Error saat membuat user",
+        error: saveErr.message,
+      });
     }
   } catch (error) {
     console.error("❌ User POST error:", error);

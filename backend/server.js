@@ -104,36 +104,61 @@ app.use(
   express.static(path.join(__dirname, "uploads"))
 );
 
-// ✅ EXPLICIT ROUTES - UNCHANGED
+// ✅ EXPLICIT ROUTES - Enhanced image serving
 app.get("/uploads/news/:filename", (req, res) => {
   const filename = req.params.filename;
   const filepath = path.join(__dirname, "uploads", "news", filename);
+  const fs = require("fs");
 
   console.log("🖼️ Static file request:", {
     filename: filename,
     filepath: filepath,
-    exists: require("fs").existsSync(filepath)
+    exists: fs.existsSync(filepath),
+    origin: req.headers.origin
   });
 
   // Set CORS headers
-  res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
+  const origin = req.headers.origin || "*";
+  res.header("Access-Control-Allow-Origin", origin);
   res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Methods", "GET, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
   // Check if file exists
-  const fs = require("fs");
   if (!fs.existsSync(filepath)) {
     console.log("❌ File not found:", filepath);
-    return res.status(404).json({ message: "Image not found" });
+    return res.status(404).json({ 
+      success: false,
+      message: "Image not found",
+      filename: filename 
+    });
   }
 
-  console.log("✅ Sending file:", filepath);
+  // Get content type
+  const contentType = getContentType(filename);
+  
+  console.log("✅ Sending file:", {
+    filename: filename,
+    contentType: contentType,
+    size: fs.statSync(filepath).size
+  });
+  
   // Send file dengan proper headers
-  res.sendFile(filepath, {
-    headers: {
-      "Content-Type": getContentType(filename),
-      "Cache-Control": "public, max-age=31536000",
-      "Access-Control-Allow-Origin": req.headers.origin || "*",
-    },
+  res.setHeader("Content-Type", contentType);
+  res.setHeader("Cache-Control", "public, max-age=31536000");
+  res.setHeader("Access-Control-Allow-Origin", origin);
+  
+  res.sendFile(filepath, (err) => {
+    if (err) {
+      console.error("❌ Error sending file:", err);
+      if (!res.headersSent) {
+        res.status(500).json({ 
+          success: false,
+          message: "Error serving file",
+          error: err.message 
+        });
+      }
+    }
   });
 });
 
@@ -166,8 +191,8 @@ async function start() {
   try {
     console.log("⏳ Connecting to MongoDB...");
     await mongoose.connect(mongoURI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
       serverSelectionTimeoutMS: 10000,
     });
     console.log("✅ MongoDB connected");

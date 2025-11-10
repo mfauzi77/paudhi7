@@ -27,18 +27,31 @@ router.post('/image',
       }
 
       const file = req.file;
-     const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
-
       
-      // Construct image URL
-      const imageUrl = `${baseUrl}/uploads/news/${file.filename}`;
+      // Get base URL - prioritize environment variable, fallback to request origin
+      // Remove trailing slashes and ensure proper format
+      let baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
+      baseUrl = baseUrl.replace(/\/+$/, ''); // Remove trailing slashes
+      
+      // Construct image URL - use relative path for better compatibility
+      // Frontend will resolve relative paths based on its own origin
+      const relativePath = `/uploads/news/${file.filename}`;
+      const imageUrl = `${baseUrl}${relativePath}`;
+      
+      console.log('📸 Image URL constructed:', {
+        baseUrl: baseUrl,
+        relativePath: relativePath,
+        fullUrl: imageUrl,
+        filename: file.filename,
+        envBaseUrl: process.env.BASE_URL
+      });
       
       // Create response data
       const imageData = {
         filename: file.filename,
         originalName: file.originalname,
         url: imageUrl,
-        relativePath: `/uploads/news/${file.filename}`,
+        relativePath: relativePath,
         size: file.size,
         mimetype: file.mimetype,
         alt: req.body.alt || req.body.title || '',
@@ -84,16 +97,19 @@ router.post('/multiple',
         });
       }
 
-      const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
+      // Get base URL - prioritize environment variable, fallback to request origin
+      let baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
+      baseUrl = baseUrl.replace(/\/+$/, ''); // Remove trailing slashes
 
       const uploadedImages = [];
 
       for (const file of req.files) {
+        const relativePath = `/uploads/news/${file.filename}`;
         const imageData = {
           filename: file.filename,
           originalName: file.originalname,
-          url: `${baseUrl}/uploads/news/${file.filename}`,
-          relativePath: `/uploads/news/${file.filename}`,
+          url: `${baseUrl}${relativePath}`,
+          relativePath: relativePath,
           size: file.size,
           mimetype: file.mimetype
         };
@@ -210,12 +226,17 @@ router.get('/image/metadata', async (req, res) => {
 
     // Get file stats
     const stats = fs.statSync(filePath);
-   const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
-
+    
+    // Get base URL
+    let baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
+    baseUrl = baseUrl.replace(/\/+$/, ''); // Remove trailing slashes
+    
+    const relativePath = `/uploads/news/${targetFile}`;
 
     const metadata = {
       filename: targetFile,
-      url: `${baseUrl}/uploads/news/${targetFile}`,
+      url: `${baseUrl}${relativePath}`,
+      relativePath: relativePath,
       size: stats.size,
       created: stats.birthtime,
       modified: stats.mtime,
@@ -257,8 +278,10 @@ router.get('/list', async (req, res) => {
     // Read directory
     const files = fs.readdirSync(uploadDir);
     const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
-   const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
-
+    
+    // Get base URL
+    let baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
+    baseUrl = baseUrl.replace(/\/+$/, ''); // Remove trailing slashes
 
     const images = files
       .filter(file => {
@@ -269,10 +292,12 @@ router.get('/list', async (req, res) => {
       .map(file => {
         const filePath = path.join(uploadDir, file);
         const stats = fs.statSync(filePath);
+        const relativePath = `/uploads/${category}/${file}`;
         
         return {
           filename: file,
-          url: `${baseUrl}/uploads/${category}/${file}`,
+          url: `${baseUrl}${relativePath}`,
+          relativePath: relativePath,
           size: stats.size,
           created: stats.birthtime,
           modified: stats.mtime

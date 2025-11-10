@@ -20,6 +20,7 @@ import {
   UserPlus,
 } from "lucide-react";
 import apiService from "../utils/apiService";
+import regionData from "../data/dataprovkabkota.json";
 
 const UserManagement = ({ setActiveTab }) => {
   const [users, setUsers] = useState([]);
@@ -40,18 +41,39 @@ const UserManagement = ({ setActiveTab }) => {
     role: "admin_kl",
     klId: "",
     klName: "",
+    province: "",
+    city: "",
+    regionName: "",
+    regionNote: "",
     isActive: true,
   });
 
+  const [availableCities, setAvailableCities] = useState([]);
+
   const klList = [
-    { id: "KEMENKO_PMK", name: "Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan" },
-    { id: "KEMENDIKDASMEN", name: "Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi" },
+    {
+      id: "KEMENKO_PMK",
+      name: "Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan",
+    },
+    {
+      id: "KEMENDIKDASMEN",
+      name: "Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi",
+    },
     { id: "KEMENAG", name: "Kementerian Agama" },
-    { id: "KEMENDES_PDT", name: "Kementerian Desa, Pembangunan Daerah Tertinggal, dan Transmigrasi" },
+    {
+      id: "KEMENDES_PDT",
+      name: "Kementerian Desa, Pembangunan Daerah Tertinggal, dan Transmigrasi",
+    },
     { id: "KEMENKES", name: "Kementerian Kesehatan" },
-    { id: "KEMENDUKBANGGA", name: "Kementerian Pembangunan Kependudukan dan Keluarga Berencana Nasional" },
+    {
+      id: "KEMENDUKBANGGA",
+      name: "Kementerian Pembangunan Kependudukan dan Keluarga Berencana Nasional",
+    },
     { id: "KEMENSOS", name: "Kementerian Sosial" },
-    { id: "KPPPA", name: "Kementerian Pemberdayaan Perempuan dan Perlindungan Anak" },
+    {
+      id: "KPPPA",
+      name: "Kementerian Pemberdayaan Perempuan dan Perlindungan Anak",
+    },
     { id: "KEMENDAGRI", name: "Kementerian Dalam Negeri" },
     { id: "BAPPENAS", name: "Badan Perencanaan Pembangunan Nasional" },
     { id: "BPS", name: "Badan Pusat Statistik" },
@@ -88,6 +110,35 @@ const UserManagement = ({ setActiveTab }) => {
         klName: selectedKL ? selectedKL.name : "",
       }));
     }
+
+    // Auto-set regionName when province or city changes
+    if (field === "province") {
+      setFormData((prev) => {
+        let regionName = "";
+        if (value) {
+          regionName = prev.city ? `${value} - ${prev.city}` : value;
+        }
+        return {
+          ...prev,
+          province: value,
+          city: "", // reset city when province changes
+          regionName,
+        };
+      });
+    } else if (field === "city") {
+      setFormData((prev) => {
+        const province = prev.province;
+        let regionName = "";
+        if (province) {
+          regionName = value ? `${province} - ${value}` : province;
+        }
+        return {
+          ...prev,
+          city: value,
+          regionName,
+        };
+      });
+    }
   };
 
   const resetForm = () => {
@@ -99,6 +150,8 @@ const UserManagement = ({ setActiveTab }) => {
       role: "admin_kl",
       klId: "",
       klName: "",
+      province: "",
+      city: "",
       regionName: "",
       regionNote: "",
       isActive: true,
@@ -134,6 +187,11 @@ const UserManagement = ({ setActiveTab }) => {
   };
 
   const handleEdit = (user) => {
+    const regionName = user.regionName || "";
+    const parts = regionName.split(" - ");
+    const province = parts[0] || "";
+    const city = parts[1] || "";
+
     setEditingUser(user);
     setFormData({
       username: user.username,
@@ -143,7 +201,9 @@ const UserManagement = ({ setActiveTab }) => {
       role: user.role,
       klId: user.klId || "",
       klName: user.klName || "",
-      regionName: user.regionName || "",
+      province,
+      city,
+      regionName,
       regionNote: user.regionNote || "",
       isActive: user.isActive,
     });
@@ -375,7 +435,7 @@ const UserManagement = ({ setActiveTab }) => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   {editingUser
                     ? "Password Baru (kosongkan jika tidak diubah)"
-                  : "Kata Sandi"}
+                    : "Kata Sandi"}
                 </label>
                 <input
                   type="password"
@@ -440,15 +500,44 @@ const UserManagement = ({ setActiveTab }) => {
                 <>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Nama Daerah
+                      Provinsi
                     </label>
-                    <input
-                      type="text"
-                      value={formData.regionName}
-                      onChange={(e) => handleFormChange("regionName", e.target.value)}
+                    <select
+                      value={formData.province}
+                      onChange={(e) =>
+                        handleFormChange("province", e.target.value)
+                      }
                       required
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    />
+                    >
+                      <option value="">Pilih Provinsi</option>
+                      {regionData.map((item) => (
+                        <option key={item.provinsi} value={item.provinsi}>
+                          {item.provinsi}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Kabupaten/Kota (opsional)
+                    </label>
+                    <select
+                      value={formData.city}
+                      onChange={(e) => handleFormChange("city", e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      disabled={!formData.province}
+                    >
+                      <option value="">Pilih Kabupaten/Kota</option>
+                      {formData.province &&
+                        regionData
+                          .find((item) => item.provinsi === formData.province)
+                          ?.kabupaten_kota.map((city) => (
+                            <option key={city} value={city}>
+                              {city}
+                            </option>
+                          ))}
+                    </select>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -456,7 +545,9 @@ const UserManagement = ({ setActiveTab }) => {
                     </label>
                     <textarea
                       value={formData.regionNote}
-                      onChange={(e) => handleFormChange("regionNote", e.target.value)}
+                      onChange={(e) =>
+                        handleFormChange("regionNote", e.target.value)
+                      }
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                       rows={3}
                     />
@@ -550,7 +641,14 @@ const UserManagement = ({ setActiveTab }) => {
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {user.klName ? (
+                    {user.role === "admin_daerah" ? (
+                      <div className="flex items-center gap-2">
+                        <Building className="w-4 h-4 text-gray-400" />
+                        <span className="text-sm text-gray-900">
+                          {user.regionName || "-"}
+                        </span>
+                      </div>
+                    ) : user.klName ? (
                       <div className="flex items-center gap-2">
                         <Building className="w-4 h-4 text-gray-400" />
                         <span className="text-sm text-gray-900">

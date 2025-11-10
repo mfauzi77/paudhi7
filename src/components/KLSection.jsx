@@ -9,6 +9,7 @@ import bappenasLogo from '../assets/kl/bappenas.png';
 import kemenagLogo from '../assets/kl/kemenag.png';         
 import kemendesaLogo from '../assets/kl/kemendespdtt.png'; 
 import bpsLogo from '../assets/kl/bps.svg';
+import kemendagriLogo from '../assets/kl/kemendagri.png';
 
 const kemenkoPMK = {
   name: "Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan",
@@ -23,6 +24,16 @@ const institutions = [
     role: "Layanan Pendidikan PAUD",
     logo: kemendikdasmenLogo,
     programs: ["PAUD Formal", "Kurikulum", "Guru PAUD"],
+  },
+  {
+    name: "Kementerian Dalam Negeri",
+    role: "Pembinaan Pemerintahan Daerah & Dukungan Layanan PAUD HI di Daerah",
+    logo: kemendagriLogo,
+    programs: [
+    "Pembinaan Pemda",
+    "Fasilitasi PAUD HI di Daerah",
+    "Integrasi Data Lintas Sektor"
+  ],
   },
   {
     name: "Kementerian Kesehatan",

@@ -32,24 +32,27 @@ const userSchema = new mongoose.Schema(
       default: "admin_kl",
     },
     klId: {
-      type: String,
-      required: function () {
-        return this.role === "admin_kl";
-      },
-      enum: [
-        "KEMENKO_PMK",
-        "KEMENDIKBUDRISTEK",
-        "KEMENAG",
-        "KEMENDES_PDTT",
-        "KEMENKES",
-        "KEMENDUKBANGGA",
-        "KEMENSOS",
-        "KEMENPPPA",
-        "KEMENDAGRI",
-        "BAPPENAS",
-        "BPS",
-      ],
-    },
+  type: String,
+  enum: [
+    "KEMENKO_PMK",
+    "KEMENDIKBUDRISTEK",
+    "KEMENAG",
+    "KEMENDES_PDTT",
+    "KEMENKES",
+    "KEMENDUKBANGGA",
+    "KEMENSOS",
+    "KEMENPPPA",
+    "KEMENDAGRI",
+    "BAPPENAS",
+    "BPS",
+    null, // biar null/undefined nggak bikin error enum
+  ],
+  required: function () {
+    return this.role === "admin_kl";
+  },
+  default: null,
+},
+
     klName: {
       type: String,
       required: function () {
@@ -61,8 +64,19 @@ const userSchema = new mongoose.Schema(
     regionName: {
       type: String,
       required: function () {
-        return false;
+        return this.role === "admin_daerah";
       },
+      trim: true,
+    },
+    province: {
+      type: String,
+      required: function () {
+        return this.role === "admin_daerah";
+      },
+      trim: true,
+    },
+    city: {
+      type: String,
       trim: true,
     },
     regionNote: {
@@ -147,7 +161,8 @@ userSchema.pre("validate", function (next) {
 
   // For admin_kl, enforce klId/klName consistency with official list
   if (this.role === "admin_kl") {
-    const klList = (this.constructor.getKLList && this.constructor.getKLList()) || [];
+    const klList =
+      (this.constructor.getKLList && this.constructor.getKLList()) || [];
     const klMap = new Map(klList.map((k) => [k.id, k.name]));
     if (!this.klId || !klMap.has(this.klId)) {
       return next(new Error("K/L ID tidak valid untuk role admin_kl"));
@@ -212,14 +227,29 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
 // Get KL list for admin_kl users
 userSchema.statics.getKLList = function () {
   return [
-    { id: "KEMENKO_PMK", name: "Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan" },
-    { id: "KEMENDIKBUDRISTEK", name: "Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi" },
+    {
+      id: "KEMENKO_PMK",
+      name: "Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan",
+    },
+    {
+      id: "KEMENDIKBUDRISTEK",
+      name: "Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi",
+    },
     { id: "KEMENAG", name: "Kementerian Agama" },
-    { id: "KEMENDES_PDTT", name: "Kementerian Desa, Pembangunan Daerah Tertinggal, dan Transmigrasi" },
+    {
+      id: "KEMENDES_PDTT",
+      name: "Kementerian Desa, Pembangunan Daerah Tertinggal, dan Transmigrasi",
+    },
     { id: "KEMENKES", name: "Kementerian Kesehatan" },
-    { id: "KEMENDUKBANGGA", name: "Kementerian Pembangunan Kependudukan dan Keluarga Berencana Nasional" },
+    {
+      id: "KEMENDUKBANGGA",
+      name: "Kementerian Pembangunan Kependudukan dan Keluarga Berencana Nasional",
+    },
     { id: "KEMENSOS", name: "Kementerian Sosial" },
-    { id: "KEMENPPPA", name: "Kementerian Pemberdayaan Perempuan dan Perlindungan Anak" },
+    {
+      id: "KEMENPPPA",
+      name: "Kementerian Pemberdayaan Perempuan dan Perlindungan Anak",
+    },
     { id: "KEMENDAGRI", name: "Kemendagri" },
     { id: "BAPPENAS", name: "Badan Perencanaan Pembangunan Nasional" },
     { id: "BPS", name: "Badan Pusat Statistik" },
@@ -257,8 +287,14 @@ userSchema.set("toObject", { virtuals: true, transform: transformDoc });
 
 // Indexes
 // Case-insensitive unique indexes for email and username
-userSchema.index({ email: 1 }, { unique: true, collation: { locale: "en", strength: 2 } });
-userSchema.index({ username: 1 }, { unique: true, collation: { locale: "en", strength: 2 } });
+userSchema.index(
+  { email: 1 },
+  { unique: true, collation: { locale: "en", strength: 2 } }
+);
+userSchema.index(
+  { username: 1 },
+  { unique: true, collation: { locale: "en", strength: 2 } }
+);
 // Helpful query indexes
 userSchema.index({ role: 1, isActive: 1 });
 userSchema.index({ klId: 1 });

@@ -41,94 +41,114 @@ const NewsImage = ({
     return () => observer.disconnect();
   }, []);
 
-  // Menggunakan logic yang sama persis dengan getImageUrl dari NewsSection
+  // Enhanced image URL resolver with better error handling
   const getImageUrl = (rawSrc) => {
-    if (!rawSrc) return null;
-    
-    const apiBase = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_URL)
-      ? import.meta.env.VITE_API_URL
-      : (window && window.PAUDHI_API_BASE) || import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:5000/api' : '/api');
-    const backendOrigin = apiBase && /^https?:\/\//.test(apiBase)
-      ? apiBase.replace(/\/$/, '').replace(/\/api$/, '')
-      : window.location.origin;
-    
-    // Debug logging
-    console.log('🔍 NewsImage getImageUrl called with:', {
-      rawSrc: rawSrc,
-      backendOrigin: backendOrigin
-    });
-    
-    // Cek apakah artikel memiliki image
     if (!rawSrc) {
-      console.log('❌ No image field');
+      console.log('❌ NewsImage: No image source provided');
       return null;
     }
-
-    // Jika image adalah string (filename atau URL dari backend)
-    if (typeof rawSrc === 'string') {
-      // Jika absolute URL, normalisasi jika dari localhost/http dan path /uploads
-      if (rawSrc.startsWith('http')) {
-        try {
-          const u = new URL(rawSrc);
-          const isLocal = /localhost|127\.0\.0\.1/.test(u.hostname) || u.protocol === 'http:';
-          const isUploads = u.pathname.startsWith('/uploads');
-          if (isUploads && (isLocal || u.origin !== backendOrigin)) {
-            const imageUrl = `${backendOrigin}${u.pathname}`;
-            console.log('✅ NewsImage: Normalized absolute uploads URL:', imageUrl);
-            return imageUrl;
-          }
-        } catch (e) {}
-        console.log('✅ NewsImage: Full URL image:', rawSrc);
-        return rawSrc;
+    
+    // Get backend origin - handle both development and production
+    let backendOrigin;
+    try {
+      const apiBase = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_URL)
+        ? import.meta.env.VITE_API_URL
+        : (window && window.PAUDHI_API_BASE) || '/api';
+      
+      // If API base is absolute URL, extract origin
+      if (/^https?:\/\//i.test(apiBase)) {
+        backendOrigin = apiBase.replace(/\/+$/, '').replace(/\/api\/?$/, '');
+      } else {
+        // Relative path - use current origin
+        backendOrigin = window.location.origin;
       }
-      // Jika filename atau relative, tambahkan path uploads/news
+    } catch (e) {
+      backendOrigin = window.location.origin;
+    }
+    
+    // Debug logging
+    console.log('🔍 NewsImage getImageUrl:', {
+      rawSrc: typeof rawSrc === 'string' ? rawSrc.substring(0, 100) : rawSrc,
+      rawSrcType: typeof rawSrc,
+      backendOrigin: backendOrigin
+    });
+
+    // Handle string URL (most common case)
+    if (typeof rawSrc === 'string') {
+      // Already absolute URL - normalize if needed
+      if (rawSrc.startsWith('http://') || rawSrc.startsWith('https://')) {
+        try {
+          const url = new URL(rawSrc);
+          // If it's an uploads path and origin doesn't match, use backend origin
+          if (url.pathname.startsWith('/uploads/')) {
+            // Check if we should normalize (different origin or localhost)
+            const needsNormalization = 
+              url.origin !== backendOrigin || 
+              /localhost|127\.0\.0\.1/.test(url.hostname);
+            
+            if (needsNormalization) {
+              const normalized = `${backendOrigin}${url.pathname}`;
+              console.log('✅ NewsImage: Normalized absolute URL:', normalized);
+              return normalized;
+            }
+          }
+          console.log('✅ NewsImage: Using absolute URL as-is:', rawSrc);
+          return rawSrc;
+        } catch (e) {
+          console.warn('⚠️ NewsImage: Invalid URL format, treating as relative:', rawSrc);
+        }
+      }
+      
+      // Relative path starting with /uploads/
       if (rawSrc.startsWith('/uploads/')) {
         const imageUrl = `${backendOrigin}${rawSrc}`;
-        console.log('✅ NewsImage: Constructed image URL (relative /uploads):', imageUrl);
+        console.log('✅ NewsImage: Constructed from /uploads/ path:', imageUrl);
         return imageUrl;
       }
+      
+      // Relative path starting with uploads/ (no leading slash)
       if (rawSrc.startsWith('uploads/')) {
         const imageUrl = `${backendOrigin}/${rawSrc}`;
-        console.log('✅ NewsImage: Constructed image URL (uploads/):', imageUrl);
+        console.log('✅ NewsImage: Constructed from uploads/ path:', imageUrl);
         return imageUrl;
       }
-      const imageUrl = `${backendOrigin}/uploads/news/${rawSrc}`;
-      console.log('✅ NewsImage: Constructed image URL (filename):', imageUrl);
+      
+      // Just filename - assume it's in news folder
+      if (!rawSrc.includes('/') && !rawSrc.startsWith('http')) {
+        const imageUrl = `${backendOrigin}/uploads/news/${rawSrc}`;
+        console.log('✅ NewsImage: Constructed from filename:', imageUrl);
+        return imageUrl;
+      }
+      
+      // Try to construct from any other relative path
+      const imageUrl = rawSrc.startsWith('/') 
+        ? `${backendOrigin}${rawSrc}`
+        : `${backendOrigin}/${rawSrc}`;
+      console.log('✅ NewsImage: Constructed from relative path:', imageUrl);
       return imageUrl;
     }
 
-    // Fallback untuk object (jika masih ada masalah)
-    if (rawSrc && typeof rawSrc === 'object') {
-      console.log('⚠️ NewsImage: Image is object, trying to extract filename:', rawSrc);
+    // Handle object format (from upload response)
+    if (typeof rawSrc === 'object' && rawSrc !== null) {
+      console.log('⚠️ NewsImage: Image is object, extracting URL:', rawSrc);
       
-      if (rawSrc.url) {
-        try {
-          if (rawSrc.url.startsWith('http')) {
-            const u = new URL(rawSrc.url);
-            const isLocal = /localhost|127\.0\.0\.1/.test(u.hostname) || u.protocol === 'http:';
-            const isUploads = u.pathname.startsWith('/uploads');
-            if (isUploads && (isLocal || u.origin !== backendOrigin)) {
-              const imageUrl = `${backendOrigin}${u.pathname}`;
-              console.log('✅ NewsImage: Normalized object absolute URL:', imageUrl);
-              return imageUrl;
-            }
-          }
-        } catch (e) {}
-        const imageUrl = rawSrc.url.startsWith('/uploads/')
-          ? `${backendOrigin}${rawSrc.url}`
-          : `${backendOrigin}/${rawSrc.url.replace(/^\//,'')}`;
-        console.log('✅ NewsImage: Extracted URL from object:', imageUrl);
-        return imageUrl;
+      // Try url property first
+      if (rawSrc.url && typeof rawSrc.url === 'string') {
+        return getImageUrl(rawSrc.url); // Recursively process the URL
       }
       
-      if (rawSrc.filename) {
-        const imageUrl = `${backendOrigin}/uploads/news/${rawSrc.filename}`;
-        console.log('✅ NewsImage: Constructed image URL from object filename:', imageUrl);
-        return imageUrl;
+      // Try relativePath property
+      if (rawSrc.relativePath && typeof rawSrc.relativePath === 'string') {
+        return getImageUrl(rawSrc.relativePath); // Recursively process
+      }
+      
+      // Try filename property
+      if (rawSrc.filename && typeof rawSrc.filename === 'string') {
+        return getImageUrl(rawSrc.filename); // Recursively process
       }
     }
 
-    console.log('❌ NewsImage: Could not resolve image URL for:', rawSrc);
+    console.error('❌ NewsImage: Could not resolve image URL for:', rawSrc);
     return null;
   };
 

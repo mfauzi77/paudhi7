@@ -343,91 +343,117 @@ const NewsSection = () => {
     }
   };
 
-  // ✅ SIMPLE HELPER UNTUK IMAGE URL - COMPLETELY FIXED
+  // ✅ Enhanced image URL resolver - consistent with NewsImage component
   const getImageUrl = (article) => {
-    const apiBase = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_URL)
-      ? import.meta.env.VITE_API_URL
-      : (window && window.PAUDHI_API_BASE) || import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:5000/api' : '/api');
-    const backendOrigin = apiBase && /^https?:\/\//.test(apiBase)
-      ? apiBase.replace(/\/$/, '').replace(/\/api$/, '')
-      : window.location.origin;
-
-    // Debug logging
-    console.log('🔍 getImageUrl called with:', {
-      article: article._id,
-      image: article.image,
-      imageType: typeof article.image,
-      imageValue: article.image
-    });
-
-    if (!article.image) {
-      console.log('❌ No image field for article:', article._id);
-      return null;
+    // Handle null/undefined image gracefully - don't log error for articles without images
+    if (!article || !article.image) {
+      return null; // Return null silently - no error logging for articles without images
     }
 
-    // Jika image adalah string (filename atau URL dari backend)
-    if (typeof article.image === 'string') {
-      // Jika absolute URL, normalisasi jika dari localhost/http dan path /uploads
-      if (article.image.startsWith('http')) {
+    const rawSrc = article.image;
+    
+    // Get backend origin - handle both development and production
+    let backendOrigin;
+    try {
+      const apiBase = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_URL)
+        ? import.meta.env.VITE_API_URL
+        : (window && window.PAUDHI_API_BASE) || '/api';
+      
+      // If API base is absolute URL, extract origin
+      if (/^https?:\/\//i.test(apiBase)) {
+        backendOrigin = apiBase.replace(/\/+$/, '').replace(/\/api\/?$/, '');
+      } else {
+        // Relative path - use current origin
+        backendOrigin = window.location.origin;
+      }
+    } catch (e) {
+      backendOrigin = window.location.origin;
+    }
+
+    // Debug logging
+    console.log('🔍 NewsSection getImageUrl:', {
+      articleId: article._id,
+      rawSrc: typeof rawSrc === 'string' ? rawSrc.substring(0, 100) : rawSrc,
+      rawSrcType: typeof rawSrc,
+      backendOrigin: backendOrigin
+    });
+
+    // Handle string URL (most common case)
+    if (typeof rawSrc === 'string') {
+      // Already absolute URL - normalize if needed
+      if (rawSrc.startsWith('http://') || rawSrc.startsWith('https://')) {
         try {
-          const u = new URL(article.image);
-          const isLocal = /localhost|127\.0\.0\.1/.test(u.hostname) || u.protocol === 'http:';
-          const isUploads = u.pathname.startsWith('/uploads');
-          if (isUploads && (isLocal || u.origin !== backendOrigin)) {
-            const imageUrl = `${backendOrigin}${u.pathname}`;
-            console.log('✅ Normalized absolute uploads URL:', imageUrl);
-            return imageUrl;
+          const url = new URL(rawSrc);
+          // If it's an uploads path and origin doesn't match, use backend origin
+          if (url.pathname.startsWith('/uploads/')) {
+            // Check if we should normalize (different origin or localhost)
+            const needsNormalization = 
+              url.origin !== backendOrigin || 
+              /localhost|127\.0\.0\.1/.test(url.hostname);
+            
+            if (needsNormalization) {
+              const normalized = `${backendOrigin}${url.pathname}`;
+              console.log('✅ NewsSection: Normalized absolute URL:', normalized);
+              return normalized;
+            }
           }
-        } catch (e) {}
-        console.log('✅ Full URL image:', article.image);
-        return article.image;
+          console.log('✅ NewsSection: Using absolute URL as-is:', rawSrc);
+          return rawSrc;
+        } catch (e) {
+          console.warn('⚠️ NewsSection: Invalid URL format, treating as relative:', rawSrc);
+        }
       }
-      // Jika filename atau relative, tambahkan path uploads/news
-      if (article.image.startsWith('/uploads/')) {
-        const imageUrl = `${backendOrigin}${article.image}`;
-        console.log('✅ Constructed image URL (relative /uploads):', imageUrl);
+      
+      // Relative path starting with /uploads/
+      if (rawSrc.startsWith('/uploads/')) {
+        const imageUrl = `${backendOrigin}${rawSrc}`;
+        console.log('✅ NewsSection: Constructed from /uploads/ path:', imageUrl);
         return imageUrl;
       }
-      if (article.image.startsWith('uploads/')) {
-        const imageUrl = `${backendOrigin}/${article.image}`;
-        console.log('✅ Constructed image URL (uploads/):', imageUrl);
+      
+      // Relative path starting with uploads/ (no leading slash)
+      if (rawSrc.startsWith('uploads/')) {
+        const imageUrl = `${backendOrigin}/${rawSrc}`;
+        console.log('✅ NewsSection: Constructed from uploads/ path:', imageUrl);
         return imageUrl;
       }
-      const imageUrl = `${backendOrigin}/uploads/news/${article.image}`;
-      console.log('✅ Constructed image URL:', imageUrl);
+      
+      // Just filename - assume it's in news folder
+      if (!rawSrc.includes('/') && !rawSrc.startsWith('http')) {
+        const imageUrl = `${backendOrigin}/uploads/news/${rawSrc}`;
+        console.log('✅ NewsSection: Constructed from filename:', imageUrl);
+        return imageUrl;
+      }
+      
+      // Try to construct from any other relative path
+      const imageUrl = rawSrc.startsWith('/') 
+        ? `${backendOrigin}${rawSrc}`
+        : `${backendOrigin}/${rawSrc}`;
+      console.log('✅ NewsSection: Constructed from relative path:', imageUrl);
       return imageUrl;
     }
 
-    // Fallback untuk object (jika masih ada masalah)
-    if (article.image && typeof article.image === 'object') {
-      console.log('⚠️ Image is object, trying to extract filename:', article.image);
-      if (article.image.url) {
-        try {
-          if (article.image.url.startsWith('http')) {
-            const u = new URL(article.image.url);
-            const isLocal = /localhost|127\.0\.0\.1/.test(u.hostname) || u.protocol === 'http:';
-            const isUploads = u.pathname.startsWith('/uploads');
-            if (isUploads && (isLocal || u.origin !== backendOrigin)) {
-              const imageUrl = `${backendOrigin}${u.pathname}`;
-              console.log('✅ Normalized object absolute URL:', imageUrl);
-              return imageUrl;
-            }
-          }
-        } catch (e) {}
-        const rel = article.image.url.startsWith('/uploads/')
-          ? `${backendOrigin}${article.image.url}`
-          : `${backendOrigin}/${article.image.url.replace(/^\//,'')}`;
-        console.log('✅ Object with relative URL:', rel);
-        return rel;
+    // Handle object format (from upload response)
+    if (typeof rawSrc === 'object' && rawSrc !== null) {
+      console.log('⚠️ NewsSection: Image is object, extracting URL:', rawSrc);
+      
+      // Try url property first
+      if (rawSrc.url && typeof rawSrc.url === 'string') {
+        return getImageUrl({ ...article, image: rawSrc.url }); // Recursively process
       }
-      if (article.image.filename) {
-        const imageUrl = `${backendOrigin}/uploads/news/${article.image.filename}`;
-        console.log('✅ Object with filename:', imageUrl);
-        return imageUrl;
+      
+      // Try relativePath property
+      if (rawSrc.relativePath && typeof rawSrc.relativePath === 'string') {
+        return getImageUrl({ ...article, image: rawSrc.relativePath }); // Recursively process
+      }
+      
+      // Try filename property
+      if (rawSrc.filename && typeof rawSrc.filename === 'string') {
+        return getImageUrl({ ...article, image: rawSrc.filename }); // Recursively process
       }
     }
 
-    console.log('❌ Could not construct image URL for:', article.image);
+    console.error('❌ NewsSection: Could not resolve image URL for:', rawSrc);
     return null;
   };
 
@@ -622,34 +648,25 @@ const NewsSection = () => {
               }}
             >
               {filteredArticles.map((article) => {
-                // Debug logging for each article
-                console.log('🖼️ Processing article image:', {
-                  articleId: article._id,
-                  title: article.title,
-                  image: article.image,
-                  imageType: typeof article.image,
-                  hasImage: !!article.image
-                });
-                
                 return (
                   <div
                     key={article._id}
                     onClick={() => openPopup(article)}
-                    className="group cursor-pointer bg-white shadow-lg hover:shadow-xl border border-gray-100 rounded-xl lg:rounded-2xl overflow-hidden transition-all duration-300 transform hover:-translate-y-1 lg:hover:-translate-y-2 flex-shrink-0 w-64 sm:w-80 lg:w-96"
+                    className="group cursor-pointer bg-white shadow-md hover:shadow-xl border border-gray-200/50 rounded-xl lg:rounded-2xl overflow-hidden transition-all duration-300 transform hover:-translate-y-1 flex-shrink-0 w-64 sm:w-72 lg:w-80"
                     style={{ scrollSnapAlign: 'start' }}
                   >
-                    {/* ✅ IMAGE SECTION - COMPLETELY FIXED WITH DEBUG */}
-                    <div className="relative h-40 sm:h-48 lg:h-56 overflow-hidden">
+                    {/* ✅ IMAGE SECTION */}
+                    <div className="relative h-32 sm:h-36 lg:h-40 overflow-hidden bg-gray-100">
                       {article.image ? (
                         <NewsImage
                           src={article.image}
                           alt={article.title}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          className="w-full h-full object-cover transition-opacity duration-300"
                           fallbackClassName="w-full h-full"
                           hoverEffect={false}
                         />
                       ) : (
-                        // Jika tidak ada gambar, tampilkan placeholder sederhana
+                        // Placeholder sederhana
                         <div className="w-full h-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white">
                           <div className="text-center">
                             <i className="fas fa-newspaper text-2xl mb-2"></i>
@@ -658,12 +675,14 @@ const NewsSection = () => {
                         </div>
                       )}
 
-                      <div className="absolute top-2 sm:top-3 right-2 sm:right-3 bg-white/90 backdrop-blur-sm rounded-full p-1.5 sm:p-2">
+                      {/* Badge icon */}
+                      <div className="absolute top-2 sm:top-3 right-2 sm:right-3 bg-white/90 backdrop-blur-sm rounded-full p-1.5 sm:p-2 shadow-md">
                         <i className={`${article.icon || 'fas fa-newspaper'} text-blue-600 text-xs sm:text-sm`}></i>
                       </div>
 
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2 sm:p-4">
-                        <div className="flex items-center gap-2 sm:gap-3 text-xs text-white mb-1 sm:mb-2">
+                      {/* Date overlay */}
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2 sm:p-3">
+                        <div className="flex items-center gap-2 sm:gap-3 text-xs text-white">
                           <span className="flex items-center gap-1">
                             <i className="fas fa-calendar text-xs"></i>
                             <span className="hidden sm:inline">
@@ -684,8 +703,8 @@ const NewsSection = () => {
                       </div>
                     </div>
 
-                    {/* Article Content - Unchanged */}
-                    <div className="p-3 sm:p-4 lg:p-6">
+                    {/* Article Content */}
+                    <div className="p-3 sm:p-4 lg:p-5">
                       <h3 className="text-sm sm:text-lg lg:text-xl font-bold text-gray-900 mb-2 sm:mb-3 line-clamp-2 group-hover:text-blue-600 transition leading-tight">
                         {article.title}
                       </h3>
@@ -694,6 +713,7 @@ const NewsSection = () => {
                         {article.excerpt}
                       </p>
 
+                      {/* Tags section */}
                       <div className="flex items-center justify-between mb-3 sm:mb-4">
                         <div className="flex flex-wrap gap-1">
                           {article.tags && article.tags.length > 0 && article.tags.slice(0, 1).map((tag, idx) => (
@@ -713,6 +733,7 @@ const NewsSection = () => {
                         </div>
                       </div>
 
+                      {/* Author section */}
                       <div className="pt-2 sm:pt-3 border-t border-gray-100">
                         <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600">
                           <i className="fas fa-user-circle"></i>
@@ -848,7 +869,7 @@ const NewsSection = () => {
                       </div>
                     );
                   }
-                  console.log('❌ No image URL for popup:', selectedNews._id);
+                  // No image available - silently return null (no error logging)
                   return null;
                 })()}
 

@@ -99,15 +99,52 @@ class ApiService {
 
   async createNews(newsData) {
     const formData = new FormData();
-    if (newsData.image instanceof File) formData.append("image", newsData.image);
-    Object.keys(newsData).forEach(k => k !== "image" && formData.append(k, typeof newsData[k]==='object'?JSON.stringify(newsData[k]):newsData[k]));
+    
+    // Handle image - support File, object with url, or string URL
+    if (newsData.image instanceof File) {
+      formData.append("image", newsData.image);
+    } else if (newsData.image && typeof newsData.image === 'object' && newsData.image.url) {
+      // Image is object with url property - send as string
+      formData.append("image", newsData.image.url);
+    } else if (typeof newsData.image === 'string' && newsData.image) {
+      // Image is already a URL string
+      formData.append("image", newsData.image);
+    }
+    
+    // Append other fields
+    Object.keys(newsData).forEach(k => {
+      if (k !== "image") {
+        formData.append(k, typeof newsData[k]==='object' && newsData[k] !== null ? JSON.stringify(newsData[k]) : newsData[k]);
+      }
+    });
+    
     return this.request("/news", { method: "POST", body: formData });
   }
 
   async updateNews(id, newsData) {
     const formData = new FormData();
-    if (newsData.image instanceof File) formData.append("image", newsData.image);
-    Object.keys(newsData).forEach(k => k !== "image" && formData.append(k, typeof newsData[k]==='object'?JSON.stringify(newsData[k]):newsData[k]));
+    
+    // Handle image - support File, object with url, or string URL
+    if (newsData.image instanceof File) {
+      formData.append("image", newsData.image);
+    } else if (newsData.image && typeof newsData.image === 'object' && newsData.image.url) {
+      // Image is object with url property - send as string
+      formData.append("image", newsData.image.url);
+    } else if (typeof newsData.image === 'string' && newsData.image) {
+      // Image is already a URL string
+      formData.append("image", newsData.image);
+    } else if (newsData.image === null) {
+      // Explicitly removing image - send empty string
+      formData.append("image", "");
+    }
+    
+    // Append other fields
+    Object.keys(newsData).forEach(k => {
+      if (k !== "image") {
+        formData.append(k, typeof newsData[k]==='object' && newsData[k] !== null ? JSON.stringify(newsData[k]) : newsData[k]);
+      }
+    });
+    
     return this.request(`/news/${id}`, { method: "PUT", body: formData });
   }
 

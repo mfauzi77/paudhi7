@@ -151,13 +151,32 @@ const NewsManagement = () => {
         urlType: typeof newsData.image?.url
       });
       
+      // Handle image upload if there's a file
+      let imageUrl = null;
+      if (newsData.image?.file instanceof File) {
+        // Upload image first
+        console.log('📤 Uploading image before creating news...');
+        const imageData = await handleImageUpload(newsData.image, newsData.title);
+        console.log('✅ Image uploaded, URL:', imageData?.url);
+        // Extract URL from imageData object
+        imageUrl = imageData?.url || imageData?.imageUrl || null;
+      } else if (newsData.image?.url) {
+        // Already has URL (from previous upload or existing)
+        imageUrl = newsData.image.url;
+        console.log('✅ Using existing image URL:', imageUrl);
+      } else if (typeof newsData.image === 'string' && newsData.image) {
+        // Image is already a URL string
+        imageUrl = newsData.image;
+        console.log('✅ Using image URL string:', imageUrl);
+      }
+      
       // Prepare data for API - use standardized content field
       const apiData = {
         title: newsData.title?.trim() || '',
         excerpt: newsData.excerpt?.trim() || '',
         content: newsData.content?.trim() || '', // Use content field directly
         status: 'draft', // Always draft for new news
-        image: newsData.image
+        image: imageUrl // Use URL string (or null)
       };
       
       console.log("📋 API data after mapping:", apiData);
