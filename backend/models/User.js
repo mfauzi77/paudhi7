@@ -174,6 +174,18 @@ userSchema.pre("validate", function (next) {
     }
   }
 
+  // For admin_daerah, enforce valid regionName
+  if (this.role === "admin_daerah") {
+    if (typeof this.regionName === "string") {
+      this.regionName = this.regionName.trim();
+    }
+    const regions = (this.constructor.getRegionList && this.constructor.getRegionList()) || [];
+    const valid = regions.includes(this.regionName);
+    if (!this.regionName || !valid) {
+      return next(new Error("Nama daerah tidak valid untuk role admin_daerah"));
+    }
+  }
+
   next();
 });
 
@@ -253,6 +265,50 @@ userSchema.statics.getKLList = function () {
     { id: "KEMENDAGRI", name: "Kemendagri" },
     { id: "BAPPENAS", name: "Badan Perencanaan Pembangunan Nasional" },
     { id: "BPS", name: "Badan Pusat Statistik" },
+  ];
+};
+
+// Get Region list for admin_daerah users (Provinsi)
+userSchema.statics.getRegionList = function () {
+  return [
+    "Aceh",
+    "Sumatera Utara",
+    "Sumatera Barat",
+    "Riau",
+    "Kepulauan Riau",
+    "Jambi",
+    "Sumatera Selatan",
+    "Bangka Belitung",
+    "Bengkulu",
+    "Lampung",
+    "DKI Jakarta",
+    "Jawa Barat",
+    "Banten",
+    "Jawa Tengah",
+    "DI Yogyakarta",
+    "Jawa Timur",
+    "Bali",
+    "Nusa Tenggara Barat",
+    "Nusa Tenggara Timur",
+    "Kalimantan Barat",
+    "Kalimantan Tengah",
+    "Kalimantan Selatan",
+    "Kalimantan Timur",
+    "Kalimantan Utara",
+    "Sulawesi Utara",
+    "Sulawesi Tengah",
+    "Sulawesi Selatan",
+    "Sulawesi Tenggara",
+    "Gorontalo",
+    "Sulawesi Barat",
+    "Maluku",
+    "Maluku Utara",
+    "Papua",
+    "Papua Barat",
+    "Papua Barat Daya",
+    "Papua Selatan",
+    "Papua Pegunungan",
+    "Papua Tengah",
   ];
 };
 
