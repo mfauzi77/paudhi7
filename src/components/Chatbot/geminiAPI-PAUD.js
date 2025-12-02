@@ -148,14 +148,13 @@ export async function callGeminiAPI(userPrompt) {
     const relevantFAQ = searchFAQ(userPrompt);
     if (relevantFAQ.length > 0) {
       const bestMatch = relevantFAQ[0];
-     return `📋 Berdasarkan FAQ PAUD HI:
+      return `📋 Berdasarkan FAQ PAUD HI:
 
 ${bestMatch.question}
 
 ${bestMatch.answer}
 
 💡 Catatan: API tidak tersedia, jawaban diambil dari database FAQ.`;
-
     }
     return `❌ Maaf, layanan AI sedang tidak tersedia.\n\n💡 Silakan:\n• Hubungi staf via WhatsApp: ${SUPPORT_PHONE}\n• Isi form kontak untuk bantuan lebih lanjut`;
   }
@@ -221,9 +220,20 @@ Jika menjelaskan poin-poin, gunakan tanda “-” atau angka tanpa format khusus
       },
       body: JSON.stringify({
         contents: [
-          { role: "user", parts: [{ text: systemPrompt }] },
-          { role: "user", parts: [{ text: userPrompt }] },
+          {
+            parts: [
+              {
+                text: systemPrompt + "\n\nPertanyaan pengguna: " + userPrompt,
+              },
+            ],
+          },
         ],
+        generationConfig: {
+          temperature: 0.7,
+          topK: 40,
+          topP: 0.95,
+          maxOutputTokens: 1024,
+        },
       }),
     });
 
@@ -250,7 +260,6 @@ ${bestMatch.question}
 ${bestMatch.answer}
 
 💡 Catatan: API tidak tersedia, jawaban diambil dari database FAQ.`;
-
     }
 
     return `❌ Maaf, AI sedang mengalami gangguan dan saya tidak menemukan informasi spesifik di FAQ.\n\n💡 Silakan:\n• Hubungi staf via WhatsApp: ${SUPPORT_PHONE}\n• Isi form kontak untuk bantuan lebih lanjut\n• Coba pertanyaan dengan kata kunci yang berbeda`;

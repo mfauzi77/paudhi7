@@ -118,10 +118,14 @@ router.post("/", authenticate, requireAdminUtama, async (req, res) => {
     // Basic required field validation to avoid ambiguous 500s
     const requiredFields = ["username", "email", "password", "fullName"];
     for (const field of requiredFields) {
-      if (!userData[field] || (typeof userData[field] === "string" && !userData[field].trim())) {
+      if (
+        !userData[field] ||
+        typeof userData[field] !== "string" ||
+        !userData[field].trim()
+      ) {
         return res.status(400).json({
           success: false,
-          message: `Field '${field}' wajib diisi`,
+          message: `Field '${field}' wajib diisi dan harus berupa string`,
         });
       }
     }
@@ -137,9 +141,12 @@ router.post("/", authenticate, requireAdminUtama, async (req, res) => {
     // Sanitize permissions: if client sends old array format or invalid type, drop to use defaults
     if (
       userData.permissions &&
-      (Array.isArray(userData.permissions) || typeof userData.permissions !== "object")
+      (Array.isArray(userData.permissions) ||
+        typeof userData.permissions !== "object")
     ) {
-      console.warn("⚠️ Invalid permissions format in request; applying defaults.");
+      console.warn(
+        "⚠️ Invalid permissions format in request; applying defaults."
+      );
       delete userData.permissions; // model hook will set defaults
     }
 
@@ -163,8 +170,8 @@ router.post("/", authenticate, requireAdminUtama, async (req, res) => {
           message: "Untuk role Admin Daerah, Provinsi wajib dipilih",
         });
       }
-      userData.klId = null;
-      userData.klName = null;
+      // Ensure regionName is set to province for admin_daerah
+      userData.regionName = userData.province;
     } else {
       // For other roles, clear all role-specific fields
       userData.klId = null;
@@ -193,6 +200,14 @@ router.post("/", authenticate, requireAdminUtama, async (req, res) => {
       }
       userData.regionName = rn; // normalized
     }
+
+    console.log("Final userData before save:", {
+      role: userData.role,
+      klId: userData.klId,
+      klName: userData.klName,
+      province: userData.province,
+      regionName: userData.regionName,
+    });
 
     // Check if username or email already exists
     const existingUser = await User.findOne({
@@ -230,8 +245,12 @@ router.post("/", authenticate, requireAdminUtama, async (req, res) => {
           errors: Object.values(saveErr.errors).map((e) => e.message),
         });
       }
-      if (saveErr.name === 'CastError') {
-        return res.status(400).json({ success: false, message: 'CastError pada field', error: saveErr.message });
+      if (saveErr.name === "CastError") {
+        return res.status(400).json({
+          success: false,
+          message: "CastError pada field",
+          error: saveErr.message,
+        });
       }
       if (saveErr.code === 11000) {
         const field = Object.keys(saveErr.keyValue || {})[0];
@@ -271,9 +290,12 @@ router.put("/:id", authenticate, requireAdminUtama, async (req, res) => {
     // Sanitize permissions on update as well
     if (
       updateData.permissions &&
-      (Array.isArray(updateData.permissions) || typeof updateData.permissions !== "object")
+      (Array.isArray(updateData.permissions) ||
+        typeof updateData.permissions !== "object")
     ) {
-      console.warn("⚠️ Invalid permissions format in update; dropping provided permissions.");
+      console.warn(
+        "⚠️ Invalid permissions format in update; dropping provided permissions."
+      );
       delete updateData.permissions; // keep existing or model defaults
     }
 
@@ -283,9 +305,13 @@ router.put("/:id", authenticate, requireAdminUtama, async (req, res) => {
     }
 
     // Normalize role-related fields on update as well
-    if (updateData.role && updateData.role !== "admin_kl") {
-      updateData.klId = undefined;
-      updateData.klName = undefined;
+    if (
+      updateData.role &&
+      updateData.role !== "admin_kl" &&
+      updateData.role !== "admin_daerah"
+    ) {
+      updateData.klId = null;
+      updateData.klName = null;
     }
     if (updateData.role === "admin_kl") {
       if (!updateData.klId || !updateData.klName) {
@@ -295,6 +321,7 @@ router.put("/:id", authenticate, requireAdminUtama, async (req, res) => {
         });
       }
     }
+    // No additional validation needed for admin_daerah klId/klName since they are not required
 
     // For admin_daerah, validate regionName on update when role set
     if (updateData.role === "admin_daerah") {
@@ -451,16 +478,29 @@ router.get("/kl-list", authenticate, requireAdminUtama, async (req, res) => {
 });
 
 // GET /api/users/region-list - Get region list for admin_daerah
-router.get("/region-list", authenticate, requireAdminUtama, async (req, res) => {
-  try {
-    console.log("📋 Getting region list for admin_daerah...");
-    const regions = User.getRegionList();
-    console.log("✅ Region list retrieved");
-    res.json({ success: true, message: "Daftar daerah berhasil diambil", data: regions });
-  } catch (error) {
-    console.error("❌ Region list error:", error);
-    res.status(500).json({ success: false, message: "Error saat mengambil daftar daerah", error: error.message });
+router.get(
+  "/region-list",
+  authenticate,
+  requireAdminUtama,
+  async (req, res) => {
+    try {
+      console.log("📋 Getting region list for admin_daerah...");
+      const regions = User.getRegionList();
+      console.log("✅ Region list retrieved");
+      res.json({
+        success: true,
+        message: "Daftar daerah berhasil diambil",
+        data: regions,
+      });
+    } catch (error) {
+      console.error("❌ Region list error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Error saat mengambil daftar daerah",
+        error: error.message,
+      });
+    }
   }
-});
+);
 
 module.exports = router;

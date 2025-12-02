@@ -36,10 +36,10 @@ const institutions = [
   ],
   },
   {
-    name: "Kementerian Kesehatan",
-    role: "Layanan Kesehatan & Gizi Anak",
-    logo: kesehatanLogo,
-    programs: ["Imunisasi", "Gizi Balita", "Posyandu"],
+    name: "Badan Perencanaan Pembangunan Nasional",
+    role: "Perencanaan & Evaluasi Program",
+    logo: bappenasLogo,
+    programs: ["Perencanaan", "Evaluasi", "Monitoring"],
   },
   {
     name: "Kementerian Pembangunan Kependudukan dan Keluarga Berencana Nasional",
@@ -60,11 +60,12 @@ const institutions = [
     programs: ["Perlindungan Anak", "PAUD HI", "KLA"],
   },
   {
-    name: "Badan Perencanaan Pembangunan Nasional",
-    role: "Perencanaan & Evaluasi Program",
-    logo: bappenasLogo,
-    programs: ["Perencanaan", "Evaluasi", "Monitoring"],
+    name: "Kementerian Kesehatan",
+    role: "Layanan Kesehatan & Gizi Anak",
+    logo: kesehatanLogo,
+    programs: ["Imunisasi", "Gizi Balita", "Posyandu"],
   },
+  
   {
     name: "Kementerian Agama",
     role: "PAUD Berbasis Agama",
@@ -72,7 +73,7 @@ const institutions = [
     programs: ["RA/BA", "TPQ", "Madrasah"],
   },
   {
-    name: "Kementerian Desa, Pembangunan Daerah Tertinggal, dan Transmigrasi",
+    name: "Kementerian Desa dan Pembangunan Daerah Tertinggal",
     role: "Pembangunan Desa & Daerah",
     logo: kemendesaLogo,
     programs: ["Desa Prioritas", "BUMDes", "PKH"],

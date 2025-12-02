@@ -199,11 +199,11 @@ const Chatbot = () => {
         const bestMatch = relevantFAQs[0];
         addBotMessage(`📋 Berdasarkan FAQ PAUD HI:\n\n**${bestMatch.question}**\n\n${bestMatch.answer}\n\n💡 *AI sedang tidak tersedia, jawaban dari database FAQ.*`);
       } else {
-        addBotMessage("❌ Maaf, ada masalah saat memproses pertanyaan Anda. Silakan coba lagi atau hubungi staf kami via WhatsApp: 0811-1234-5678");
+        addBotMessage("❌ Maaf, ada masalah saat memproses pertanyaan Anda. Silakan coba lagi nanti.");
       }
       
       setTimeout(() => {
-        addBotMessage("💡 Alternatif: Coba lihat FAQ atau hubungi staf langsung via WhatsApp:", true);
+        addBotMessage("💡 Alternatif: Coba lihat FAQ", true);
       }, 1000);
     } finally {
       setIsTyping(false);

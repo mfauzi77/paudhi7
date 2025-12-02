@@ -1,24 +1,8 @@
-# TODO: Implement Dropdown for Admin Daerah Region Selection
+# TODO: Update PolicyMapDashboard to New Design
 
-## Tasks
-
-- [ ] Import dataprovkabkota.json into UserManagement.jsx
-- [ ] Add province and city fields to formData state
-- [ ] Modify form for admin_daerah role:
-  - Add Province dropdown (required)
-  - Add City dropdown (optional, depends on selected province)
-- [ ] Update handleFormChange to handle province and city selection
-- [ ] Update handleSubmit to construct regionName as "Province" or "Province - City"
-- [ ] Update handleEdit to parse existing regionName into province and city
-- [ ] Update resetForm to include new fields
-- [ ] Test the dropdown functionality
-
-## Files to Edit
-
-- src/pages/UserManagement.jsx
-
-## Notes
-
-- Province is required for admin_daerah
-- City is optional; if not selected, regionName will be just the province
-- regionName format: "Province" or "Province - City"
+- [x] Update header title to "SISMONEV – Dashboard Regulasi PAUD HI" with government logo
+- [x] Add three summary cards below header: "Sudah Punya Regulasi", "Dalam Proses", "Belum Ada"
+- [x] Remove the map section and adjust layout to full-width
+- [x] Update table columns to include Status and Tautan Dokumen
+- [x] Add filter dropdowns above the table for Province and Status
+- [x] Refine styling for professional palette and no sidebar

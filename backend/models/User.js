@@ -32,26 +32,26 @@ const userSchema = new mongoose.Schema(
       default: "admin_kl",
     },
     klId: {
-  type: String,
-  enum: [
-    "KEMENKO_PMK",
-    "KEMENDIKBUDRISTEK",
-    "KEMENAG",
-    "KEMENDES_PDTT",
-    "KEMENKES",
-    "KEMENDUKBANGGA",
-    "KEMENSOS",
-    "KEMENPPPA",
-    "KEMENDAGRI",
-    "BAPPENAS",
-    "BPS",
-    null, // biar null/undefined nggak bikin error enum
-  ],
-  required: function () {
-    return this.role === "admin_kl";
-  },
-  default: null,
-},
+      type: String,
+      enum: [
+        "KEMENKO_PMK",
+        "KEMENDIKBUDRISTEK",
+        "KEMENAG",
+        "KEMENDES_PDTT",
+        "KEMENKES",
+        "KEMENDUKBANGGA",
+        "KEMENSOS",
+        "KEMENPPPA",
+        "KEMENDAGRI",
+        "BAPPENAS",
+        "BPS",
+        null, // biar null/undefined nggak bikin error enum
+      ],
+      required: function () {
+        return this.role === "admin_kl";
+      },
+      default: null,
+    },
 
     klName: {
       type: String,
@@ -153,14 +153,18 @@ userSchema.pre("validate", function (next) {
     this.username = this.username.trim();
   }
 
-  // For non admin_kl, clear KL fields to avoid enum/required issues
-  if (this.role !== "admin_kl") {
-    this.klId = undefined;
-    this.klName = undefined;
+  // Normalize role: trim and replace spaces with underscore
+  if (typeof this.role === "string") {
+    this.role = this.role.trim().replace(/\s+/g, "_");
   }
 
-  // For admin_kl, enforce klId/klName consistency with official list
+  // Clear unnecessary fields based on role
   if (this.role === "admin_kl") {
+    // Clear admin_daerah fields
+    this.regionName = null;
+    this.province = null;
+    this.city = null;
+    // Enforce klId/klName consistency with official list
     const klList =
       (this.constructor.getKLList && this.constructor.getKLList()) || [];
     const klMap = new Map(klList.map((k) => [k.id, k.name]));
@@ -172,18 +176,28 @@ userSchema.pre("validate", function (next) {
       // Auto-correct klName if possible
       this.klName = expectedName;
     }
-  }
-
-  // For admin_daerah, enforce valid regionName
-  if (this.role === "admin_daerah") {
+  } else if (this.role === "admin_daerah") {
+    // Clear admin_kl fields
+    this.klId = null;
+    this.klName = null;
+    // Enforce valid regionName
     if (typeof this.regionName === "string") {
       this.regionName = this.regionName.trim();
     }
-    const regions = (this.constructor.getRegionList && this.constructor.getRegionList()) || [];
+    const regions =
+      (this.constructor.getRegionList && this.constructor.getRegionList()) ||
+      [];
     const valid = regions.includes(this.regionName);
     if (!this.regionName || !valid) {
       return next(new Error("Nama daerah tidak valid untuk role admin_daerah"));
     }
+  } else {
+    // For other roles, clear all role-specific fields
+    this.klId = null;
+    this.klName = null;
+    this.regionName = null;
+    this.province = null;
+    this.city = null;
   }
 
   next();

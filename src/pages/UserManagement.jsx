@@ -111,34 +111,16 @@ const UserManagement = ({ setActiveTab }) => {
       }));
     }
 
-    // Auto-set regionName when province or city changes
+    // For admin_daerah: regionName is always the province, city is optional
     if (field === "province") {
-      setFormData((prev) => {
-        let regionName = "";
-        if (value) {
-          regionName = prev.city ? `${value} - ${prev.city}` : value;
-        }
-        return {
-          ...prev,
-          province: value,
-          city: "", // reset city when province changes
-          regionName,
-        };
-      });
-    } else if (field === "city") {
-      setFormData((prev) => {
-        const province = prev.province;
-        let regionName = "";
-        if (province) {
-          regionName = value ? `${province} - ${value}` : province;
-        }
-        return {
-          ...prev,
-          city: value,
-          regionName,
-        };
-      });
+      setFormData((prev) => ({
+        ...prev,
+        province: value,
+        regionName: value, // regionName is the province
+        city: "", // reset city when province changes
+      }));
     }
+    // city change doesn't affect regionName
   };
 
   const resetForm = () => {
@@ -168,6 +150,12 @@ const UserManagement = ({ setActiveTab }) => {
       return;
     }
 
+    // Validasi: jika admin_daerah, province wajib diisi
+    if (formData.role === "admin_daerah" && !formData.province) {
+      alert("Untuk role Admin Daerah, Provinsi wajib dipilih!");
+      return;
+    }
+
     try {
       if (editingUser) {
         await apiService.updateUser(editingUser._id, formData);
@@ -187,10 +175,9 @@ const UserManagement = ({ setActiveTab }) => {
   };
 
   const handleEdit = (user) => {
-    const regionName = user.regionName || "";
-    const parts = regionName.split(" - ");
-    const province = parts[0] || "";
-    const city = parts[1] || "";
+    // For admin_daerah, regionName is the province, city is optional
+    const province = user.regionName || "";
+    const city = user.city || "";
 
     setEditingUser(user);
     setFormData({
@@ -203,7 +190,7 @@ const UserManagement = ({ setActiveTab }) => {
       klName: user.klName || "",
       province,
       city,
-      regionName,
+      regionName: province, // regionName is province
       regionNote: user.regionNote || "",
       isActive: user.isActive,
     });
@@ -259,6 +246,8 @@ const UserManagement = ({ setActiveTab }) => {
         return "bg-purple-100 text-purple-700";
       case "admin_kl":
         return "bg-blue-100 text-blue-700";
+      case "admin_daerah":
+        return "bg-green-100 text-green-700";
       default:
         return "bg-gray-100 text-gray-700";
     }
@@ -270,6 +259,8 @@ const UserManagement = ({ setActiveTab }) => {
         return "Admin Utama";
       case "admin_kl":
         return "Admin K/L";
+      case "admin_daerah":
+        return "Admin Daerah";
       default:
         return role;
     }
@@ -358,6 +349,7 @@ const UserManagement = ({ setActiveTab }) => {
               <option value="all">Semua Role</option>
               <option value="admin_utama">Admin Utama</option>
               <option value="admin_kl">Admin K/L</option>
+              <option value="admin_daerah">Admin Daerah</option>
             </select>
           </div>
 

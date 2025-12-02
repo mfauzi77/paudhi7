@@ -12,6 +12,7 @@ import Footer from './components/Footer';
 import NewsSection from './components/NewsSection';
 import KLSection from './components/KLSection';
 import DirectorySection from './components/DirectorySection';
+import PolicyMapDashboard from './pages/PolicyMapDashboard';
 
 // Lazy loading untuk komponen yang tidak critical
 const Chatbot = lazy(() => import('./components/Chatbot/Chatbot'));
@@ -138,7 +139,7 @@ function AppWrapper() {
             </ProtectedRoute>
           } 
         />
-        <Route 
+        {/* <Route 
           path="/admin/analytics" 
           element={
             <ProtectedRoute requiredRoles={['super_admin', 'admin']}>
@@ -146,7 +147,7 @@ function AppWrapper() {
                 <AdminDashboard />
               </Suspense>
             </ProtectedRoute>
-          } 
+          }  */}
         />
         <Route 
           path="/admin/ran-paud-data" 
@@ -158,11 +159,20 @@ function AppWrapper() {
             </ProtectedRoute>
           } 
         />
+        
         <Route 
           path="/login" 
           element={
             <Suspense fallback={<LoadingSpinner size="lg" text="Memuat halaman login..." className="py-8" />}>
               <LoginForm />
+            </Suspense>
+          } 
+        />
+        <Route 
+          path="/regulasi" 
+          element={
+            <Suspense fallback={<LoadingSpinner size="lg" text="Memuat halaman login..." className="py-8" />}>
+              <PolicyMapDashboard />
             </Suspense>
           } 
         />
