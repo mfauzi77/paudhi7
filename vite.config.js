@@ -23,6 +23,11 @@ export default defineConfig(({ mode }) => {
         }
       }
     },
+    resolve: {
+      alias: {
+        '@services': '/src/services',
+      },
+    },
     server: {
       port: 5173,
       host: true,

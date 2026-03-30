@@ -134,8 +134,8 @@ const ServicesSection = () => {
                 <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-14 lg:h-14 flex items-center justify-center bg-white bg-opacity-30 rounded-lg lg:rounded-xl mb-2 sm:mb-3 lg:mb-4">
                   <i className={`${service.icon} text-sm sm:text-base lg:text-2xl`}></i>
                 </div>
-                <h3 className="text-xs sm:text-sm lg:text-lg font-bold mb-1 sm:mb-2 leading-tight line-clamp-2">{service.title}</h3>
-                <p className="text-xs sm:text-sm text-gray-700 leading-relaxed line-clamp-3 lg:line-clamp-none">{service.subtitle}</p>
+                <h3 className="text-xs sm:text-sm lg:text-lg font-bold mb-1 sm:mb-2 leading-tight">{service.title}</h3>
+                <p className="text-xs sm:text-sm text-gray-700 leading-relaxed">{service.subtitle}</p>
                 
                 {/* Mobile Expand Indicator */}
                 <div className="mt-2 sm:mt-3 lg:mt-4 flex items-center justify-between md:hidden">

@@ -32,7 +32,7 @@ const ProtectedRoute = ({
 
   // 🔒 Jika belum login, redirect ke halaman login
   if (!isAuthenticated) {
-    console.log("🔒 User not authenticated, redirecting to login");
+    console.log("🔒 Pengguna tidak terautentikasi, sedang dialihkan ke halaman masuk");
     return <Navigate to={redirectTo} state={{ from: location }} replace />;
   }
 
@@ -40,9 +40,9 @@ const ProtectedRoute = ({
   if (requiredRoles.length > 0 && user) {
     let userRole = user.role;
 
-    // 🪄 Perlakukan admin_kl seperti admin biasa (override untuk fleksibilitas)
-    if (userRole === "admin_kl" && requiredRoles.includes("admin")) {
-      userRole = "admin"; // anggap admin_kl valid untuk role admin
+    // 🪄 Perlakukan admin_kl dan admin_daerah seperti admin biasa (override untuk fleksibilitas)
+    if ((userRole === "admin_kl" || userRole === "admin_daerah") && requiredRoles.includes("admin")) {
+      userRole = "admin"; // anggap admin_kl & admin_daerah valid untuk role admin
     }
     // 🪄 Perlakukan admin_utama seperti super_admin (legacy support)
     if (userRole === "admin_utama" && requiredRoles.includes("super_admin")) {
@@ -65,6 +65,7 @@ const ProtectedRoute = ({
         case "super_admin":
         case "admin":
         case "admin_kl":
+        case "admin_daerah":
         case "kl_operator":
         case "viewer":
           redirectPath = "/admin";

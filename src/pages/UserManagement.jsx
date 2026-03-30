@@ -56,12 +56,12 @@ const UserManagement = ({ setActiveTab }) => {
       name: "Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan",
     },
     {
-      id: "KEMENDIKDASMEN",
+      id: "KEMENDIKBUDRISTEK",
       name: "Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi",
     },
     { id: "KEMENAG", name: "Kementerian Agama" },
     {
-      id: "KEMENDES_PDT",
+      id: "KEMENDES_PDTT",
       name: "Kementerian Desa, Pembangunan Daerah Tertinggal, dan Transmigrasi",
     },
     { id: "KEMENKES", name: "Kementerian Kesehatan" },
@@ -71,10 +71,10 @@ const UserManagement = ({ setActiveTab }) => {
     },
     { id: "KEMENSOS", name: "Kementerian Sosial" },
     {
-      id: "KPPPA",
+      id: "KEMENPPPA",
       name: "Kementerian Pemberdayaan Perempuan dan Perlindungan Anak",
     },
-    { id: "KEMENDAGRI", name: "Kementerian Dalam Negeri" },
+    { id: "KEMENDAGRI", name: "Kemendagri" },
     { id: "BAPPENAS", name: "Badan Perencanaan Pembangunan Nasional" },
     { id: "BPS", name: "Badan Pusat Statistik" },
   ];

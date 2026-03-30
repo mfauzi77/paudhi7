@@ -4,7 +4,7 @@ import { ChevronDown, Calendar } from 'lucide-react';
 const PAUDYearFilter = ({ 
   selectedYear, 
   onYearChange, 
-  availableYears = [2020, 2021, 2022, 2023, 2024, 2025],
+  availableYears = [2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029],
   className = '',
   disabled = false 
 }) => {

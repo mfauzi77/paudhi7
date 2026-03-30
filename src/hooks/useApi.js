@@ -42,12 +42,21 @@ export const useNews = (params = {}) => {
         setLoading(true);
         setError(null);
         const data = await apiService.getNews(params);
-        setNews(data.news || []);
-        setPagination({
-          totalPages: data.totalPages,
-          currentPage: data.currentPage,
-          total: data.total
-        });
+        if (data.success && Array.isArray(data.data)) {
+          setNews(data.data);
+          setPagination({
+            totalPages: data.pagination?.totalPages || data.totalPages,
+            currentPage: data.pagination?.currentPage || data.currentPage,
+            total: data.pagination?.total || data.total
+          });
+        } else {
+          setNews(data.news || data || []);
+          setPagination({
+            totalPages: data.totalPages,
+            currentPage: data.currentPage,
+            total: data.total
+          });
+        }
       } catch (err) {
         setError(err.message);
         console.error('News fetch error:', err);
@@ -156,7 +165,8 @@ export const useNewsItem = (id) => {
         setLoading(true);
         setError(null);
         const data = await apiService.getNewsById(id);
-        setNews(data);
+        // Handle PostgreSQL wrapped response
+        setNews(data.success ? data.data : data);
       } catch (err) {
         setError(err.message);
       } finally {

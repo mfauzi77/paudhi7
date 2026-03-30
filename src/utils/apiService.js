@@ -152,6 +152,10 @@ class ApiService {
 
   async searchNews(query) { return this.request(`/news?search=${encodeURIComponent(query)}`); }
 
+  async searchRanPaud(query) { return this.request(`/ran-paud/public?search=${encodeURIComponent(query)}`); }
+
+  async searchPembelajaran(query) { return this.request(`/pembelajaran?search=${encodeURIComponent(query)}`); }
+
   // ================= PEMBELAJARAN =================
   // List (admin/internal)
   async getPembelajaran(params = {}) {

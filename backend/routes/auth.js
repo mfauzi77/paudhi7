@@ -2,90 +2,20 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+const pool = require('../dbPostgres');
+const { v4: uuidv4 } = require('uuid'); // Fallback if not available, used crypto below
 
-// =================
-// HELPER FUNCTIONS
-// =================
-
-// Helper function to fix permissions structure
-const fixPermissionsStructure = (user) => {
-  try {
-    // If permissions is an array (old format), convert to object
-    if (Array.isArray(user.permissions)) {
-      console.log('🔧 Converting array permissions to object for user:', user.email);
-      
-      const newPermissions = {
-        ranPaud: { create: true, read: true, update: true, delete: true },
-        news: { create: true, read: true, update: true, delete: true },
-        pembelajaran: { create: true, read: true, update: true, delete: true },
-        faq: { create: true, read: true, update: true, delete: true },
-        users: { create: false, read: false, update: false, delete: false }
-      };
-      
-      // Map old permissions if they exist
-      user.permissions.forEach(perm => {
-        if (perm.module && perm.actions && Array.isArray(perm.actions)) {
-          const moduleMap = {
-            'ran_paud': 'ranPaud',
-            'ranPaud': 'ranPaud',
-            'news': 'news',
-            'pembelajaran': 'pembelajaran',
-            'faq': 'faq',
-            'users': 'users'
-          };
-          
-          const moduleName = moduleMap[perm.module] || perm.module;
-          
-          if (newPermissions[moduleName]) {
-            newPermissions[moduleName] = {
-              create: perm.actions.includes('create'),
-              read: perm.actions.includes('read'),
-              update: perm.actions.includes('update'),
-              delete: perm.actions.includes('delete')
-            };
-          }
-        }
-      });
-      
-      // Set based on role
-      if (['super_admin'].includes(user.role)) {
-        newPermissions.users = { create: true, read: true, update: true, delete: true };
-      }
-      
-      user.permissions = newPermissions;
-      console.log('✅ Permissions converted successfully');
+// Helper to generate ID if uuid package missing
+const generateId = () => {
+    try {
+        return require('crypto').randomUUID();
+    } catch (e) {
+        return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
     }
-    
-    // If permissions is missing or null, set defaults
-    if (!user.permissions || typeof user.permissions !== 'object') {
-      console.log('🔧 Setting default permissions for user:', user.email);
-      
-      const defaultPermissions = {
-        ranPaud: { create: true, read: true, update: true, delete: true },
-        news: { create: true, read: true, update: true, delete: true },
-        pembelajaran: { create: true, read: true, update: true, delete: true },
-        faq: { create: true, read: true, update: true, delete: true },
-        users: { create: false, read: false, update: false, delete: false }
-      };
-      
-      if (['super_admin'].includes(user.role)) {
-        defaultPermissions.users = { create: true, read: true, update: true, delete: true };
-      }
-      
-      user.permissions = defaultPermissions;
-      console.log('✅ Default permissions set');
-    }
-    
-    return true;
-  } catch (error) {
-    console.error('❌ Error fixing permissions structure:', error);
-    return false;
-  }
 };
 
 // =================
-// AUTHENTICATION ROUTES
+// AUTHENTICATION ROUTES (PostgreSQL Version)
 // =================
 
 // POST /api/auth/login
@@ -93,99 +23,58 @@ router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Validation
     if (!email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: "Email dan password diperlukan",
-      });
+      return res.status(400).json({ success: false, message: "Email dan password diperlukan" });
     }
 
-    // Find user
-    const user = await User.findOne({ email: email.toLowerCase() });
+    // Find user by email
+    const result = await pool.query('SELECT * FROM users WHERE email = $1', [email.toLowerCase()]);
+    const user = result.rows[0];
+
     if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: "Email atau password salah",
-      });
+      return res.status(401).json({ success: false, message: "Email atau password salah" });
     }
 
-    // ===== FIX: Konversi permissions array ke object jika perlu =====
-    const permissionsFixed = fixPermissionsStructure(user);
-    if (!permissionsFixed) {
-      console.error('❌ Failed to fix permissions structure');
-      return res.status(500).json({
-        success: false,
-        message: "Terjadi kesalahan sistem permissions",
-      });
-    }
-    // ===== END FIX =====
-
-    // Check if user is active
-    if (!user.isActive) {
-      return res.status(401).json({
-        success: false,
-        message: "Akun tidak aktif",
-      });
+    // Check active
+    if (!user.is_active) {
+      return res.status(401).json({ success: false, message: "Akun tidak aktif" });
     }
 
     // Verify password
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return res.status(401).json({
-        success: false,
-        message: "Email atau password salah",
-      });
+      return res.status(401).json({ success: false, message: "Email atau password salah" });
     }
 
-    // Generate JWT token with updated role
+    // Update last login
+    await pool.query('UPDATE users SET last_login = NOW() WHERE id = $1', [user.id]);
+
+    // Generate Token
     const token = jwt.sign(
       {
-        userId: user._id,
+        userId: user.id,
         email: user.email,
-        role: user.role, // This will be the updated role
-        klId: user.klId || null,
+        role: user.role,
+        klId: user.kl_id,
       },
       process.env.JWT_SECRET,
       { expiresIn: "24h" }
     );
 
-    // Convert old roles to new roles if needed - FIXED FOR SISMONEV PAUD HI
-    let roleUpdated = false;
-    if (user.role === "admin") {
-      user.role = "admin"; // Keep as admin, don't convert
-      roleUpdated = true;
-    }
-    // ❌ REMOVED: admin_utama role no longer exists
-    // All admin_utama users will be converted to super_admin via migration script
-    // Superadmin role must remain super_admin for SISMONEV PAUD HI
-
-    // Update last login and save (with try-catch to handle potential save errors)
-    try {
-      user.lastLogin = new Date();
-      await user.save();
-      console.log('✅ User data saved successfully');
-    } catch (saveError) {
-      console.error('❌ Error saving user data:', saveError);
-      // Continue with login even if save fails
-      console.log('⚠️ Continuing login despite save error');
-    }
-
-    // Return user data (without password)
+    // Prepare response (camelCase for frontend)
     const userResponse = {
-      id: user._id,
+      id: user.id,
+      _id: user.id, // Legacy compatibility
       email: user.email,
       username: user.username,
-      fullName: user.fullName,
-      role: user.role, // This will be the updated role
-      klId: user.klId,
-      klName: user.klName,
-      isActive: user.isActive,
-      lastLogin: user.lastLogin,
-      permissions: user.permissions // Include fixed permissions
+      fullName: user.full_name,
+      role: user.role,
+      klId: user.kl_id,
+      klName: user.kl_name,
+      isActive: user.is_active,
+      lastLogin: new Date(), // Just updated
+      permissions: user.permissions || {}
     };
-
-    console.log('✅ Login successful for:', user.email, `(${user.role})`);
 
     res.status(200).json({
       success: true,
@@ -193,13 +82,10 @@ router.post("/login", async (req, res) => {
       token,
       user: userResponse,
     });
+
   } catch (error) {
     console.error("Login error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Terjadi kesalahan saat login",
-      error: error.message,
-    });
+    res.status(500).json({ success: false, message: "Terjadi kesalahan saat login" });
   }
 });
 
@@ -208,361 +94,215 @@ router.post("/register", async (req, res) => {
   try {
     const { email, password, username, fullName, role, klId } = req.body;
 
-    // Validation
     if (!email || !password || !username || !fullName) {
-      return res.status(400).json({
-        success: false,
-        message: "Semua field diperlukan",
-      });
+      return res.status(400).json({ success: false, message: "Semua field diperlukan" });
     }
 
-    // Check if user already exists
-    const existingUser = await User.findOne({
-      $or: [{ email: email.toLowerCase() }, { username }],
-    });
-
-    if (existingUser) {
-      return res.status(400).json({
-        success: false,
-        message: "Email atau username sudah terdaftar",
-      });
+    // Check existing
+    const existing = await pool.query(
+        'SELECT id FROM users WHERE email = $1 OR username = $2', 
+        [email.toLowerCase(), username]
+    );
+    if (existing.rows.length > 0) {
+      return res.status(400).json({ success: false, message: "Email atau username sudah terdaftar" });
     }
 
     // Hash password
-    const saltRounds = 12;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const hashedPassword = await bcrypt.hash(password, 12);
+    const newId = generateId();
 
-    // Create user
-    const newUser = new User({
-      email: email.toLowerCase(),
-      password: hashedPassword,
-      username,
-      fullName,
-      role: role || "user",
-      klId: klId || null,
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
+    // Default permissions logic could be here, but usually handled by frontend or admin panel. 
+    // We'll insert basic structure or empty object, assuming 'user' role defaults.
+    // For now, let's keep it simple or default to what schema says ('{}')
 
-    await newUser.save();
+    const query = `
+        INSERT INTO users (id, username, email, password, full_name, role, kl_id, is_active, created_at, updated_at)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), NOW())
+        RETURNING *
+    `;
+    const values = [
+        newId, username, email.toLowerCase(), hashedPassword, fullName, 
+        role || 'user', klId || null, true
+    ];
 
-    // Generate token
+    const result = await pool.query(query, values);
+    const newUser = result.rows[0];
+
+    // Token
     const token = jwt.sign(
-      {
-        userId: newUser._id,
-        email: newUser.email,
-        role: newUser.role,
-        klId: newUser.klId,
-      },
+      { userId: newUser.id, email: newUser.email, role: newUser.role, klId: newUser.kl_id },
       process.env.JWT_SECRET,
       { expiresIn: "24h" }
     );
-
-    // Return user data (without password)
-    const userResponse = {
-      id: newUser._id,
-      email: newUser.email,
-      username: newUser.username,
-      fullName: newUser.fullName,
-      role: newUser.role,
-      klId: newUser.klId,
-      isActive: newUser.isActive,
-      createdAt: newUser.createdAt,
-    };
 
     res.status(201).json({
       success: true,
       message: "Registrasi berhasil",
       token,
-      user: userResponse,
+      user: {
+          id: newUser.id,
+          _id: newUser.id, // Legacy compatibility
+          email: newUser.email,
+          username: newUser.username,
+          fullName: newUser.full_name,
+          role: newUser.role,
+          isActive: newUser.is_active
+      }
     });
+
   } catch (error) {
     console.error("Register error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Terjadi kesalahan saat registrasi",
-      error: error.message,
-    });
+    res.status(500).json({ success: false, message: "Terjadi kesalahan saat registrasi", error: error.message });
   }
 });
 
 // POST /api/auth/logout
-router.post("/logout", async (req, res) => {
-  try {
-    // In a real application, you might want to blacklist the token
-    // For now, we'll just return a success message
-    res.status(200).json({
-      success: true,
-      message: "Logout berhasil",
-    });
-  } catch (error) {
-    console.error("Logout error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Terjadi kesalahan saat logout",
-      error: error.message,
-    });
-  }
+router.post("/logout", (req, res) => {
+  res.status(200).json({ success: true, message: "Logout berhasil" });
 });
 
-// GET /api/auth/verify
+// GET /api/auth/verify (also /profile often used similarly)
 router.get("/verify", async (req, res) => {
-  try {
-    const token = req.headers.authorization?.split(" ")[1];
+    try {
+        const token = req.headers.authorization?.split(" ")[1];
+        if (!token) return res.status(401).json({ success: false, message: "Token tidak ditemukan" });
 
-    if (!token) {
-      return res.status(401).json({
-        success: false,
-        message: "Token tidak ditemukan",
-      });
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        
+        const result = await pool.query('SELECT * FROM users WHERE id = $1', [decoded.userId]);
+        const user = result.rows[0];
+
+        if (!user || !user.is_active) {
+            return res.status(401).json({ success: false, message: "Token/User tidak valid" });
+        }
+
+        res.status(200).json({
+            success: true,
+            user: {
+                id: user.id,
+                _id: user.id, // Legacy compatibility
+                email: user.email,
+                username: user.username,
+                fullName: user.full_name,
+                role: user.role,
+                klId: user.kl_id,
+                klName: user.kl_name,
+                isActive: user.is_active,
+                permissions: user.permissions
+            }
+        });
+
+    } catch (error) {
+        res.status(401).json({ success: false, message: "Token tidak valid" });
     }
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.userId).select("-password");
-
-    if (!user || !user.isActive) {
-      return res.status(401).json({
-        success: false,
-        message: "Token tidak valid",
-      });
-    }
-
-    // ===== FIX: Apply permissions fix for verify route too =====
-    fixPermissionsStructure(user);
-    // ===== END FIX =====
-
-    res.status(200).json({
-      success: true,
-      message: "Token valid",
-      user: {
-        id: user._id,
-        email: user.email,
-        username: user.username,
-        fullName: user.fullName,
-        role: user.role,
-        klId: user.klId,
-        isActive: user.isActive,
-        lastLoginAt: user.lastLoginAt,
-        permissions: user.permissions
-      },
-    });
-  } catch (error) {
-    console.error("Token verification error:", error);
-    res.status(401).json({
-      success: false,
-      message: "Token tidak valid",
-      error: error.message,
-    });
-  }
 });
 
 // GET /api/auth/profile
 router.get("/profile", async (req, res) => {
-  try {
-    const token = req.headers.authorization?.split(" ")[1];
+    // Same implementation as verify effectively
+    try {
+        const token = req.headers.authorization?.split(" ")[1];
+        if (!token) return res.status(401).json({ success: false, message: "Token tidak ditemukan" });
 
-    if (!token) {
-      return res.status(401).json({
-        success: false,
-        message: "Token tidak ditemukan",
-      });
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const result = await pool.query('SELECT * FROM users WHERE id = $1', [decoded.userId]);
+        const user = result.rows[0];
+
+        if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
+        res.status(200).json({
+            success: true,
+            user: {
+                id: user.id,
+                _id: user.id, // Legacy compatibility
+                email: user.email,
+                username: user.username,
+                fullName: user.full_name,
+                role: user.role,
+                klId: user.kl_id,
+                isActive: user.is_active,
+                permissions: user.permissions,
+                createdAt: user.created_at
+            }
+        });
+    } catch (e) {
+        res.status(500).json({ success: false, message: e.message });
     }
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.userId).select("-password");
-
-    if (!user || !user.isActive) {
-      return res.status(401).json({
-        success: false,
-        message: "User tidak ditemukan",
-      });
-    }
-
-    // ===== FIX: Apply permissions fix for profile route too =====
-    fixPermissionsStructure(user);
-    // ===== END FIX =====
-
-    res.status(200).json({
-      success: true,
-      message: "Profile berhasil diambil",
-      user: {
-        id: user._id,
-        email: user.email,
-        username: user.username,
-        fullName: user.fullName,
-        role: user.role,
-        klId: user.klId,
-        isActive: user.isActive,
-        lastLoginAt: user.lastLoginAt,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
-        permissions: user.permissions
-      },
-    });
-  } catch (error) {
-    console.error("Profile error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Terjadi kesalahan saat mengambil profile",
-      error: error.message,
-    });
-  }
 });
 
 // PUT /api/auth/profile
 router.put("/profile", async (req, res) => {
-  try {
-    const token = req.headers.authorization?.split(" ")[1];
-
-    if (!token) {
-      return res.status(401).json({
-        success: false,
-        message: "Token tidak ditemukan",
-      });
-    }
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.userId);
-
-    if (!user || !user.isActive) {
-      return res.status(401).json({
-        success: false,
-        message: "User tidak ditemukan",
-      });
-    }
-
-    // ===== FIX: Apply permissions fix before save =====
-    fixPermissionsStructure(user);
-    // ===== END FIX =====
-
-    const { fullName, username, email } = req.body;
-
-    // Update fields
-    if (fullName) user.fullName = fullName;
-    if (username) user.username = username;
-    if (email) user.email = email.toLowerCase();
-
-    user.updatedAt = new Date();
-    
-    // Save with try-catch to handle potential save errors
     try {
-      await user.save();
-      console.log('✅ Profile updated successfully');
-    } catch (saveError) {
-      console.error('❌ Error saving profile update:', saveError);
-      return res.status(500).json({
-        success: false,
-        message: "Terjadi kesalahan saat menyimpan profile",
-        error: saveError.message,
-      });
-    }
+        const token = req.headers.authorization?.split(" ")[1];
+        if (!token) return res.status(401).json({ success: false, message: "Token missing" });
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    res.status(200).json({
-      success: true,
-      message: "Profile berhasil diupdate",
-      user: {
-        id: user._id,
-        email: user.email,
-        username: user.username,
-        fullName: user.fullName,
-        role: user.role,
-        klId: user.klId,
-        isActive: user.isActive,
-        lastLoginAt: user.lastLoginAt,
-        updatedAt: user.updatedAt,
-        permissions: user.permissions
-      },
-    });
-  } catch (error) {
-    console.error("Profile update error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Terjadi kesalahan saat update profile",
-      error: error.message,
-    });
-  }
+        const { fullName, username, email } = req.body;
+        
+        // Dynamic update query
+        let fields = [];
+        let values = [];
+        let idx = 1;
+
+        if (fullName) { fields.push(`full_name = $${idx++}`); values.push(fullName); }
+        if (username) { fields.push(`username = $${idx++}`); values.push(username); }
+        if (email) { fields.push(`email = $${idx++}`); values.push(email.toLowerCase()); }
+        
+        if (fields.length === 0) return res.json({ success: true, message: "Nothing to update" });
+
+        fields.push(`updated_at = NOW()`);
+        
+        // Add ID as last parameter
+        values.push(decoded.userId);
+        
+        const query = `UPDATE users SET ${fields.join(', ')} WHERE id = $${idx} RETURNING *`;
+        
+        const result = await pool.query(query, values);
+        const updated = result.rows[0];
+
+        res.json({
+            success: true,
+            user: {
+                id: updated.id,
+                _id: updated.id, // Legacy compatibility
+                email: updated.email,
+                username: updated.username,
+                fullName: updated.full_name,
+                // ... include other fields if needed for frontend state update
+            }
+        });
+
+    } catch (e) {
+        res.status(500).json({ success: false, message: e.message });
+    }
 });
 
 // POST /api/auth/change-password
 router.post("/change-password", async (req, res) => {
-  try {
-    const token = req.headers.authorization?.split(" ")[1];
-
-    if (!token) {
-      return res.status(401).json({
-        success: false,
-        message: "Token tidak ditemukan",
-      });
-    }
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.userId);
-
-    if (!user || !user.isActive) {
-      return res.status(401).json({
-        success: false,
-        message: "User tidak ditemukan",
-      });
-    }
-
-    // ===== FIX: Apply permissions fix before save =====
-    fixPermissionsStructure(user);
-    // ===== END FIX =====
-
-    const { currentPassword, newPassword } = req.body;
-
-    if (!currentPassword || !newPassword) {
-      return res.status(400).json({
-        success: false,
-        message: "Current password dan new password diperlukan",
-      });
-    }
-
-    // Verify current password
-    const isCurrentPasswordValid = await bcrypt.compare(
-      currentPassword,
-      user.password
-    );
-    if (!isCurrentPasswordValid) {
-      return res.status(400).json({
-        success: false,
-        message: "Current password salah",
-      });
-    }
-
-    // Hash new password
-    const saltRounds = 12;
-    const hashedNewPassword = await bcrypt.hash(newPassword, saltRounds);
-
-    user.password = hashedNewPassword;
-    user.updatedAt = new Date();
-    
-    // Save with try-catch to handle potential save errors
     try {
-      await user.save();
-      console.log('✅ Password changed successfully');
-    } catch (saveError) {
-      console.error('❌ Error saving password change:', saveError);
-      return res.status(500).json({
-        success: false,
-        message: "Terjadi kesalahan saat menyimpan password baru",
-        error: saveError.message,
-      });
-    }
+        const token = req.headers.authorization?.split(" ")[1];
+        if (!token) return res.status(401).json({ success: false });
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    res.status(200).json({
-      success: true,
-      message: "Password berhasil diubah",
-    });
-  } catch (error) {
-    console.error("Change password error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Terjadi kesalahan saat mengubah password",
-      error: error.message,
-    });
-  }
+        const { currentPassword, newPassword } = req.body;
+        if(!currentPassword || !newPassword) return res.status(400).json({success:false, message: "Password required"});
+
+        // Get current hash
+        const resUser = await pool.query('SELECT password FROM users WHERE id = $1', [decoded.userId]);
+        if (resUser.rows.length === 0) return res.status(404).json({success:false, message: "User not found"});
+        
+        const user = resUser.rows[0];
+        const valid = await bcrypt.compare(currentPassword, user.password);
+        if (!valid) return res.status(400).json({success:false, message: "Password lama salah"});
+
+        const newHash = await bcrypt.hash(newPassword, 12);
+        await pool.query('UPDATE users SET password = $1, updated_at = NOW() WHERE id = $2', [newHash, decoded.userId]);
+
+        res.json({ success: true, message: "Password updated" });
+
+    } catch (e) {
+        res.status(500).json({ success: false, message: e.message });
+    }
 });
 
 module.exports = router;

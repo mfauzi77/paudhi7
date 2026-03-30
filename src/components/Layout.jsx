@@ -119,7 +119,7 @@ const Layout = ({ children }) => {
     { name: 'Beranda', path: '/' },
     { name: 'Tentang', path: '/about' },
     { name: 'Dashboard RAN PAUD', path: '/ran-paud-dashboard' },
-    { name: 'Pengasuhan AI', path: '/pengasuhan' },
+
     { name: 'FAQ', path: '/faq' },
   ];
 

@@ -1,5 +1,5 @@
 // middleware/klAccessControl.js
-const User = require("../models/User");
+const pool = require("../dbPostgres");
 
 // =================
 // K/L ACCESS CONTROL MIDDLEWARE
@@ -117,10 +117,25 @@ const validateDataAccess = (modelName) => {
       }
 
       try {
-        // Import model berdasarkan nama
-        const Model = require(`../models/${modelName}`);
+        let tableName = "";
+        let klColumn = "";
         
-        const data = await Model.findById(dataId);
+        // Map modelName to table
+        if (modelName === "Pembelajaran") {
+             tableName = "pembelajaran";
+             klColumn = "created_by_kl"; // Pembelajaran uses this
+        } else if (modelName === "RanPaud") {
+             tableName = "ran_paud";
+             klColumn = "kl_id";
+        } else {
+             console.warn(`Unmapped modelName in validateDataAccess: ${modelName}`);
+             return next(); // Skip if unknown or handle error
+        }
+        
+        const query = `SELECT ${klColumn} as "klId" FROM ${tableName} WHERE id = $1`;
+        const result = await pool.query(query, [dataId]);
+        const data = result.rows[0];
+
         if (!data) {
           return res.status(404).json({
             success: false,
@@ -136,6 +151,7 @@ const validateDataAccess = (modelName) => {
           });
         }
       } catch (error) {
+        console.error("ValidateDataAccess Error:", error);
         return res.status(500).json({
           success: false,
           message: "Error validasi akses data",
@@ -175,6 +191,8 @@ const validateBulkKLAccess = (req, res, next) => {
     // Cek apakah ada data dari K/L lain dalam bulk operation
     const bulkData = req.body.data || req.body.ids || [];
     
+    // Note: This checks the REQUEST BODY. 
+    // If the request contains data with klId that doesn't match, block it.
     for (const item of bulkData) {
       if (item.klId && item.klId !== req.user.klId) {
         return res.status(403).json({
@@ -222,7 +240,8 @@ const validatePermission = (module, action) => {
 
     // Cek permission untuk admin dan admin_kl
     if (req.user.role === "admin" || req.user.role === "admin_kl") {
-      const hasPermission = req.user.hasPermission(module, action);
+      // Use the helper attached in auth.js
+      const hasPermission = req.user.hasPermission ? req.user.hasPermission(module, action) : false;
       
       if (!hasPermission) {
         return res.status(403).json({
@@ -247,4 +266,4 @@ module.exports = {
   validateBulkKLAccess,
   getKLFilter,
   validatePermission,
-}; 
+};

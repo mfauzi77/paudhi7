@@ -37,7 +37,9 @@ const Navigation = () => {
     setIsDropdownOpen(false);
   }, [location.pathname]);
 
-  // Search functionality
+  // Search functionality with debounce
+  const searchTimeoutRef = useRef(null);
+  
   const handleSearch = async (query) => {
     if (!query.trim()) {
       setSearchResults([]);
@@ -46,36 +48,46 @@ const Navigation = () => {
     }
 
     setIsSearching(true);
+    setSearchError(null);
+
     try {
       const searchPromises = [
-        apiService.searchNews ? apiService.searchNews(query).catch(() => ({ data: [] })) : Promise.resolve({ data: [] }),
-        apiService.searchRanPaud ? apiService.searchRanPaud(query).catch(() => ({ data: [] })) : Promise.resolve({ data: [] }),
-        apiService.searchPembelajaran ? apiService.searchPembelajaran(query).catch(() => ({ data: [] })) : Promise.resolve({ data: [] })
+        apiService.searchNews(query).catch(() => ({ data: [] })),
+        apiService.searchRanPaud(query).catch(() => ({ data: [] })),
+        apiService.searchPembelajaran(query).catch(() => ({ data: [] }))
       ];
 
       const [newsResults, ranPaudResults, pembelajaranResults] = await Promise.all(searchPromises);
 
+      // Extract results safely
+      const newsArr = Array.isArray(newsResults?.data) ? newsResults.data : [];
+      const ranPaudArr = Array.isArray(ranPaudResults?.data) ? ranPaudResults.data : [];
+      const pembArr = Array.isArray(pembelajaranResults?.data) ? pembelajaranResults.data : (Array.isArray(pembelajaranResults) ? pembelajaranResults : []);
+
       const results = [
-        ...(newsResults?.data || []).map(item => ({
+        ...newsArr.map(item => ({
           ...item,
           type: 'news',
           title: item.title,
-          description: item.content?.substring(0, 100) + '...',
-          url: `/news/${item._id}`
+          description: (item.excerpt || item.content || '').substring(0, 100).replace(/<[^>]*>/g, '').trim() + '...',
+          url: `/news/${item.id || item._id}`,
+          image: item.image
         })),
-        ...(ranPaudResults?.data || []).map(item => ({
+        ...ranPaudArr.map(item => ({
           ...item,
           type: 'ranpaud',
-          title: `${item.klName} - ${item.program}`,
-          description: `Program RAN PAUD HI dari ${item.klName}`,
-          url: `/ran-paud-dashboard`
+          title: `${item.klName || ''} - ${item.program || ''}`,
+          description: `Program RAN PAUD HI dari ${item.klName || ''}`,
+          url: `/ran-paud-dashboard`,
+          image: null
         })),
-        ...(pembelajaranResults?.data || []).map(item => ({
+        ...pembArr.map(item => ({
           ...item,
           type: 'pembelajaran',
-          title: item.judul || item.nama,
-          description: item.deskripsi?.substring(0, 100) + '...' || 'Materi pembelajaran',
-          url: `/education`
+          title: item.title || item.judul || item.nama,
+          description: (item.description || item.deskripsi || 'Materi pembelajaran').substring(0, 100).replace(/<[^>]*>/g, '').trim() + '...',
+          url: `/education`,
+          image: item.thumbnail || item.image
         }))
       ];
 
@@ -83,7 +95,6 @@ const Navigation = () => {
       setShowSearchResults(true);
     } catch (error) {
       console.error('Search error:', error);
-      setSearchResults([]);
       setSearchError('Gagal melakukan pencarian. Silakan coba lagi.');
     } finally {
       setIsSearching(false);
@@ -95,11 +106,19 @@ const Navigation = () => {
     setSearchTerm(value);
     setSearchError(null);
 
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
     if (value.trim()) {
-      handleSearch(value);
+      setIsSearching(true);
+      searchTimeoutRef.current = setTimeout(() => {
+        handleSearch(value);
+      }, 500); // 500ms debounce
     } else {
       setSearchResults([]);
       setShowSearchResults(false);
+      setIsSearching(false);
     }
   };
 
@@ -120,6 +139,26 @@ const Navigation = () => {
 
   const isActive = (path) => location.pathname === path;
 
+  // Helper to resolve image URL
+  const getResultImage = (result) => {
+    if (!result.image) return null;
+    if (result.image.startsWith('http')) return result.image;
+    
+    let backendOrigin;
+    try {
+      const apiBase = import.meta.env.VITE_API_URL || '/api';
+      backendOrigin = /^https?:\/\//i.test(apiBase) 
+        ? apiBase.replace(/\/+$/, '').replace(/\/api\/?$/, '')
+        : window.location.origin;
+    } catch (e) {
+      backendOrigin = window.location.origin;
+    }
+    
+    return result.image.startsWith('/') 
+      ? `${backendOrigin}${result.image}`
+      : `${backendOrigin}/${result.image}`;
+  };
+
   // Menu items shared between desktop and mobile
   const navItems = [
     { label: 'Beranda', path: '/' },
@@ -128,6 +167,8 @@ const Navigation = () => {
     { label: 'Pelaporan PAUD HI', path: '/ran-paud-dashboard' },
     { label: 'CERIA', path: '/ceria' },
   ];
+
+
 
   return (
     <nav className="bg-white shadow-lg sticky top-0 z-50">
@@ -142,24 +183,24 @@ const Navigation = () => {
                 alt="PAUD HI Logo"
               />
             </div>
-            <div className="ml-3">
+            <div className="ml-3 hidden lg:block">
               <h1 className="text-xl font-bold text-gray-900">SISMONEV CERIA</h1>
             </div>
           </Link>
 
           {/* Search Bar - Desktop only */}
-          <div className="hidden md:flex flex-1 max-w-2xl mx-8 relative" ref={searchRef}>
-            <div className="relative">
+          <div className="hidden md:flex flex-1 max-w-xl mx-8 relative" ref={searchRef}>
+            <div className="relative w-full">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Search className="h-5 w-5 text-gray-400" />
               </div>
               <input
                 type="text"
-                placeholder="Cari berita, program, atau materi pembelajaran..."
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Cari berita, program, atau materi..."
+                className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg leading-5 bg-gray-50 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 value={searchTerm}
                 onChange={handleSearchInputChange}
-                onFocus={() => searchTerm.trim() && setShowSearchResults(true)}
+                onFocus={() => searchTerm.trim() && !isSearching && setShowSearchResults(true)}
               />
               {isSearching && (
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -169,63 +210,87 @@ const Navigation = () => {
             </div>
 
             {/* Search Results Dropdown */}
-            {showSearchResults && searchResults.length > 0 && (
-              <div className="absolute z-50 w-full mt-1 bg-white rounded-md shadow-lg border border-gray-200 max-h-96 overflow-y-auto">
-                {searchResults.map((result, index) => (
-                  <div
-                    key={`${result.type}-${index}`}
-                    className="px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0"
-                    onClick={() => handleSearchResultClick(result)}
-                  >
-                    <div className="flex items-start">
-                      <div className="flex-shrink-0 mt-1">
-                        {result.type === 'news' && <FileText className="h-4 w-4 text-blue-600" />}
-                        {result.type === 'ranpaud' && <BarChart3 className="h-4 w-4 text-green-600" />}
-                        {result.type === 'pembelajaran' && <GraduationCap className="h-4 w-4 text-purple-600" />}
-                      </div>
-                      <div className="ml-3 flex-1">
-                        <div className="text-sm font-medium text-gray-900 line-clamp-1">
-                          {result.title}
-                        </div>
-                        <div className="text-sm text-gray-500 line-clamp-2">
-                          {result.description}
-                        </div>
-                        <div className="mt-1">
-                          <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                            result.type === 'news' ? 'bg-blue-100 text-blue-800' :
-                            result.type === 'ranpaud' ? 'bg-green-100 text-green-800' :
-                            'bg-purple-100 text-purple-800'
-                          }`}>
-                            {result.type === 'news' ? 'Berita' :
-                             result.type === 'ranpaud' ? 'Program RAN PAUD' :
-                             'Materi Pembelajaran'}
-                          </span>
-                        </div>
-                      </div>
+            {showSearchResults && (
+              <div className="absolute z-[100] w-full mt-2 bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden">
+                {searchResults.length > 0 ? (
+                  <div className="max-h-[70vh] overflow-y-auto">
+                    <div className="px-4 py-2 bg-gray-50 border-b border-gray-100 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      Hasil Pencarian ({searchResults.length})
                     </div>
+                    {searchResults.map((result, index) => (
+                      <div
+                        key={`${result.type}-${index}`}
+                        className="px-4 py-3 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-b-0 transition-colors"
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          handleSearchResultClick(result);
+                        }}
+                      >
+                        <div className="flex items-start gap-3">
+                          <div className="flex-shrink-0 w-12 h-12 bg-gray-100 rounded-md overflow-hidden flex items-center justify-center">
+                            {result.image ? (
+                              <img 
+                                src={getResultImage(result)} 
+                                alt="" 
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  e.target.onerror = null;
+                                  e.target.src = '';
+                                  e.target.parentNode.innerHTML = '<div class="text-blue-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l4 4v10a2 2 0 01-2 2z"></path></svg></div>';
+                                }}
+                              />
+                            ) : (
+                              <div className="text-gray-400">
+                                {result.type === 'news' && <FileText className="h-5 w-5 text-blue-500" />}
+                                {result.type === 'ranpaud' && <BarChart3 className="h-5 w-5 text-green-500" />}
+                                {result.type === 'pembelajaran' && <GraduationCap className="h-5 w-5 text-purple-500" />}
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="text-sm font-bold text-gray-900 line-clamp-1 mb-0.5">
+                              {result.title}
+                            </div>
+                            <div className="text-xs text-gray-500 line-clamp-2 leading-relaxed">
+                              {result.description}
+                            </div>
+                            <div className="mt-1.5 flex items-center gap-2">
+                              <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider ${
+                                result.type === 'news' ? 'bg-blue-100 text-blue-700' :
+                                result.type === 'ranpaud' ? 'bg-green-100 text-green-700' :
+                                'bg-purple-100 text-purple-700'
+                              }`}>
+                                {result.type === 'news' ? 'Berita' :
+                                 result.type === 'ranpaud' ? 'Program' :
+                                 'Edukasi'}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            )}
-
-            {/* No Results */}
-            {showSearchResults && searchResults.length === 0 && searchTerm.trim() && !isSearching && (
-              <div className="absolute z-50 w-full mt-1 bg-white rounded-md shadow-lg border border-gray-200 p-4">
-                <div className="text-center text-gray-500">
-                  <Search className="h-8 w-8 mx-auto mb-2 text-gray-400" />
-                  <p>Tidak ada hasil ditemukan</p>
-                  <p className="text-sm">Coba kata kunci yang berbeda</p>
-                </div>
+                ) : !isSearching && searchTerm.trim() ? (
+                  <div className="p-8 text-center">
+                    <div className="bg-gray-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Search className="h-8 w-8 text-gray-400" />
+                    </div>
+                    <p className="text-gray-900 font-bold">Tidak ada hasil ditemukan</p>
+                    <p className="text-sm text-gray-500 mt-1">Coba kata kunci lain atau periksa ejaan Anda</p>
+                  </div>
+                ) : null}
               </div>
             )}
 
             {/* Error Display */}
             {searchError && (
-              <div className="absolute z-50 w-full mt-1 bg-red-50 rounded-md shadow-lg border border-red-200 p-4">
-                <div className="text-center text-red-600">
-                  <div className="text-red-500 text-6xl mb-2">⚠️</div>
-                  <p className="font-medium">Error Pencarian</p>
-                  <p className="text-sm">{searchError}</p>
+              <div className="absolute z-[100] w-full mt-2 bg-red-50 rounded-xl shadow-2xl border border-red-100 p-4">
+                <div className="flex items-center gap-3 text-red-600">
+                  <div className="bg-red-100 p-2 rounded-full">⚠️</div>
+                  <div>
+                    <p className="font-bold text-sm">Kesalahan Pencarian</p>
+                    <p className="text-xs opacity-80">{searchError}</p>
+                  </div>
                 </div>
               </div>
             )}

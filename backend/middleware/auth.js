@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+const pool = require("../dbPostgres");
 
 // =================
 // AUTHENTICATION MIDDLEWARE
@@ -18,7 +18,14 @@ const verifyToken = async (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.userId).select("-password");
+    
+    // Fetch user from PG
+    const result = await pool.query(
+        'SELECT id, username, email, full_name, role, kl_id, kl_name, region_name, province, city, permissions, is_active FROM users WHERE id = $1',
+        [decoded.userId]
+    );
+    
+    const user = result.rows[0];
 
     if (!user) {
       return res.status(401).json({
@@ -27,7 +34,34 @@ const verifyToken = async (req, res, next) => {
       });
     }
 
-    req.user = user;
+    // Map to camelCase for compatibility with existing code
+    req.user = {
+        userId: user.id, // Keep generic userId
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        fullName: user.full_name,
+        role: user.role,
+        klId: user.kl_id,
+        klName: user.kl_name,
+        regionName: user.region_name,
+        province: user.province,
+        city: user.city,
+        isActive: user.is_active,
+        permissions: user.permissions || {}
+    };
+    
+    // Helper for permissions if used
+    req.user.hasPermission = (module, action) => {
+        const perms = req.user.permissions;
+        if (!perms) return false;
+        // Logic depends on permission structure. Assuming generic checks:
+        if (perms[module] && perms[module].includes(action)) return true;
+        // Or if simple object module: true
+        if (perms[module] === true || perms[module] === action) return true;
+        return false;
+    };
+
     next();
   } catch (error) {
     console.error("❌ Token verification error:", error);
@@ -51,16 +85,34 @@ const optionalAuth = async (req, res, next) => {
 
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      const user = await User.findById(decoded.userId).select("-password");
+      const result = await pool.query(
+        'SELECT id, username, email, full_name, role, kl_id, kl_name, region_name, province, city, permissions, is_active FROM users WHERE id = $1',
+        [decoded.userId]
+      );
+      const user = result.rows[0];
+      
       if (user) {
-        req.user = user;
+        req.user = {
+            userId: user.id,
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            fullName: user.full_name,
+            role: user.role,
+            klId: user.kl_id,
+            klName: user.kl_name,
+            regionName: user.region_name,
+            province: user.province,
+            city: user.city,
+            isActive: user.is_active,
+            permissions: user.permissions || {}
+        };
       }
     } catch (e) {
-      // Ignore token errors to keep this middleware optional
+      // Ignore
     }
     return next();
   } catch (error) {
-    // Never block the request
     return next();
   }
 };
@@ -79,7 +131,10 @@ const requireRole = (allowedRoles) => {
       });
     }
 
-    if (!allowedRoles.includes(req.user.role)) {
+    // Support array or single string
+    const roles = Array.isArray(allowedRoles) ? allowedRoles : [allowedRoles];
+
+    if (!roles.includes(req.user.role)) {
       return res.status(403).json({
         success: false,
         message: "Akses ditolak - role tidak diizinkan",

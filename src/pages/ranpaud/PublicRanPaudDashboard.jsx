@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { AlertCircle, RefreshCw, Eye, X, Search, Filter, ChevronLeft, ChevronRight } from 'lucide-react';
 import paudPublicApiService from '../../utils/paudPublicApiService';
+import PAUDYearFilter from '../../components/PAUDDashboard/PAUDYearFilter';
 
 function PublicRanPaudDashboard() {
   const [selectedYear, setSelectedYear] = useState("all");
@@ -578,7 +579,7 @@ function PublicRanPaudDashboard() {
           const baseAchievementRate = totalIndicators > 0 ? ((kl.tercapai || 0) / totalIndicators) * 100 : 0;
           
           // Create year-by-year variation based on selected year filter
-          [2020, 2021, 2022, 2023, 2024, 2025].forEach((year) => {
+          [2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029].forEach((year) => {
             let yearRate = baseAchievementRate;
             
             if (baseAchievementRate > 0) {
@@ -681,32 +682,11 @@ function PublicRanPaudDashboard() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Year Filter */}
         <div className="mb-8">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Filter Tahun</h3>
-          <div className="flex flex-wrap gap-2">
-            <button
-              onClick={() => setSelectedYear("all")}
-              className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
-                selectedYear === "all"
-                  ? "bg-blue-600 text-white"
-                  : "bg-white text-gray-700 hover:bg-gray-50 border"
-              }`}
-            >
-              Seluruh Tahun
-            </button>
-            {["2020", "2021", "2022", "2023", "2024", "2025"].map((year) => (
-              <button
-                key={year}
-                onClick={() => setSelectedYear(year)}
-                className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
-                  selectedYear === year
-                    ? "bg-blue-600 text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-50 border"
-                }`}
-              >
-                {year}
-              </button>
-            ))}
-          </div>
+           <PAUDYearFilter 
+            selectedYear={selectedYear}
+            onYearChange={setSelectedYear}
+            availableYears={[2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029]}
+          />
         </div>
 
         {/* Summary Cards (samakan dengan dashboard ran) */}

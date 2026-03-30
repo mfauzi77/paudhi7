@@ -141,17 +141,7 @@ const comprehensiveSearchIndex = [
     section: 'about'
   },
 
-  // === PENGASUHAN AI ===
-  {
-    id: 'pengasuhan-ai',
-    title: 'Pengasuhan AI - Konsultasi Cerdas',
-    url: '/pengasuhan',
-    category: 'Layanan Digital',
-    description: 'Platform konsultasi AI untuk membantu orang tua dalam pengasuhan anak usia dini',
-    keywords: ['pengasuhan ai', 'konsultasi', 'ai', 'chatbot', 'parenting', 'tumbuh kembang', 'tips'],
-    content: 'Konsultasi 24/7 dengan AI, tips pengasuhan, solusi masalah tumbuh kembang, panduan stimulasi',
-    section: 'ai-service'
-  },
+
 
   // === DASHBOARD ===
   {

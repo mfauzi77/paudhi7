@@ -25,6 +25,10 @@ const sampleData = [
           { tahun: 2023, target: 180, realisasi: 175, anggaran: "900000000", persentase: 97, kategori: "TERCAPAI" },
           { tahun: 2024, target: 200, realisasi: 195, anggaran: "1000000000", persentase: 98, kategori: "TERCAPAI" },
           { tahun: 2025, target: 250, realisasi: null, anggaran: "[ISI DISINI]", persentase: 0, kategori: "BELUM LAPORAN" },
+          { tahun: 2026, target: null, realisasi: null, anggaran: "[ISI DISINI]", persentase: 0, kategori: "BELUM LAPORAN" },
+          { tahun: 2027, target: null, realisasi: null, anggaran: "[ISI DISINI]", persentase: 0, kategori: "BELUM LAPORAN" },
+          { tahun: 2028, target: null, realisasi: null, anggaran: "[ISI DISINI]", persentase: 0, kategori: "BELUM LAPORAN" },
+          { tahun: 2029, target: null, realisasi: null, anggaran: "[ISI DISINI]", persentase: 0, kategori: "BELUM LAPORAN" },
         ]
       },
       {
@@ -39,6 +43,10 @@ const sampleData = [
           { tahun: 2023, target: 800, realisasi: 785, anggaran: "400000000", persentase: 98, kategori: "TERCAPAI" },
           { tahun: 2024, target: 900, realisasi: 890, anggaran: "450000000", persentase: 99, kategori: "TERCAPAI" },
           { tahun: 2025, target: 1000, realisasi: null, anggaran: "[ISI DISINI]", persentase: 0, kategori: "BELUM LAPORAN" },
+          { tahun: 2026, target: null, realisasi: null, anggaran: "[ISI DISINI]", persentase: 0, kategori: "BELUM LAPORAN" },
+          { tahun: 2027, target: null, realisasi: null, anggaran: "[ISI DISINI]", persentase: 0, kategori: "BELUM LAPORAN" },
+          { tahun: 2028, target: null, realisasi: null, anggaran: "[ISI DISINI]", persentase: 0, kategori: "BELUM LAPORAN" },
+          { tahun: 2029, target: null, realisasi: null, anggaran: "[ISI DISINI]", persentase: 0, kategori: "BELUM LAPORAN" },
         ]
       }
     ],
@@ -63,6 +71,10 @@ const sampleData = [
           { tahun: 2023, target: 25, realisasi: 24, anggaran: "500000000", persentase: 96, kategori: "TERCAPAI" },
           { tahun: 2024, target: 30, realisasi: 28, anggaran: "600000000", persentase: 93, kategori: "TERCAPAI" },
           { tahun: 2025, target: 35, realisasi: null, anggaran: "[ISI DISINI]", persentase: 0, kategori: "BELUM LAPORAN" },
+          { tahun: 2026, target: null, realisasi: null, anggaran: "[ISI DISINI]", persentase: 0, kategori: "BELUM LAPORAN" },
+          { tahun: 2027, target: null, realisasi: null, anggaran: "[ISI DISINI]", persentase: 0, kategori: "BELUM LAPORAN" },
+          { tahun: 2028, target: null, realisasi: null, anggaran: "[ISI DISINI]", persentase: 0, kategori: "BELUM LAPORAN" },
+          { tahun: 2029, target: null, realisasi: null, anggaran: "[ISI DISINI]", persentase: 0, kategori: "BELUM LAPORAN" },
         ]
       }
     ],
@@ -87,6 +99,10 @@ const sampleData = [
           { tahun: 2023, target: 18000, realisasi: 17500, anggaran: "1800000000", persentase: 97, kategori: "TERCAPAI" },
           { tahun: 2024, target: 20000, realisasi: 19500, anggaran: "2000000000", persentase: 98, kategori: "TERCAPAI" },
           { tahun: 2025, target: 25000, realisasi: null, anggaran: "[ISI DISINI]", persentase: 0, kategori: "BELUM LAPORAN" },
+          { tahun: 2026, target: null, realisasi: null, anggaran: "[ISI DISINI]", persentase: 0, kategori: "BELUM LAPORAN" },
+          { tahun: 2027, target: null, realisasi: null, anggaran: "[ISI DISINI]", persentase: 0, kategori: "BELUM LAPORAN" },
+          { tahun: 2028, target: null, realisasi: null, anggaran: "[ISI DISINI]", persentase: 0, kategori: "BELUM LAPORAN" },
+          { tahun: 2029, target: null, realisasi: null, anggaran: "[ISI DISINI]", persentase: 0, kategori: "BELUM LAPORAN" },
         ]
       }
     ],
@@ -111,6 +127,10 @@ const sampleData = [
           { tahun: 2023, target: 8000, realisasi: 7800, anggaran: "800000000", persentase: 98, kategori: "TERCAPAI" },
           { tahun: 2024, target: 9000, realisasi: 8900, anggaran: "900000000", persentase: 99, kategori: "TERCAPAI" },
           { tahun: 2025, target: 10000, realisasi: null, anggaran: "[ISI DISINI]", persentase: 0, kategori: "BELUM LAPORAN" },
+          { tahun: 2026, target: null, realisasi: null, anggaran: "[ISI DISINI]", persentase: 0, kategori: "BELUM LAPORAN" },
+          { tahun: 2027, target: null, realisasi: null, anggaran: "[ISI DISINI]", persentase: 0, kategori: "BELUM LAPORAN" },
+          { tahun: 2028, target: null, realisasi: null, anggaran: "[ISI DISINI]", persentase: 0, kategori: "BELUM LAPORAN" },
+          { tahun: 2029, target: null, realisasi: null, anggaran: "[ISI DISINI]", persentase: 0, kategori: "BELUM LAPORAN" },
         ]
       }
     ],

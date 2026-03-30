@@ -264,7 +264,7 @@ const NewsSection = () => {
                 <svg class="meta-icon" viewBox="0 0 24 24">
                   <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
                 </svg>
-                <span>${newsItem.author?.fullName || newsItem.author?.email || 'Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan'}</span>
+                <span>${newsItem.author?.klName || newsItem.author?.fullName || newsItem.author?.email || 'Kemenko PMK'}</span>
               </div>
               <div class="meta-item">
                 <svg class="meta-icon" viewBox="0 0 24 24">
@@ -308,9 +308,9 @@ const NewsSection = () => {
           ` : ''}
           
           <div class="footer">
-                            <div class="footer-logo">PAUD HI - Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan</div>
+            <div class="footer-logo">PAUD HI - ${newsItem.author?.klName || 'Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan'}</div>
             <p>Dokumen ini dibuat otomatis dari sistem Pengembangan Anak Usia Dini Holistik Integratif</p>
-            <p>© ${new Date().getFullYear()} Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan</p>
+            <p>© ${new Date().getFullYear()} ${newsItem.author?.klName || 'Kemenko PMK'}</p>
             <p>Dibuat pada: ${new Date().toLocaleDateString('id-ID', { 
               weekday: 'long', 
               year: 'numeric', 
@@ -580,7 +580,7 @@ const NewsSection = () => {
             Berita & Informasi <span className="text-blue-600">PAUD HI</span>
           </h2>
           <p className="text-sm sm:text-base lg:text-lg text-gray-600 max-w-2xl mx-auto px-2">
-            Update terbaru seputar program Pengembangan Anak Usia Dini Holistik Integratif dari Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan
+            Update terbaru seputar program Pengembangan Anak Usia Dini Holistik Integratif
           </p>
           
           {pagination.total && (
@@ -738,9 +738,9 @@ const NewsSection = () => {
                         <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600">
                           <i className="fas fa-user-circle"></i>
                           <span className="truncate hidden sm:inline">
-                            {article.author?.fullName || article.author?.email || 'Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan'}
+                            {article.author?.klName || article.author?.fullName || article.author?.email || 'Kemenko PMK'}
                           </span>
-                          <span className="truncate sm:hidden">PMK</span>
+                          <span className="truncate sm:hidden">{article.author?.klName || 'PMK'}</span>
                           {article.views > 0 && (
                             <>
                               <span className="mx-1">•</span>
@@ -792,9 +792,9 @@ const NewsSection = () => {
                       <span className="flex items-center gap-1">
                         <i className="fas fa-user"></i>
                         <span className="hidden sm:inline">
-                          {selectedNews.author?.fullName || selectedNews.author?.email || 'Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan'}
+                          {selectedNews.author?.klName || selectedNews.author?.fullName || selectedNews.author?.email || 'Kemenko PMK'}
                         </span>
-                        <span className="sm:hidden">PMK</span>
+                        <span className="sm:hidden">{selectedNews.author?.klName || 'PMK'}</span>
                       </span>
                       <span className="flex items-center gap-1">
                         <i className="fas fa-calendar"></i>

@@ -1,17 +1,53 @@
 // routes/users.js
 const express = require("express");
-const User = require("../models/User");
+const pool = require('../dbPostgres');
+const bcrypt = require("bcryptjs");
 const { authenticate, authorize } = require("../middleware/auth");
+const { v4: uuidv4 } = require('uuid'); 
 
 const router = express.Router();
+
+// Helper to generate ID
+const generateId = () => {
+    try {
+        return require('crypto').randomUUID();
+    } catch (e) {
+        return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    }
+};
+
+// ================= CONSTANTS (From Mongoose Model) =================
+const KL_LIST = [
+    { id: "KEMENKO_PMK", name: "Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan" },
+    { id: "KEMENDIKBUDRISTEK", name: "Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi" },
+    { id: "KEMENAG", name: "Kementerian Agama" },
+    { id: "KEMENDES_PDTT", name: "Kementerian Desa, Pembangunan Daerah Tertinggal, dan Transmigrasi" },
+    { id: "KEMENKES", name: "Kementerian Kesehatan" },
+    { id: "KEMENDUKBANGGA", name: "Kementerian Pembangunan Kependudukan dan Keluarga Berencana Nasional" },
+    { id: "KEMENSOS", name: "Kementerian Sosial" },
+    { id: "KEMENPPPA", name: "Kementerian Pemberdayaan Perempuan dan Perlindungan Anak" },
+    { id: "KEMENDAGRI", name: "Kemendagri" },
+    { id: "BAPPENAS", name: "Badan Perencanaan Pembangunan Nasional" },
+    { id: "BPS", name: "Badan Pusat Statistik" }
+];
+
+const REGION_LIST = [
+    "Aceh", "Sumatera Utara", "Sumatera Barat", "Riau", "Jambi", "Sumatera Selatan", "Bengkulu",
+    "Lampung", "Kepulauan Bangka Belitung", "Kepulauan Riau", "DKI Jakarta", "Jawa Barat", "Banten",
+    "Jawa Tengah", "DI Yogyakarta", "Jawa Timur", "Bali", "Nusa Tenggara Barat", "Nusa Tenggara Timur",
+    "Kalimantan Barat", "Kalimantan Tengah", "Kalimantan Selatan", "Kalimantan Timur", "Kalimantan Utara",
+    "Sulawesi Utara", "Sulawesi Tengah", "Sulawesi Selatan", "Sulawesi Tenggara", "Gorontalo",
+    "Sulawesi Barat", "Maluku", "Maluku Utara", "Papua Barat", "Papua", "Papua Selatan",
+    "Papua Tengah", "Papua Pegunungan", "Papua Barat Daya"
+];
+// ===================================================================
 
 // Middleware to check if user is admin_utama or admin/super_admin
 const requireAdminUtama = (req, res, next) => {
   if (!["admin_utama", "admin", "super_admin"].includes(req.user.role)) {
     return res.status(403).json({
       success: false,
-      message:
-        "Akses ditolak. Hanya Admin Utama yang dapat mengakses fitur ini.",
+      message: "Akses ditolak. Hanya Admin Utama yang dapat mengakses fitur ini.",
     });
   }
   next();
@@ -20,39 +56,70 @@ const requireAdminUtama = (req, res, next) => {
 // GET /api/users - Get all users (admin_utama only)
 router.get("/", authenticate, requireAdminUtama, async (req, res) => {
   try {
-    console.log("👥 Users GET request");
-
     const { page = 1, limit = 10, search, role, status } = req.query;
+    const offset = (page - 1) * limit;
 
-    // Build query
-    const query = {};
+    let queryText = `SELECT id, username, email, full_name, role, kl_id, kl_name, region_name, province, city, is_active, last_login, created_at FROM users WHERE 1=1`;
+    const params = [];
+    let paramIdx = 1;
 
     if (search) {
-      query.$or = [
-        { username: { $regex: search, $options: "i" } },
-        { email: { $regex: search, $options: "i" } },
-        { fullName: { $regex: search, $options: "i" } },
-      ];
+      queryText += ` AND (username ILIKE $${paramIdx} OR email ILIKE $${paramIdx} OR full_name ILIKE $${paramIdx})`;
+      params.push(`%${search}%`);
+      paramIdx++;
     }
 
     if (role && role !== "all") {
-      query.role = role;
+      queryText += ` AND role = $${paramIdx}`;
+      params.push(role);
+      paramIdx++;
     }
 
     if (status && status !== "all") {
-      query.isActive = status === "active";
+      const isActive = status === "active";
+      queryText += ` AND is_active = $${paramIdx}`;
+      params.push(isActive);
+      paramIdx++;
     }
 
-    // Execute query
-    const users = await User.find(query)
-      .select("-password") // Don't send passwords
-      .sort({ createdAt: -1 })
-      .limit(limit * 1)
-      .skip((page - 1) * limit);
+    // Sort and Pagination
+    queryText += ` ORDER BY created_at DESC LIMIT $${paramIdx} OFFSET $${paramIdx + 1}`;
+    params.push(limit, offset);
 
-    const total = await User.countDocuments(query);
+    // Count Total (separate query)
+    let countQuery = `SELECT COUNT(*) FROM users WHERE 1=1`;
+    const countParams = params.slice(0, paramIdx - 1); // remove limit/offset params
+    
+    // Re-construct count where clause (simplistic but works for this structure)
+    // A more robust way would be to keep the WHERE clause separate variables.
+    // For now, let's just re-apply the where logic for count:
+    let whereClause = "";
+    let countIdx = 1;
+    if (search) { whereClause += ` AND (username ILIKE $${countIdx} OR email ILIKE $${countIdx} OR full_name ILIKE $${countIdx})`; countIdx++; }
+    if (role && role !== "all") { whereClause += ` AND role = $${countIdx}`; countIdx++; }
+    if (status && status !== "all") { whereClause += ` AND is_active = $${countIdx}`; countIdx++; }
 
-    console.log(`✅ Found ${users.length} users, total: ${total}`);
+    const usersResult = await pool.query(queryText, params);
+    const countResult = await pool.query(countQuery + whereClause, countParams);
+
+    const total = parseInt(countResult.rows[0].count);
+    const users = usersResult.rows.map(u => ({
+        // Map snake_case db to camelCase response
+        id: u.id,
+        _id: u.id, // Legacy compatibility
+        username: u.username,
+        email: u.email,
+        fullName: u.full_name,
+        role: u.role,
+        klId: u.kl_id,
+        klName: u.kl_name,
+        regionName: u.region_name,
+        province: u.province,
+        city: u.city,
+        isActive: u.is_active,
+        lastLogin: u.last_login,
+        createdAt: u.created_at
+    }));
 
     res.json({
       success: true,
@@ -66,441 +133,251 @@ router.get("/", authenticate, requireAdminUtama, async (req, res) => {
     });
   } catch (error) {
     console.error("❌ Users GET error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Error saat mengambil data users",
-      error: error.message,
-    });
+    res.status(500).json({ success: false, message: error.message });
   }
 });
 
-// GET /api/users/:id - Get user by ID
+// GET /api/users/:id
 router.get("/:id", authenticate, requireAdminUtama, async (req, res) => {
   try {
-    console.log("👤 User GET by ID:", req.params.id);
-
-    const user = await User.findById(req.params.id).select("-password");
+    const result = await pool.query('SELECT * FROM users WHERE id = $1', [req.params.id]);
+    const user = result.rows[0];
 
     if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User tidak ditemukan",
-      });
+      return res.status(404).json({ success: false, message: "User tidak ditemukan" });
     }
 
-    console.log("✅ User retrieved");
+    // Map to camelCase
+    const userResponse = {
+        id: user.id,
+        _id: user.id, // Legacy compatibility
+        username: user.username,
+        email: user.email,
+        fullName: user.full_name,
+        role: user.role,
+        klId: user.kl_id,
+        klName: user.kl_name,
+        regionName: user.region_name,
+        province: user.province,
+        city: user.city,
+        isActive: user.is_active,
+        permissions: user.permissions,
+        lastLogin: user.last_login,
+        createdAt: user.created_at
+    };
 
-    res.json({
-      success: true,
-      data: user,
-    });
+    res.json({ success: true, data: userResponse });
   } catch (error) {
     console.error("❌ User GET error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Error saat mengambil data user",
-      error: error.message,
-    });
+    res.status(500).json({ success: false, message: error.message });
   }
 });
 
-// POST /api/users - Create new user
+// POST /api/users
 router.post("/", authenticate, requireAdminUtama, async (req, res) => {
   try {
-    console.log("👤 Creating new user...");
-    console.log("Request body:", req.body);
+    const body = req.body;
+    const createdBy = req.user.email || "admin@paudhi.kemenko.go.id"; // Just for logging if needed, schema doesn't have createdBy column in users table currently (only dates)
 
-    const userData = {
-      ...req.body,
-      createdBy: req.user.email || "admin@paudhi.kemenko.go.id",
-    };
-
-    // Basic required field validation to avoid ambiguous 500s
-    const requiredFields = ["username", "email", "password", "fullName"];
-    for (const field of requiredFields) {
-      if (
-        !userData[field] ||
-        typeof userData[field] !== "string" ||
-        !userData[field].trim()
-      ) {
-        return res.status(400).json({
-          success: false,
-          message: `Field '${field}' wajib diisi dan harus berupa string`,
-        });
-      }
+    // Basic Validation
+    if (!body.username || !body.email || !body.password || !body.fullName || !body.role) {
+      return res.status(400).json({ success: false, message: "Semua field wajib diisi" });
     }
 
-    // Ensure role is set explicitly to avoid defaulting to admin_kl unintentionally
-    if (!userData.role) {
-      return res.status(400).json({
-        success: false,
-        message: "Field 'role' wajib diisi",
-      });
-    }
-
-    // Sanitize permissions: if client sends old array format or invalid type, drop to use defaults
-    if (
-      userData.permissions &&
-      (Array.isArray(userData.permissions) ||
-        typeof userData.permissions !== "object")
-    ) {
-      console.warn(
-        "⚠️ Invalid permissions format in request; applying defaults."
-      );
-      delete userData.permissions; // model hook will set defaults
-    }
-
-    // Normalize role-related fields to avoid enum/required issues
-    if (userData.role === "admin_kl") {
-      // For admin_kl, both klId and klName are required
-      if (!userData.klId || !userData.klName) {
-        return res.status(400).json({
-          success: false,
-          message: "Untuk role Admin K/L, K/L wajib dipilih",
-        });
-      }
-      userData.province = null;
-      userData.city = null;
-      userData.regionName = null;
-    } else if (userData.role === "admin_daerah") {
-      // For admin_daerah, province is required, city is optional
-      if (!userData.province) {
-        return res.status(400).json({
-          success: false,
-          message: "Untuk role Admin Daerah, Provinsi wajib dipilih",
-        });
-      }
-      // Ensure regionName is set to province for admin_daerah
-      userData.regionName = userData.province;
+    // Role Validation Logic
+    if (body.role === "admin_kl") {
+        if (!body.klId || !body.klName) {
+            return res.status(400).json({ success: false, message: "Untuk role K/L, K/L wajib dipilih" });
+        }
+        body.province = null; body.city = null; body.regionName = null;
+    } else if (body.role === "admin_daerah") {
+        if (!body.province) {
+            return res.status(400).json({ success: false, message: "Untuk admin daerah, Provinsi wajib" });
+        }
+        body.regionName = body.province; // Sync
+        if (!REGION_LIST.includes(body.regionName)) {
+            return res.status(400).json({ success: false, message: "Daerah tidak valid" });
+        }
     } else {
-      // For other roles, clear all role-specific fields
-      userData.klId = null;
-      userData.klName = null;
-      userData.province = null;
-      userData.city = null;
-      userData.regionName = null;
+        body.klId = null; body.klName = null;
+        body.province = null; body.city = null; body.regionName = null;
     }
 
-    // For admin_daerah, regionName is required and must be valid
-    if (userData.role === "admin_daerah") {
-      const regions = (User.getRegionList && User.getRegionList()) || [];
-      const rn = (userData.regionName || "").trim();
-      if (!rn) {
-        return res.status(400).json({
-          success: false,
-          message: "Untuk role Admin Daerah, nama daerah wajib dipilih",
-        });
-      }
-      if (!regions.includes(rn)) {
-        return res.status(400).json({
-          success: false,
-          message: "Nama daerah tidak valid",
-          allowed: regions,
-        });
-      }
-      userData.regionName = rn; // normalized
+    // Check Duplicate
+    const existing = await pool.query(
+        'SELECT id FROM users WHERE email = $1 OR username = $2',
+        [body.email.toLowerCase(), body.username]
+    );
+    if (existing.rows.length > 0) {
+        return res.status(400).json({ success: false, message: "Username atau email sudah ada" });
     }
 
-    console.log("Final userData before save:", {
-      role: userData.role,
-      klId: userData.klId,
-      klName: userData.klName,
-      province: userData.province,
-      regionName: userData.regionName,
-    });
+    // Hash Password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(body.password, salt);
+    const newId = generateId();
 
-    // Check if username or email already exists
-    const existingUser = await User.findOne({
-      $or: [{ username: userData.username }, { email: userData.email }],
-    });
+    const query = `
+        INSERT INTO users (
+            id, username, email, password, full_name, 
+            role, kl_id, kl_name, region_name, province, city, 
+            permissions, is_active, created_at, updated_at
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, NOW(), NOW())
+        RETURNING *
+    `;
+    
+    // Default permissions logic (kept simple as per auth.js logic)
+    const permissions = body.permissions && typeof body.permissions === 'object' && !Array.isArray(body.permissions) 
+        ? JSON.stringify(body.permissions) 
+        : '{}';
 
-    if (existingUser) {
-      return res.status(400).json({
-        success: false,
-        message: "Username atau email sudah digunakan",
-      });
-    }
+    const values = [
+        newId, body.username, body.email.toLowerCase(), hashedPassword, body.fullName,
+        body.role, body.klId, body.klName, body.regionName, body.province, body.city || null,
+        permissions, true
+    ];
 
-    try {
-      const newUser = new User(userData);
-      const savedUser = await newUser.save();
+    const result = await pool.query(query, values);
+    const newUser = result.rows[0];
 
-      // Remove password from response
-      const userResponse = savedUser.toObject();
-      delete userResponse.password;
-
-      console.log("✅ User created successfully");
-
-      return res.status(201).json({
+    res.status(201).json({
         success: true,
         message: "User berhasil dibuat",
-        data: userResponse,
-      });
-    } catch (saveErr) {
-      console.error("❌ Error creating user (save):", saveErr);
-      if (saveErr.name === "ValidationError") {
-        return res.status(400).json({
-          success: false,
-          message: "ValidationError",
-          errors: Object.values(saveErr.errors).map((e) => e.message),
-        });
-      }
-      if (saveErr.name === "CastError") {
-        return res.status(400).json({
-          success: false,
-          message: "CastError pada field",
-          error: saveErr.message,
-        });
-      }
-      if (saveErr.code === 11000) {
-        const field = Object.keys(saveErr.keyValue || {})[0];
-        return res.status(400).json({
-          success: false,
-          message: `Duplicate ${field}: ${saveErr.keyValue[field]}`,
-        });
-      }
-      return res.status(500).json({
-        success: false,
-        message: "Error saat membuat user",
-        error: saveErr.message,
-      });
-    }
+        data: { id: newUser.id, email: newUser.email, username: newUser.username }
+    });
+
   } catch (error) {
     console.error("❌ User POST error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Error saat membuat user",
-      error: error.message,
-    });
+    res.status(500).json({ success: false, message: error.message });
   }
 });
 
-// PUT /api/users/:id - Update user
+// PUT /api/users/:id
 router.put("/:id", authenticate, requireAdminUtama, async (req, res) => {
   try {
-    console.log("🔄 Updating user...");
-    console.log("ID:", req.params.id);
-    console.log("Request body:", req.body);
+    const { id } = req.params;
+    const body = req.body;
 
-    const updateData = {
-      ...req.body,
-      updatedBy: req.user.email || "admin@paudhi.kemenko.go.id",
-    };
-
-    // Sanitize permissions on update as well
-    if (
-      updateData.permissions &&
-      (Array.isArray(updateData.permissions) ||
-        typeof updateData.permissions !== "object")
-    ) {
-      console.warn(
-        "⚠️ Invalid permissions format in update; dropping provided permissions."
-      );
-      delete updateData.permissions; // keep existing or model defaults
+    // Role Logic Validation
+    if (body.role === "admin_kl") {
+        if (!body.klId || !body.klName) return res.status(400).json({ success: false, message: "KL wajib" });
+    }
+    if (body.role === "admin_daerah") {
+        if (!body.province || !body.regionName) return res.status(400).json({ success: false, message: "Daerah wajib" });
     }
 
-    // If password is empty, don't update it
-    if (!updateData.password) {
-      delete updateData.password;
+    // Dynamic Update Query
+    let fields = [];
+    let values = [];
+    let idx = 1;
+
+    if (body.fullName) { fields.push(`full_name = $${idx++}`); values.push(body.fullName); }
+    if (body.username) { fields.push(`username = $${idx++}`); values.push(body.username); }
+    if (body.email) { fields.push(`email = $${idx++}`); values.push(body.email.toLowerCase()); }
+    if (body.role) { fields.push(`role = $${idx++}`); values.push(body.role); }
+    
+    // Nullable fields logic is tricky in dynamic updates. 
+    // Simplified: always update these if role changed, or if provided explicitly.
+    // For robust logic, checking the role is essential.
+    if (body.role === 'admin_kl') {
+         fields.push(`kl_id = $${idx++}`); values.push(body.klId);
+         fields.push(`kl_name = $${idx++}`); values.push(body.klName);
+         fields.push(`region_name = NULL`); 
+         fields.push(`province = NULL`);
+         fields.push(`city = NULL`);
+    } else if (body.role === 'admin_daerah') {
+         fields.push(`kl_id = NULL`);
+         fields.push(`kl_name = NULL`);
+         fields.push(`region_name = $${idx++}`); values.push(body.regionName);
+         fields.push(`province = $${idx++}`); values.push(body.province);
+         fields.push(`city = $${idx++}`); values.push(body.city);
+    } else if (body.role && body.role !== 'admin_kl' && body.role !== 'admin_daerah') {
+         // Clear all special fields
+         fields.push(`kl_id = NULL`); fields.push(`kl_name = NULL`);
+         fields.push(`region_name = NULL`); fields.push(`province = NULL`); fields.push(`city = NULL`);
     }
 
-    // Normalize role-related fields on update as well
-    if (
-      updateData.role &&
-      updateData.role !== "admin_kl" &&
-      updateData.role !== "admin_daerah"
-    ) {
-      updateData.klId = null;
-      updateData.klName = null;
+    if (body.permissions) {
+         fields.push(`permissions = $${idx++}`); 
+         values.push(JSON.stringify(body.permissions));
     }
-    if (updateData.role === "admin_kl") {
-      if (!updateData.klId || !updateData.klName) {
-        return res.status(400).json({
-          success: false,
-          message: "Untuk role Admin K/L, K/L wajib dipilih",
-        });
-      }
-    }
-    // No additional validation needed for admin_daerah klId/klName since they are not required
-
-    // For admin_daerah, validate regionName on update when role set
-    if (updateData.role === "admin_daerah") {
-      const regions = (User.getRegionList && User.getRegionList()) || [];
-      const rn = (updateData.regionName || "").trim();
-      if (!rn) {
-        return res.status(400).json({
-          success: false,
-          message: "Untuk role Admin Daerah, nama daerah wajib dipilih",
-        });
-      }
-      if (!regions.includes(rn)) {
-        return res.status(400).json({
-          success: false,
-          message: "Nama daerah tidak valid",
-          allowed: regions,
-        });
-      }
-      updateData.regionName = rn;
+    
+    if (body.password) {
+         const salt = await bcrypt.genSalt(10);
+         const hashed = await bcrypt.hash(body.password, salt);
+         fields.push(`password = $${idx++}`);
+         values.push(hashed);
     }
 
-    const updatedUser = await User.findByIdAndUpdate(
-      req.params.id,
-      updateData,
-      { new: true, runValidators: true }
-    ).select("-password");
+    fields.push(`updated_at = NOW()`);
+    
+    if (fields.length === 1) return res.json({ success: true, message: "Nothing to update" }); // Only updated_at
 
-    if (!updatedUser) {
-      return res.status(404).json({
-        success: false,
-        message: "User tidak ditemukan",
-      });
-    }
-
-    console.log("✅ User updated successfully");
+    values.push(id);
+    const query = `UPDATE users SET ${fields.join(', ')} WHERE id = $${idx} RETURNING *`;
+    
+    const result = await pool.query(query, values);
+    
+    if (result.rows.length === 0) return res.status(404).json({ success: false, message: "User not found" });
 
     res.json({
-      success: true,
-      message: "User berhasil diperbarui",
-      data: updatedUser,
+        success: true,
+        message: "User berhasil diperbarui",
+        data: result.rows[0]
     });
+
   } catch (error) {
     console.error("❌ User PUT error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Error saat memperbarui user",
-      error: error.message,
-    });
+    res.status(500).json({ success: false, message: error.message });
   }
 });
 
-// DELETE /api/users/:id - Delete user
+// DELETE /api/users/:id
 router.delete("/:id", authenticate, requireAdminUtama, async (req, res) => {
   try {
-    console.log("🗑️ Deleting user...");
-    console.log("ID:", req.params.id);
+    const result = await pool.query('DELETE FROM users WHERE id = $1 RETURNING *', [req.params.id]);
+    
+    if (result.rows.length === 0) return res.status(404).json({ success: false, message: "User not found" });
 
-    const deletedUser = await User.findByIdAndDelete(req.params.id);
-
-    if (!deletedUser) {
-      return res.status(404).json({
-        success: false,
-        message: "User tidak ditemukan",
-      });
-    }
-
-    console.log("✅ User deleted successfully");
-
-    res.json({
-      success: true,
-      message: "User berhasil dihapus",
-      data: { _id: deletedUser._id },
-    });
+    res.json({ success: true, message: "User berhasil dihapus", data: { id: result.rows[0].id } });
   } catch (error) {
     console.error("❌ User DELETE error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Error saat menghapus user",
-      error: error.message,
-    });
+    res.status(500).json({ success: false, message: error.message });
   }
 });
 
-// PATCH /api/users/:id/toggle-status - Toggle user status
-router.patch(
-  "/:id/toggle-status",
-  authenticate,
-  requireAdminUtama,
-  async (req, res) => {
-    try {
-      console.log("🔄 Toggling user status...");
-      console.log("ID:", req.params.id);
-
-      const user = await User.findById(req.params.id);
-
-      if (!user) {
-        return res.status(404).json({
-          success: false,
-          message: "User tidak ditemukan",
-        });
-      }
-
-      user.isActive = !user.isActive;
-      user.updatedBy = req.user.email || "admin@paudhi.kemenko.go.id";
-      await user.save();
-
-      console.log(
-        `✅ User status toggled to ${user.isActive ? "active" : "inactive"}`
-      );
-
-      res.json({
-        success: true,
-        message: `User berhasil ${
-          user.isActive ? "diaktifkan" : "dinonaktifkan"
-        }`,
-        data: {
-          _id: user._id,
-          isActive: user.isActive,
-        },
-      });
-    } catch (error) {
-      console.error("❌ User status toggle error:", error);
-      res.status(500).json({
-        success: false,
-        message: "Error saat mengubah status user",
-        error: error.message,
-      });
-    }
-  }
-);
-
-// GET /api/users/kl-list - Get K/L list for user creation
-router.get("/kl-list", authenticate, requireAdminUtama, async (req, res) => {
+// PATCH /api/users/:id/toggle-status
+router.patch("/:id/toggle-status", authenticate, requireAdminUtama, async (req, res) => {
   try {
-    console.log("📋 Getting K/L list for user creation...");
-
-    const klList = User.getKLList();
-
-    console.log("✅ K/L list retrieved");
-
-    res.json({
-      success: true,
-      message: "Daftar K/L berhasil diambil",
-      data: klList,
-    });
+     // First get current status
+     const getCurrent = await pool.query('SELECT is_active FROM users WHERE id = $1', [req.params.id]);
+     if (getCurrent.rows.length === 0) return res.status(404).json({ success: false, message: "User not found" });
+     
+     const currentStatus = getCurrent.rows[0].is_active;
+     const newStatus = !currentStatus;
+     
+     const result = await pool.query('UPDATE users SET is_active = $1, updated_at = NOW() WHERE id = $2 RETURNING *', [newStatus, req.params.id]);
+     
+     const user = result.rows[0];
+     res.json({
+        success: true,
+        message: `User berhasil ${user.is_active ? "diaktifkan" : "dinonaktifkan"}`,
+        data: { id: user.id, isActive: user.is_active }
+     });
   } catch (error) {
-    console.error("❌ K/L list error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Error saat mengambil daftar K/L",
-      error: error.message,
-    });
+    console.error("❌ User Toggle error:", error);
+    res.status(500).json({ success: false, message: error.message });
   }
 });
 
-// GET /api/users/region-list - Get region list for admin_daerah
-router.get(
-  "/region-list",
-  authenticate,
-  requireAdminUtama,
-  async (req, res) => {
-    try {
-      console.log("📋 Getting region list for admin_daerah...");
-      const regions = User.getRegionList();
-      console.log("✅ Region list retrieved");
-      res.json({
-        success: true,
-        message: "Daftar daerah berhasil diambil",
-        data: regions,
-      });
-    } catch (error) {
-      console.error("❌ Region list error:", error);
-      res.status(500).json({
-        success: false,
-        message: "Error saat mengambil daftar daerah",
-        error: error.message,
-      });
-    }
-  }
-);
+// GET /api/users/kl-list
+router.get("/kl-list", authenticate, requireAdminUtama, (req, res) => {
+    res.json({ success: true, data: KL_LIST });
+});
+
+// GET /api/users/region-list
+router.get("/region-list", authenticate, requireAdminUtama, (req, res) => {
+    res.json({ success: true, data: REGION_LIST });
+});
 
 module.exports = router;

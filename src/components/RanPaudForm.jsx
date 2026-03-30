@@ -78,6 +78,38 @@ const RanPaudForm = ({ item, onSave, onCancel }) => {
             persentase: 0,
             kategori: "BELUM LAPORAN",
           },
+          {
+            tahun: 2026,
+            target: null,
+            realisasi: null,
+            anggaran: "[ISI DISINI]",
+            persentase: 0,
+            kategori: "BELUM LAPORAN",
+          },
+          {
+            tahun: 2027,
+            target: null,
+            realisasi: null,
+            anggaran: "[ISI DISINI]",
+            persentase: 0,
+            kategori: "BELUM LAPORAN",
+          },
+          {
+            tahun: 2028,
+            target: null,
+            realisasi: null,
+            anggaran: "[ISI DISINI]",
+            persentase: 0,
+            kategori: "BELUM LAPORAN",
+          },
+          {
+            tahun: 2029,
+            target: null,
+            realisasi: null,
+            anggaran: "[ISI DISINI]",
+            persentase: 0,
+            kategori: "BELUM LAPORAN",
+          },
         ],
       },
     ],
@@ -369,6 +401,38 @@ const RanPaudForm = ({ item, onSave, onCancel }) => {
         },
         {
           tahun: 2025,
+          target: null,
+          realisasi: null,
+          anggaran: "[ISI DISINI]",
+          persentase: 0,
+          kategori: "BELUM LAPORAN",
+        },
+        {
+          tahun: 2026,
+          target: null,
+          realisasi: null,
+          anggaran: "[ISI DISINI]",
+          persentase: 0,
+          kategori: "BELUM LAPORAN",
+        },
+        {
+          tahun: 2027,
+          target: null,
+          realisasi: null,
+          anggaran: "[ISI DISINI]",
+          persentase: 0,
+          kategori: "BELUM LAPORAN",
+        },
+        {
+          tahun: 2028,
+          target: null,
+          realisasi: null,
+          anggaran: "[ISI DISINI]",
+          persentase: 0,
+          kategori: "BELUM LAPORAN",
+        },
+        {
+          tahun: 2029,
           target: null,
           realisasi: null,
           anggaran: "[ISI DISINI]",
@@ -926,9 +990,31 @@ const RanPaudForm = ({ item, onSave, onCancel }) => {
                     Data Pelaksanaan per Tahun
                   </h4>
 
-                  {/* Year Tabs */}
-                  <div className="flex space-x-1 mb-4">
-                    {[2020, 2021, 2022, 2023, 2024, 2025].map((year) => (
+                  {/* Year Tabs - Grouped Design */}
+                  <div className="flex items-center space-x-2 mb-4">
+                    {/* Dropdown for Historical Years (2020-2024) */}
+                    <select
+                      value={activeYear >= 2020 && activeYear <= 2024 ? activeYear : ''}
+                      onChange={(e) => setActiveYear(parseInt(e.target.value))}
+                      className={`px-3 py-2 text-sm font-medium rounded-lg border ${
+                        activeYear >= 2020 && activeYear <= 2024
+                          ? "bg-blue-600 text-white border-blue-600"
+                          : "bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200"
+                      }`}
+                    >
+                      <option value="" disabled>2020-2024</option>
+                      <option value="2020">2020</option>
+                      <option value="2021">2021</option>
+                      <option value="2022">2022</option>
+                      <option value="2023">2023</option>
+                      <option value="2024">2024</option>
+                    </select>
+
+                    {/* Separator */}
+                    <div className="h-6 w-px bg-gray-300"></div>
+
+                    {/* Individual Tabs for Current Years (2025-2029) */}
+                    {[2025, 2026, 2027, 2028, 2029].map((year) => (
                       <button
                         key={year}
                         onClick={() => setActiveYear(year)}
